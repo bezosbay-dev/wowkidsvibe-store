@@ -65,7 +65,6 @@ export async function getProductByHandle(handle) {
               id
               title
               availableForSale
-              quantityAvailable
               price { amount currencyCode }
               compareAtPrice { amount currencyCode }
               selectedOptions { name value }

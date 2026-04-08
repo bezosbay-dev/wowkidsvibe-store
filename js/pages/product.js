@@ -129,10 +129,10 @@ function renderProduct(container) {
             <span class="material-symbols-outlined text-lg">visibility</span>
             <span>${Math.floor(Math.random() * 20 + 5)} people viewing this right now</span>
           </div>
-          ${selectedVariant.quantityAvailable != null && selectedVariant.quantityAvailable > 0 && selectedVariant.quantityAvailable < 20 ? `
+          ${selectedVariant.availableForSale === false ? `
           <div class="flex items-center gap-3 p-3 bg-error-container/20 rounded-xl text-error text-sm font-medium">
             <span class="material-symbols-outlined text-lg">inventory_2</span>
-            <span>Only ${selectedVariant.quantityAvailable} left in stock!</span>
+            <span>Out of stock</span>
           </div>` : ''}
         </div>
 

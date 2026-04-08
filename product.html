@@ -36,14 +36,6 @@
       <span id="product-breadcrumb" class="text-primary font-bold">Product</span>
     </nav>
 
-    <!-- Debug info (visible until JS loads successfully) -->
-    <div id="debug-info" class="bg-yellow-50 border border-yellow-300 rounded-xl p-6 mb-8">
-      <p class="font-headline font-bold text-lg mb-2">Loading product page...</p>
-      <p class="text-sm text-on-surface-variant" id="debug-url"></p>
-      <p class="text-sm text-on-surface-variant" id="debug-handle"></p>
-      <p class="text-sm text-error font-bold mt-2" id="debug-error" style="display:none;"></p>
-    </div>
-
     <!-- Product Detail -->
     <div id="product-detail"></div>
 
@@ -58,28 +50,6 @@
 
   <div data-component="footer"></div>
 
-  <!-- NON-MODULE debug script: runs immediately, proves page loaded -->
-  <script>
-    (function() {
-      var url = window.location.href;
-      var search = window.location.search;
-      var params = new URLSearchParams(search);
-      var handle = params.get('handle');
-
-      document.getElementById('debug-url').textContent = 'URL: ' + url;
-      document.getElementById('debug-handle').textContent = 'Handle: ' + (handle || '(none — no ?handle= in URL)');
-
-      console.log('[PRODUCT PAGE DEBUG] URL:', url);
-      console.log('[PRODUCT PAGE DEBUG] Search:', search);
-      console.log('[PRODUCT PAGE DEBUG] Handle:', handle);
-
-      if (!handle) {
-        document.getElementById('debug-error').style.display = 'block';
-        document.getElementById('debug-error').textContent = 'ERROR: No handle parameter found in URL. Expected: product.html?handle=your-product-handle';
-      }
-    })();
-  </script>
-
   <!-- MODULE script: header, footer, and product page logic -->
   <script type="module">
     import { initHeader } from './js/components/header.js';
@@ -89,8 +59,6 @@
     import { formatMoney } from './js/api/client.js';
     import { showToast } from './js/components/toast.js';
     import { openCartDrawer } from './js/components/header.js';
-
-    console.log('[PRODUCT MODULE] All imports loaded successfully');
 
     initHeader();
     initFooter();
@@ -107,14 +75,18 @@
       const params = new URLSearchParams(window.location.search);
       const handle = params.get('handle');
 
-      console.log('[PRODUCT MODULE] initProductPage, handle:', handle);
-
-      const debugEl = document.getElementById('debug-info');
       const container = document.getElementById('product-detail');
 
       if (!handle) {
-        if (debugEl) {
-          debugEl.innerHTML = '<p class="font-headline font-bold text-error text-lg">No product handle in URL</p><p class="text-on-surface-variant mt-2">Navigate here from the <a href="collection.html?handle=all" class="text-primary underline">collection page</a> by clicking a product.</p>';
+        if (container) {
+          container.innerHTML = `
+            <div class="text-center py-20">
+              <span class="material-symbols-outlined text-8xl text-on-surface-variant/30 mb-6 block">shopping_bag</span>
+              <h2 class="font-headline font-extrabold text-2xl mb-3">Select a product to view</h2>
+              <p class="text-on-surface-variant mb-8">Browse our collection and click on a product to see its details.</p>
+              <a href="collection.html?handle=all" class="inline-block px-8 py-4 kinetic-gradient text-white rounded-full font-headline font-bold text-lg hover:scale-[1.02] transition-all shadow-lg">Browse All Products</a>
+            </div>
+          `;
         }
         return;
       }
@@ -125,9 +97,7 @@
       }
 
       try {
-        console.log('[PRODUCT MODULE] Calling Shopify API for handle:', handle);
-
-        // Direct fetch to avoid any caching issues
+        // Fetch product from Shopify
         const response = await fetch(STOREFRONT_URL, {
           method: 'POST',
           headers: {
@@ -141,7 +111,7 @@
                 images(first: 10) { edges { node { url altText } } }
                 variants(first: 100) {
                   edges { node {
-                    id title availableForSale quantityAvailable
+                    id title availableForSale
                     price { amount currencyCode }
                     compareAtPrice { amount currencyCode }
                     selectedOptions { name value }
@@ -157,15 +127,11 @@
           }),
         });
 
-        console.log('[PRODUCT MODULE] API response status:', response.status);
-
         if (!response.ok) {
           throw new Error('API returned ' + response.status);
         }
 
         const json = await response.json();
-        console.log('[PRODUCT MODULE] API json:', json);
-
         if (json.errors) {
           throw new Error(json.errors.map(e => e.message).join(', '));
         }
@@ -173,32 +139,23 @@
         currentProduct = json.data.product;
 
         if (!currentProduct) {
-          if (debugEl) debugEl.style.display = 'none';
           container.innerHTML = `
             <div class="text-center py-20">
               <span class="material-symbols-outlined text-8xl text-on-surface-variant/30 mb-6 block">search_off</span>
               <h2 class="font-headline font-extrabold text-2xl mb-3">Product not found</h2>
-              <p class="text-on-surface-variant mb-4">Handle: "${handle}"</p>
-              <p class="text-on-surface-variant mb-8">This product doesn't exist. Make sure to use the full product handle from Shopify.</p>
+              <p class="text-on-surface-variant mb-8">This product doesn't exist or has been removed.</p>
               <a href="collection.html?handle=all" class="inline-block px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold hover:scale-[1.02] transition-all">Browse All Products</a>
             </div>
           `;
           return;
         }
 
-        // Hide debug, render product
-        if (debugEl) debugEl.style.display = 'none';
         document.title = currentProduct.title + ' — WowKidsVibe';
         renderProduct(container);
         loadRecommendations();
 
       } catch (err) {
-        console.error('[PRODUCT MODULE] FATAL ERROR:', err);
-        const debugErr = document.getElementById('debug-error');
-        if (debugErr) {
-          debugErr.style.display = 'block';
-          debugErr.textContent = 'JS Error: ' + err.message;
-        }
+        console.error('Product page error:', err);
         if (container) {
           container.innerHTML = `
             <div class="text-center py-20">
