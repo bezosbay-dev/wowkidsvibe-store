@@ -21,23 +21,26 @@
     }
   </script>
   <link rel="stylesheet" href="css/global.css" />
+  <style>
+    .bundle-option { cursor: pointer; transition: all 0.2s ease; }
+    .bundle-option:hover { border-color: #b60d3d; }
+    .bundle-option.selected { border-color: #b60d3d; background: #fff5f6; }
+    .bundle-option.selected .bundle-radio { border-color: #b60d3d; background: #b60d3d; }
+    .bundle-option.selected .bundle-radio::after { content: ''; display: block; width: 8px; height: 8px; background: white; border-radius: 50%; }
+    .bundle-radio { width: 20px; height: 20px; min-width: 20px; border: 2px solid #aeacb6; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+    .desc-clean img, .desc-clean video, .desc-clean iframe, .desc-clean source, .desc-clean picture { display: none !important; }
+  </style>
 </head>
 <body class="bg-background text-on-background font-body">
 
   <div data-component="header"></div>
 
   <main class="pt-24 pb-32 max-w-7xl mx-auto px-6">
-    <!-- Breadcrumbs -->
-    <nav class="flex items-center gap-2 mb-8 font-label text-xs uppercase tracking-[0.2em] text-on-surface-variant">
-      <a class="hover:text-primary transition-colors" href="index.html">Home</a>
-      <span class="material-symbols-outlined text-[10px]">chevron_right</span>
-      <a class="hover:text-primary transition-colors" href="collection.html?handle=all">Shop</a>
-      <span class="material-symbols-outlined text-[10px]">chevron_right</span>
-      <span id="product-breadcrumb" class="text-primary font-bold">Product</span>
-    </nav>
-
     <!-- Product Detail -->
     <div id="product-detail"></div>
+
+    <!-- Description Section (below two columns) -->
+    <div id="description-section" style="display:none;"></div>
 
     <!-- Related Products -->
     <section id="related-section" class="mt-24" style="display:none;">
@@ -50,7 +53,6 @@
 
   <div data-component="footer"></div>
 
-  <!-- MODULE script: header, footer, and product page logic -->
   <script type="module">
     import { initHeader } from './js/components/header.js';
     import { initFooter } from './js/components/footer.js';
@@ -63,47 +65,29 @@
     initHeader();
     initFooter();
 
-    // ─── State ───
     let currentProduct = null;
     let selectedVariant = null;
     let quantity = 1;
+    let bundleQty = 1;
 
-    // ─── Start ───
     initProductPage();
 
     async function initProductPage() {
       const params = new URLSearchParams(window.location.search);
       const handle = params.get('handle');
-
       const container = document.getElementById('product-detail');
 
       if (!handle) {
-        if (container) {
-          container.innerHTML = `
-            <div class="text-center py-20">
-              <span class="material-symbols-outlined text-8xl text-on-surface-variant/30 mb-6 block">shopping_bag</span>
-              <h2 class="font-headline font-extrabold text-2xl mb-3">Select a product to view</h2>
-              <p class="text-on-surface-variant mb-8">Browse our collection and click on a product to see its details.</p>
-              <a href="collection.html?handle=all" class="inline-block px-8 py-4 kinetic-gradient text-white rounded-full font-headline font-bold text-lg hover:scale-[1.02] transition-all shadow-lg">Browse All Products</a>
-            </div>
-          `;
-        }
+        container.innerHTML = '<div class="text-center py-20"><span class="material-symbols-outlined text-8xl text-on-surface-variant/30 mb-6 block">shopping_bag</span><h2 class="font-headline font-extrabold text-2xl mb-3">Select a product to view</h2><p class="text-on-surface-variant mb-8">Browse our collection and click on a product to see its details.</p><a href="collection.html?handle=all" class="inline-block px-8 py-4 kinetic-gradient text-white rounded-full font-headline font-bold text-lg hover:scale-[1.02] transition-all shadow-lg">Browse All Products</a></div>';
         return;
       }
 
-      // Show skeleton
-      if (container) {
-        container.innerHTML = skeletonHTML();
-      }
+      container.innerHTML = skeletonHTML();
 
       try {
-        // Fetch product from Shopify
         const response = await fetch(STOREFRONT_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontToken,
-          },
+          headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontToken },
           body: JSON.stringify({
             query: `query getProduct($handle: String!) {
               product(handle: $handle) {
@@ -123,50 +107,27 @@
                 compareAtPriceRange { minVariantPrice { amount currencyCode } }
               }
             }`,
-            variables: { handle: handle }
+            variables: { handle }
           }),
         });
 
-        if (!response.ok) {
-          throw new Error('API returned ' + response.status);
-        }
-
+        if (!response.ok) throw new Error('API returned ' + response.status);
         const json = await response.json();
-        if (json.errors) {
-          throw new Error(json.errors.map(e => e.message).join(', '));
-        }
+        if (json.errors) throw new Error(json.errors.map(e => e.message).join(', '));
 
         currentProduct = json.data.product;
 
         if (!currentProduct) {
-          container.innerHTML = `
-            <div class="text-center py-20">
-              <span class="material-symbols-outlined text-8xl text-on-surface-variant/30 mb-6 block">search_off</span>
-              <h2 class="font-headline font-extrabold text-2xl mb-3">Product not found</h2>
-              <p class="text-on-surface-variant mb-8">This product doesn't exist or has been removed.</p>
-              <a href="collection.html?handle=all" class="inline-block px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold hover:scale-[1.02] transition-all">Browse All Products</a>
-            </div>
-          `;
+          container.innerHTML = '<div class="text-center py-20"><span class="material-symbols-outlined text-8xl text-on-surface-variant/30 mb-6 block">search_off</span><h2 class="font-headline font-extrabold text-2xl mb-3">Product not found</h2><p class="text-on-surface-variant mb-8">This product doesn\'t exist or has been removed.</p><a href="collection.html?handle=all" class="inline-block px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold hover:scale-[1.02] transition-all">Browse All Products</a></div>';
           return;
         }
 
         document.title = currentProduct.title + ' — WowKidsVibe';
         renderProduct(container);
         loadRecommendations();
-
       } catch (err) {
         console.error('Product page error:', err);
-        if (container) {
-          container.innerHTML = `
-            <div class="text-center py-20">
-              <span class="material-symbols-outlined text-8xl text-error/30 mb-6 block">error</span>
-              <h2 class="font-headline font-extrabold text-2xl mb-3">Failed to load product</h2>
-              <p class="text-on-surface-variant mb-2">${err.message}</p>
-              <p class="text-on-surface-variant mb-8">Check browser console (F12) for details.</p>
-              <a href="collection.html?handle=all" class="inline-block px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold hover:scale-[1.02] transition-all">Browse All Products</a>
-            </div>
-          `;
-        }
+        container.innerHTML = '<div class="text-center py-20"><span class="material-symbols-outlined text-8xl text-error/30 mb-6 block">error</span><h2 class="font-headline font-extrabold text-2xl mb-3">Failed to load product</h2><p class="text-on-surface-variant mb-2">' + err.message + '</p><a href="collection.html?handle=all" class="inline-block px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold hover:scale-[1.02] transition-all mt-6">Browse All Products</a></div>';
       }
     }
 
@@ -176,30 +137,44 @@
       const variants = p.variants.edges.map(e => e.node);
       selectedVariant = variants[0];
       quantity = 1;
+      bundleQty = 1;
 
       const mainImage = selectedVariant.image || images[0];
       const price = selectedVariant.price;
       const compareAt = selectedVariant.compareAtPrice;
       const hasDiscount = compareAt && parseFloat(compareAt.amount) > parseFloat(price.amount);
-      const discountPercent = hasDiscount
-        ? Math.round((1 - parseFloat(price.amount) / parseFloat(compareAt.amount)) * 100)
-        : 0;
+      const discountPercent = hasDiscount ? Math.round((1 - parseFloat(price.amount) / parseFloat(compareAt.amount)) * 100) : 0;
+      const priceNum = parseFloat(price.amount);
+      const compareNum = hasDiscount ? parseFloat(compareAt.amount) : priceNum;
+      const currency = price.currencyCode;
 
-      // Update breadcrumb
-      const breadcrumb = document.getElementById('product-breadcrumb');
-      if (breadcrumb) breadcrumb.textContent = p.title;
+      // Breadcrumb: shorten title to 30 chars
+      const shortTitle = p.title.length > 30 ? p.title.substring(0, 30) + '...' : p.title;
 
-      // Build thumbnails
+      // Bundle pricing calculations (based on compare-at or regular price)
+      const basePrice = compareNum || priceNum; // use original/compare price as base
+      const bundle1Price = priceNum;
+      const bundle1Discount = hasDiscount ? discountPercent : 0;
+      const bundle2Price = Math.round(basePrice * 0.60 * 100) / 100; // 40% off
+      const bundle3Price = Math.round(basePrice * 0.40 * 100) / 100; // 60% off
+      const bundle2Save = Math.round((basePrice * 2 - bundle2Price * 2) * 100) / 100;
+      const bundle3Save = Math.round((basePrice * 3 - bundle3Price * 3) * 100) / 100;
+      const bundle1Save = hasDiscount ? Math.round((compareNum - priceNum) * 100) / 100 : 0;
+
+      // Viewing count
+      const viewingCount = Math.floor(Math.random() * 20 + 8);
+
+      // Thumbnails
       let thumbsHTML = '';
       if (images.length > 1) {
         const thumbs = images.slice(0, 8).map(function(img, i) {
           const ring = i === 0 ? 'ring-2 ring-primary ring-offset-2' : 'hover:opacity-80';
           return '<button class="thumb-btn aspect-square rounded-xl overflow-hidden ' + ring + ' transition-all" data-index="' + i + '"><img class="w-full h-full object-cover" src="' + img.url + '" alt="" loading="lazy" /></button>';
         }).join('');
-        thumbsHTML = '<div class="grid grid-cols-4 gap-3">' + thumbs + '</div>';
+        thumbsHTML = '<div class="grid grid-cols-4 gap-3 mt-4">' + thumbs + '</div>';
       }
 
-      // Build option buttons
+      // Variant option buttons
       let optionsHTML = '';
       p.options.forEach(function(option) {
         if (option.name === 'Title') return;
@@ -210,96 +185,200 @@
         optionsHTML += '<div class="space-y-3"><h3 class="font-label text-xs font-bold text-on-surface-variant uppercase tracking-[0.15em]">' + option.name + '</h3><div class="flex flex-wrap gap-2">' + btns + '</div></div>';
       });
 
+      // In stock check
+      const inStock = selectedVariant.availableForSale;
+
       container.innerHTML = `
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          <!-- Gallery -->
-          <div class="lg:col-span-6 space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+          <!-- LEFT: Image Gallery -->
+          <div class="lg:col-span-6 lg:sticky lg:top-28">
             <div class="relative aspect-square rounded-2xl overflow-hidden bg-surface-container-low">
+              ${hasDiscount ? '<div class="absolute top-4 left-4 z-10 bg-primary text-on-primary font-label font-bold px-4 py-1.5 rounded-full text-xs shadow-lg">SAVE ' + discountPercent + '%</div>' : ''}
               <img id="main-image" class="w-full h-full object-cover" src="${mainImage ? mainImage.url : ''}" alt="${p.title}" />
             </div>
             ${thumbsHTML}
           </div>
 
-          <!-- Details -->
-          <div class="lg:col-span-6 space-y-6">
-            <header class="space-y-3">
-              <h1 class="text-3xl lg:text-4xl font-headline font-extrabold tracking-tight leading-tight text-on-surface">${p.title}</h1>
-              <div class="flex items-center gap-3">
-                <div class="flex text-[#C49B00]">
-                  <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-                  <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-                  <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-                  <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-                  <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+          <!-- RIGHT: Product Info -->
+          <div class="lg:col-span-6 space-y-5">
+
+            <!-- 1. Breadcrumb -->
+            <nav class="flex items-center gap-2 font-label text-[11px] uppercase tracking-[0.15em] text-on-surface-variant">
+              <a class="hover:text-primary transition-colors" href="index.html">Home</a>
+              <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+              <a class="hover:text-primary transition-colors" href="collection.html?handle=all">Shop</a>
+              <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+              <span class="text-on-surface font-bold">${shortTitle}</span>
+            </nav>
+
+            <!-- 2. Title -->
+            <h1 class="text-2xl lg:text-3xl font-headline font-extrabold tracking-tight leading-tight text-on-surface">${p.title}</h1>
+
+            <!-- 3. Star Rating -->
+            <div class="flex items-center gap-2">
+              <div class="flex text-[#F59E0B]">
+                <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">star</span>
+              </div>
+              <span class="text-sm font-bold text-on-surface">4.9</span>
+              <span class="text-sm text-on-surface-variant">(2,847 reviews)</span>
+            </div>
+
+            <!-- 4. Price -->
+            <div class="flex items-center gap-3 flex-wrap">
+              <span id="variant-price" class="text-3xl font-headline font-extrabold ${hasDiscount ? 'text-primary' : 'text-on-surface'}">${formatMoney(price.amount, currency)}</span>
+              ${hasDiscount ? '<span id="variant-compare-price" class="text-lg text-on-surface-variant line-through">' + formatMoney(compareAt.amount, currency) + '</span><span class="bg-primary text-on-primary font-label font-bold text-[10px] px-3 py-1 rounded-full">SAVE ' + discountPercent + '%</span>' : ''}
+            </div>
+
+            <!-- 5. Social Proof -->
+            <div class="flex items-center gap-2 text-sm">
+              <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span></span>
+              <span class="text-on-surface-variant"><strong class="text-on-surface">${viewingCount} people</strong> are viewing this right now</span>
+            </div>
+
+            <!-- 6. Bundle & Save -->
+            <div class="border border-outline-variant/30 rounded-2xl overflow-hidden">
+              <div class="bg-surface-container-high/50 px-5 py-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-lg">local_offer</span>
+                <span class="font-headline font-extrabold text-sm uppercase tracking-wide">Bundle & Save</span>
+              </div>
+              <div class="p-4 space-y-3" id="bundle-options">
+                <!-- Buy 1 -->
+                <label class="bundle-option selected flex items-center gap-4 p-4 rounded-xl border-2 border-outline-variant/30" data-bundle="1">
+                  <div class="bundle-radio"><div></div></div>
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="font-headline font-bold text-sm">Buy 1</span>
+                      ${bundle1Discount > 0 ? '<span class="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">' + bundle1Discount + '% OFF</span>' : ''}
+                    </div>
+                    <div class="text-sm text-on-surface-variant mt-0.5">${formatMoney(bundle1Price, currency)} each</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="font-headline font-extrabold text-on-surface">${formatMoney(bundle1Price, currency)}</div>
+                    ${hasDiscount ? '<div class="text-xs text-on-surface-variant line-through">' + formatMoney(compareNum, currency) + '</div>' : ''}
+                  </div>
+                </label>
+
+                <!-- Buy 2 -->
+                <label class="bundle-option flex items-center gap-4 p-4 rounded-xl border-2 border-outline-variant/30 relative" data-bundle="2">
+                  <div class="absolute -top-2.5 right-4 bg-primary text-on-primary text-[10px] font-bold px-3 py-0.5 rounded-full font-label uppercase">Most Popular</div>
+                  <div class="bundle-radio"><div></div></div>
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="font-headline font-bold text-sm">Buy 2</span>
+                      <span class="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">40% OFF</span>
+                      <span class="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px]">local_shipping</span> FREE SHIPPING</span>
+                    </div>
+                    <div class="text-sm text-on-surface-variant mt-0.5">${formatMoney(bundle2Price, currency)} each</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="font-headline font-extrabold text-on-surface">${formatMoney(bundle2Price * 2, currency)}</div>
+                    <div class="text-xs text-on-surface-variant line-through">${formatMoney(basePrice * 2, currency)}</div>
+                  </div>
+                </label>
+
+                <!-- Buy 3 -->
+                <label class="bundle-option flex items-center gap-4 p-4 rounded-xl border-2 border-outline-variant/30" data-bundle="3">
+                  <div class="bundle-radio"><div></div></div>
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="font-headline font-bold text-sm">Buy 3</span>
+                      <span class="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">60% OFF</span>
+                      <span class="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px]">local_shipping</span> FREE SHIPPING</span>
+                    </div>
+                    <div class="text-sm text-on-surface-variant mt-0.5">${formatMoney(bundle3Price, currency)} each</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="font-headline font-extrabold text-on-surface">${formatMoney(bundle3Price * 3, currency)}</div>
+                    <div class="text-xs text-on-surface-variant line-through">${formatMoney(basePrice * 3, currency)}</div>
+                  </div>
+                </label>
+              </div>
+              <div id="bundle-savings" class="px-5 pb-4 ${bundle1Save > 0 ? '' : 'hidden'}">
+                <div class="flex items-center gap-2 text-green-600 font-headline font-bold text-sm">
+                  <span class="material-symbols-outlined text-base">savings</span>
+                  <span>You save <span id="savings-amount">${formatMoney(bundle1Save, currency)}</span></span>
                 </div>
-                <span class="text-sm font-medium text-on-surface-variant">4.9/5</span>
-              </div>
-            </header>
-
-            <!-- Price -->
-            <div class="bg-surface-container-lowest p-6 rounded-2xl soft-shadow">
-              <div class="flex items-center gap-4 flex-wrap">
-                <span id="variant-price" class="text-4xl font-headline font-extrabold ${hasDiscount ? 'text-error' : 'text-on-surface'}">${formatMoney(price.amount, price.currencyCode)}</span>
-                ${hasDiscount ? '<span id="variant-compare-price" class="text-xl text-on-surface-variant line-through">' + formatMoney(compareAt.amount, compareAt.currencyCode) + '</span><span class="bg-primary-container text-on-primary-container font-label font-bold text-xs px-3 py-1 rounded-full">SAVE ' + discountPercent + '%</span>' : ''}
               </div>
             </div>
 
-            <!-- Urgency -->
-            <div class="flex items-center gap-3 p-3 bg-tertiary-container/20 rounded-xl text-tertiary text-sm font-medium">
-              <span class="material-symbols-outlined text-lg">visibility</span>
-              <span>${Math.floor(Math.random() * 20 + 5)} people viewing this right now</span>
-            </div>
-
-            <!-- Options -->
+            <!-- 7. Variant Selectors -->
             ${optionsHTML}
 
-            <!-- Quantity -->
+            <!-- 8. Quantity Selector -->
             <div class="space-y-3">
               <h3 class="font-label text-xs font-bold text-on-surface-variant uppercase tracking-[0.15em]">Quantity</h3>
               <div class="inline-flex items-center bg-surface-container-high rounded-full p-1">
-                <button id="qty-decrease" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors font-headline font-bold text-lg">-</button>
+                <button id="qty-decrease" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors font-headline font-bold text-lg">−</button>
                 <span id="qty-value" class="px-5 font-headline font-bold text-lg min-w-[3rem] text-center">1</span>
                 <button id="qty-increase" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors font-headline font-bold text-lg">+</button>
               </div>
             </div>
 
-            <!-- CTA Buttons -->
-            <div class="space-y-3 pt-4">
-              <button id="add-to-cart-main" class="w-full coral-button text-white font-headline font-extrabold py-5 rounded-full text-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-3 hover:scale-[1.01] active:scale-[0.98] transition-all">
-                <span class="material-symbols-outlined">shopping_bag</span> ADD TO CART
-              </button>
-              <button id="buy-now-btn" class="w-full bg-on-surface text-background font-headline font-extrabold py-5 rounded-full text-xl hover:bg-black transition-all">
-                BUY IT NOW
-              </button>
+            <!-- 9. ADD TO CART -->
+            <button id="add-to-cart-main" class="w-full kinetic-gradient text-white font-headline font-extrabold py-4 rounded-full text-lg shadow-lg shadow-primary/20 flex items-center justify-center gap-3 hover:scale-[1.01] active:scale-[0.98] transition-all">
+              <span class="material-symbols-outlined text-xl">shopping_bag</span> ADD TO CART — <span id="atc-price">${formatMoney(bundle1Price, currency)}</span>
+            </button>
+
+            <!-- 10. BUY NOW -->
+            <button id="buy-now-btn" class="w-full bg-on-surface text-background font-headline font-extrabold py-4 rounded-full text-lg hover:bg-black transition-all flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-xl">bolt</span> BUY IT NOW
+            </button>
+
+            <!-- 11. Trust Badges -->
+            <div class="grid grid-cols-4 gap-3 pt-4">
+              <div class="flex flex-col items-center gap-1.5 text-center">
+                <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary text-lg">local_shipping</span>
+                </div>
+                <span class="text-[9px] font-bold uppercase tracking-wider text-on-surface-variant leading-tight">Free Shipping</span>
+              </div>
+              <div class="flex flex-col items-center gap-1.5 text-center">
+                <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary text-lg">replay_30</span>
+                </div>
+                <span class="text-[9px] font-bold uppercase tracking-wider text-on-surface-variant leading-tight">30-Day Returns</span>
+              </div>
+              <div class="flex flex-col items-center gap-1.5 text-center">
+                <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary text-lg">verified_user</span>
+                </div>
+                <span class="text-[9px] font-bold uppercase tracking-wider text-on-surface-variant leading-tight">Secure Checkout</span>
+              </div>
+              <div class="flex flex-col items-center gap-1.5 text-center">
+                <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center">
+                  <span class="material-symbols-outlined text-green-600 text-lg">check_circle</span>
+                </div>
+                <span class="text-[9px] font-bold uppercase tracking-wider text-on-surface-variant leading-tight">${inStock ? 'In Stock' : 'Out of Stock'}</span>
+              </div>
             </div>
 
-            <!-- Trust Badges -->
-            <div class="grid grid-cols-3 gap-4 pt-6 border-t border-outline-variant/20">
-              <div class="flex flex-col items-center gap-2 text-center">
-                <span class="material-symbols-outlined text-primary text-2xl">local_shipping</span>
-                <span class="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant">Free Shipping</span>
-              </div>
-              <div class="flex flex-col items-center gap-2 text-center">
-                <span class="material-symbols-outlined text-primary text-2xl">replay</span>
-                <span class="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant">30-Day Returns</span>
-              </div>
-              <div class="flex flex-col items-center gap-2 text-center">
-                <span class="material-symbols-outlined text-primary text-2xl">verified_user</span>
-                <span class="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant">Safe Checkout</span>
-              </div>
-            </div>
-
-            <!-- Description -->
-            ${p.descriptionHtml ? '<div class="pt-6 border-t border-outline-variant/20"><h3 class="font-headline font-bold text-lg mb-4">About this product</h3><div class="prose prose-sm text-on-surface-variant font-body max-w-none">' + p.descriptionHtml + '</div></div>' : ''}
           </div>
         </div>
       `;
 
-      // Wire up interactions
+      // Description section below columns — strip images
+      if (p.descriptionHtml) {
+        const descSection = document.getElementById('description-section');
+        descSection.style.display = 'block';
+        descSection.innerHTML = '<div class="mt-16 max-w-4xl mx-auto"><div class="border-t border-outline-variant/20 pt-10"><h2 class="text-2xl font-headline font-extrabold mb-6 flex items-center gap-3"><span class="w-8 h-1 bg-primary rounded-full"></span> About This Product</h2><div class="desc-clean prose prose-sm md:prose-base text-on-surface-variant font-body max-w-none leading-relaxed">' + stripImages(p.descriptionHtml) + '</div></div></div>';
+      }
+
       setupGallery(images);
       setupVariantOptions(variants);
       setupQuantity();
+      setupBundle(priceNum, basePrice, currency);
       setupAddToCart();
+    }
+
+    function stripImages(html) {
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      div.querySelectorAll('img, video, iframe, picture, source').forEach(el => el.remove());
+      return div.innerHTML;
     }
 
     function setupGallery(images) {
@@ -347,18 +426,122 @@
             const priceEl = document.getElementById('variant-price');
             if (priceEl) priceEl.textContent = formatMoney(match.price.amount, match.price.currencyCode);
             if (match.image) document.getElementById('main-image').src = match.image.url;
+
+            // Update bundle pricing with new variant
+            const newPrice = parseFloat(match.price.amount);
+            const newCompare = match.compareAtPrice ? parseFloat(match.compareAtPrice.amount) : newPrice;
+            updateBundlePrices(newPrice, newCompare, match.price.currencyCode);
           }
         });
       });
     }
 
+    function setupBundle(unitPrice, basePrice, currency) {
+      const savings = [
+        basePrice - unitPrice,
+        basePrice * 2 - Math.round(basePrice * 0.60 * 100) / 100 * 2,
+        basePrice * 3 - Math.round(basePrice * 0.40 * 100) / 100 * 3
+      ];
+
+      document.querySelectorAll('.bundle-option').forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          document.querySelectorAll('.bundle-option').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          bundleQty = parseInt(opt.dataset.bundle);
+
+          const saveAmt = savings[bundleQty - 1];
+          const savingsEl = document.getElementById('bundle-savings');
+          const savingsAmtEl = document.getElementById('savings-amount');
+          if (saveAmt > 0) {
+            savingsEl.classList.remove('hidden');
+            savingsAmtEl.textContent = formatMoney(saveAmt, currency);
+          } else {
+            savingsEl.classList.add('hidden');
+          }
+
+          updateATCPrice(currency);
+        });
+      });
+    }
+
+    function updateBundlePrices(unitPrice, basePrice, currency) {
+      const b2each = Math.round(basePrice * 0.60 * 100) / 100;
+      const b3each = Math.round(basePrice * 0.40 * 100) / 100;
+      const hasDisc = basePrice > unitPrice;
+      const discPct = hasDisc ? Math.round((1 - unitPrice / basePrice) * 100) : 0;
+
+      const opts = document.querySelectorAll('.bundle-option');
+      // Update Buy 1
+      if (opts[0]) {
+        opts[0].querySelector('.text-right .font-extrabold').textContent = formatMoney(unitPrice, currency);
+        const strikeEl = opts[0].querySelector('.text-right .line-through');
+        if (strikeEl) strikeEl.textContent = formatMoney(basePrice, currency);
+      }
+      // Update Buy 2
+      if (opts[1]) {
+        opts[1].querySelector('.text-sm.text-on-surface-variant').textContent = formatMoney(b2each, currency) + ' each';
+        opts[1].querySelector('.text-right .font-extrabold').textContent = formatMoney(b2each * 2, currency);
+        opts[1].querySelector('.text-right .line-through').textContent = formatMoney(basePrice * 2, currency);
+      }
+      // Update Buy 3
+      if (opts[2]) {
+        opts[2].querySelector('.text-sm.text-on-surface-variant').textContent = formatMoney(b3each, currency) + ' each';
+        opts[2].querySelector('.text-right .font-extrabold').textContent = formatMoney(b3each * 3, currency);
+        opts[2].querySelector('.text-right .line-through').textContent = formatMoney(basePrice * 3, currency);
+      }
+
+      // Update savings display
+      const savingsMap = [
+        basePrice - unitPrice,
+        basePrice * 2 - b2each * 2,
+        basePrice * 3 - b3each * 3
+      ];
+      const saveAmt = savingsMap[bundleQty - 1];
+      const savingsEl = document.getElementById('bundle-savings');
+      const savingsAmtEl = document.getElementById('savings-amount');
+      if (saveAmt > 0) {
+        savingsEl.classList.remove('hidden');
+        savingsAmtEl.textContent = formatMoney(saveAmt, currency);
+      } else {
+        savingsEl.classList.add('hidden');
+      }
+
+      updateATCPrice(currency);
+    }
+
+    function updateATCPrice(currency) {
+      const price = parseFloat(selectedVariant.price.amount);
+      const compareAt = selectedVariant.compareAtPrice ? parseFloat(selectedVariant.compareAtPrice.amount) : price;
+      const base = compareAt || price;
+
+      let totalPrice;
+      if (bundleQty === 1) {
+        totalPrice = price * quantity;
+      } else if (bundleQty === 2) {
+        totalPrice = Math.round(base * 0.60 * 100) / 100 * 2 * quantity;
+      } else {
+        totalPrice = Math.round(base * 0.40 * 100) / 100 * 3 * quantity;
+      }
+
+      const atcPriceEl = document.getElementById('atc-price');
+      if (atcPriceEl) atcPriceEl.textContent = formatMoney(totalPrice, currency);
+    }
+
     function setupQuantity() {
       const qtyVal = document.getElementById('qty-value');
       document.getElementById('qty-decrease')?.addEventListener('click', function() {
-        if (quantity > 1) { quantity--; qtyVal.textContent = quantity; }
+        if (quantity > 1) {
+          quantity--;
+          qtyVal.textContent = quantity;
+          updateATCPrice(selectedVariant.price.currencyCode);
+        }
       });
       document.getElementById('qty-increase')?.addEventListener('click', function() {
-        if (quantity < 99) { quantity++; qtyVal.textContent = quantity; }
+        if (quantity < 99) {
+          quantity++;
+          qtyVal.textContent = quantity;
+          updateATCPrice(selectedVariant.price.currencyCode);
+        }
       });
     }
 
@@ -368,9 +551,11 @@
         atcBtn.addEventListener('click', async function() {
           if (!selectedVariant) return;
           atcBtn.disabled = true;
+          const origHTML = atcBtn.innerHTML;
           atcBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Adding...';
           try {
-            await addToCart(selectedVariant.id, quantity);
+            const totalItems = bundleQty * quantity;
+            await addToCart(selectedVariant.id, totalItems);
             showToast('Added to cart!', 'success');
             openCartDrawer();
           } catch (err) {
@@ -378,7 +563,7 @@
             showToast('Failed to add to cart', 'error');
           } finally {
             atcBtn.disabled = false;
-            atcBtn.innerHTML = '<span class="material-symbols-outlined">shopping_bag</span> ADD TO CART';
+            atcBtn.innerHTML = origHTML;
           }
         });
       }
@@ -388,15 +573,17 @@
         buyBtn.addEventListener('click', async function() {
           if (!selectedVariant) return;
           buyBtn.disabled = true;
-          buyBtn.textContent = 'Processing...';
+          const origHTML = buyBtn.innerHTML;
+          buyBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Processing...';
           try {
-            const cart = await addToCart(selectedVariant.id, quantity);
+            const totalItems = bundleQty * quantity;
+            const cart = await addToCart(selectedVariant.id, totalItems);
             if (cart && cart.checkoutUrl) window.location.href = cart.checkoutUrl;
           } catch (err) {
             console.error('Buy now error:', err);
             showToast('Failed to checkout', 'error');
             buyBtn.disabled = false;
-            buyBtn.textContent = 'BUY IT NOW';
+            buyBtn.innerHTML = origHTML;
           }
         });
       }
@@ -448,7 +635,6 @@
           '</div>';
         }).join('');
 
-        // Bind add-to-cart buttons in recommendations
         document.querySelectorAll('#related-products .add-to-cart-btn').forEach(function(btn) {
           if (btn.dataset.bound) return;
           btn.dataset.bound = '1';
@@ -461,9 +647,10 @@
             const orig = btn.innerHTML;
             btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span> Adding...';
             try {
-              const { addToCart } = await import('./js/api/cart.js');
               await addToCart(vid, 1);
               btn.innerHTML = '<span class="material-symbols-outlined text-lg">check_circle</span> Added!';
+              showToast('Added to cart!', 'success');
+              openCartDrawer();
               setTimeout(function() { btn.innerHTML = orig; }, 1500);
             } catch (err) {
               btn.innerHTML = orig;
@@ -478,7 +665,10 @@
     }
 
     function skeletonHTML() {
-      return '<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start animate-pulse"><div class="lg:col-span-6 space-y-4"><div class="aspect-square skeleton rounded-2xl"></div><div class="grid grid-cols-4 gap-3"><div class="aspect-square skeleton rounded-xl"></div><div class="aspect-square skeleton rounded-xl"></div><div class="aspect-square skeleton rounded-xl"></div><div class="aspect-square skeleton rounded-xl"></div></div></div><div class="lg:col-span-6 space-y-6"><div class="skeleton h-10 w-3/4 rounded-xl"></div><div class="skeleton h-6 w-1/3 rounded-lg"></div><div class="skeleton h-24 w-full rounded-2xl"></div><div class="skeleton h-12 w-full rounded-2xl"></div><div class="skeleton h-16 w-full rounded-full"></div><div class="skeleton h-16 w-full rounded-full"></div></div></div>';
+      return `<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start animate-pulse">
+        <div class="lg:col-span-6 space-y-4"><div class="aspect-square skeleton rounded-2xl"></div><div class="grid grid-cols-4 gap-3"><div class="aspect-square skeleton rounded-xl"></div><div class="aspect-square skeleton rounded-xl"></div><div class="aspect-square skeleton rounded-xl"></div><div class="aspect-square skeleton rounded-xl"></div></div></div>
+        <div class="lg:col-span-6 space-y-5"><div class="skeleton h-4 w-1/2 rounded-lg"></div><div class="skeleton h-10 w-full rounded-xl"></div><div class="skeleton h-5 w-1/3 rounded-lg"></div><div class="skeleton h-8 w-2/5 rounded-lg"></div><div class="skeleton h-5 w-1/2 rounded-lg"></div><div class="skeleton h-48 w-full rounded-2xl"></div><div class="skeleton h-12 w-full rounded-2xl"></div><div class="skeleton h-14 w-full rounded-full"></div><div class="skeleton h-14 w-full rounded-full"></div></div>
+      </div>`;
     }
   </script>
 </body>
