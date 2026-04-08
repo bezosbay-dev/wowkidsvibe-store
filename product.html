@@ -409,7 +409,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontToken },
           body: JSON.stringify({
-            query: `query ($productId: ID!) { productRecommendations(productId: $productId) { id title handle featuredImage { url altText } priceRange { minVariantPrice { amount currencyCode } } compareAtPriceRange { minVariantPrice { amount currencyCode } } } }`,
+            query: `query ($productId: ID!) { productRecommendations(productId: $productId) { id title handle featuredImage { url altText } priceRange { minVariantPrice { amount currencyCode } } compareAtPriceRange { minVariantPrice { amount currencyCode } } variants(first: 1) { edges { node { id } } } } }`,
             variables: { productId: currentProduct.id }
           }),
         });
@@ -419,8 +419,59 @@
 
         document.getElementById('related-section').style.display = 'block';
         document.getElementById('related-products').innerHTML = recs.slice(0, 4).map(function(p) {
-          return '<a href="/product.html?handle=' + p.handle + '" class="group block"><div class="aspect-square rounded-2xl bg-surface-container-low overflow-hidden mb-4">' + (p.featuredImage ? '<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="' + p.featuredImage.url + '" alt="' + (p.featuredImage.altText || p.title) + '" loading="lazy" />' : '') + '</div><h3 class="font-headline font-bold text-sm mb-1 line-clamp-2">' + p.title + '</h3><span class="text-primary font-headline font-extrabold">' + formatMoney(p.priceRange.minVariantPrice.amount, p.priceRange.minVariantPrice.currencyCode) + '</span></a>';
+          const price = p.priceRange.minVariantPrice;
+          const compareAt = p.compareAtPriceRange?.minVariantPrice;
+          const hasDiscount = compareAt && parseFloat(compareAt.amount) > parseFloat(price.amount);
+          const discountPct = hasDiscount ? Math.round((1 - parseFloat(price.amount) / parseFloat(compareAt.amount)) * 100) : 0;
+          const variantId = p.variants?.edges?.[0]?.node?.id || '';
+          const url = '/product.html?handle=' + p.handle;
+          return '<div class="product-card group animate-on-scroll visible">' +
+            '<a href="' + url + '" class="block">' +
+              '<div class="product-card-img aspect-square rounded-2xl bg-surface-container-low mb-4">' +
+                (hasDiscount ? '<div class="absolute top-3 left-3 z-10 bg-primary text-on-primary font-label px-3 py-1 rounded-full text-xs">SAVE ' + discountPct + '%</div>' : '') +
+                (p.featuredImage ? '<img class="w-full h-full object-cover" src="' + p.featuredImage.url + '" alt="' + (p.featuredImage.altText || p.title) + '" loading="lazy" />' : '<div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-6xl">image</span></div>') +
+                '<div class="card-overlay"></div>' +
+                '<div class="card-atc">' +
+                  '<button class="add-to-cart-btn w-full py-3 kinetic-gradient text-white rounded-xl font-headline font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-shadow" data-variant-id="' + variantId + '" onclick="event.preventDefault();event.stopPropagation();">' +
+                    '<span class="material-symbols-outlined text-lg">shopping_bag</span> Add to Cart' +
+                  '</button>' +
+                '</div>' +
+              '</div>' +
+            '</a>' +
+            '<a href="' + url + '" class="block">' +
+              '<h3 class="font-headline font-bold text-base mb-1 line-clamp-2">' + p.title + '</h3>' +
+              '<div class="flex items-center gap-3">' +
+                '<span class="text-lg font-headline font-extrabold text-primary">' + formatMoney(price.amount, price.currencyCode) + '</span>' +
+                (hasDiscount ? '<span class="text-on-surface-variant line-through text-sm">' + formatMoney(compareAt.amount, compareAt.currencyCode) + '</span>' : '') +
+              '</div>' +
+            '</a>' +
+          '</div>';
         }).join('');
+
+        // Bind add-to-cart buttons in recommendations
+        document.querySelectorAll('#related-products .add-to-cart-btn').forEach(function(btn) {
+          if (btn.dataset.bound) return;
+          btn.dataset.bound = '1';
+          btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const vid = btn.dataset.variantId;
+            if (!vid) return;
+            btn.disabled = true;
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span> Adding...';
+            try {
+              const { addToCart } = await import('./js/api/cart.js');
+              await addToCart(vid, 1);
+              btn.innerHTML = '<span class="material-symbols-outlined text-lg">check_circle</span> Added!';
+              setTimeout(function() { btn.innerHTML = orig; }, 1500);
+            } catch (err) {
+              btn.innerHTML = orig;
+            } finally {
+              btn.disabled = false;
+            }
+          });
+        });
       } catch (err) {
         console.error('Recommendations error:', err);
       }

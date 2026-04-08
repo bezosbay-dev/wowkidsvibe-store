@@ -157,6 +157,60 @@
   pointer-events: auto;
 }
 
+/* ── Product Card Hover ── */
+.product-card-img {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card-img img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card-img .card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 50%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.product-card-img .card-atc {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 1rem;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Desktop hover */
+@media (hover: hover) {
+  .product-card:hover .product-card-img img {
+    transform: scale(1.05);
+  }
+  .product-card:hover .card-overlay {
+    opacity: 1;
+  }
+  .product-card:hover .card-atc {
+    transform: translateY(0);
+  }
+}
+
+/* Mobile: always show the button */
+@media (hover: none) {
+  .card-atc {
+    transform: translateY(0) !important;
+  }
+  .card-overlay {
+    opacity: 1 !important;
+  }
+}
+
 /* Selection color */
 ::selection {
   background: rgba(255, 115, 134, 0.3);
