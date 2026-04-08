@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Contact & FAQ — WowKidsVibe</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = { darkMode:"class", theme:{ extend:{
+      colors:{"on-secondary-fixed":"#433700","surface-variant":"#dedbe9","secondary-dim":"#5f4e00","on-primary-fixed":"#000000","secondary":"#6d5a00","error-container":"#fb5151","surface-container-low":"#f3effb","inverse-surface":"#0e0d15","on-secondary":"#fff2ce","on-background":"#2f2e36","tertiary-dim":"#7122b4","tertiary-container":"#cf9aff","secondary-fixed-dim":"#edc600","primary-dim":"#a20033","on-surface":"#2f2e36","primary-fixed-dim":"#ff5773","on-surface-variant":"#5c5a63","tertiary-fixed-dim":"#c588ff","on-error":"#ffefee","background":"#f9f5ff","surface-container-lowest":"#ffffff","on-secondary-fixed-variant":"#645300","secondary-container":"#fdd404","on-secondary-container":"#594a00","on-primary":"#ffefef","surface-dim":"#d6d2e2","tertiary":"#7e32c1","on-tertiary":"#fbefff","on-primary-fixed-variant":"#5f001b","tertiary-fixed":"#cf9aff","on-primary-container":"#4e0014","primary-container":"#ff7386","outline":"#78767f","surface-container-high":"#e4e1ee","inverse-on-surface":"#9e9ba5","on-tertiary-container":"#4a0080","surface-container-highest":"#dedbe9","error":"#b31b25","surface-bright":"#f9f5ff","inverse-primary":"#ff506f","primary":"#b60d3d","on-tertiary-fixed-variant":"#560094","error-dim":"#9f0519","surface-tint":"#b60d3d","primary-fixed":"#ff7386","on-tertiary-fixed":"#270048","on-error-container":"#570008","surface":"#f9f5ff","secondary-fixed":"#fdd404","outline-variant":"#aeacb6","surface-container":"#eae6f3"},
+      borderRadius:{DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px"},fontFamily:{headline:["Plus Jakarta Sans"],body:["Inter"],label:["Space Grotesk"]}
+    }}}
+  </script>
+  <link rel="stylesheet" href="css/global.css" />
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container/30">
+
+  <div data-component="header"></div>
+
+  <main class="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+    <header class="mb-16 md:mb-24 animate-on-scroll">
+      <div class="inline-block px-4 py-1.5 mb-6 rounded-lg bg-tertiary-container/30 text-on-tertiary-container font-label text-sm uppercase tracking-wider">Help Center</div>
+      <h1 class="text-5xl md:text-7xl font-headline font-extrabold text-on-surface tracking-tight mb-6">How can we <span class="text-primary italic">vibe</span> with you?</h1>
+      <p class="text-on-surface-variant text-lg md:text-xl max-w-2xl">Find answers to our most common questions or reach out to our team of curators for personalized support.</p>
+    </header>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-32">
+      <div class="md:col-span-4 space-y-4">
+        <div class="p-8 rounded-lg bg-surface-container-low space-y-6">
+          <h3 class="font-headline font-bold text-xl mb-4">Categories</h3>
+          <button class="flex items-center w-full group"><span class="w-2 h-2 rounded-full bg-primary mr-3"></span><span class="font-headline font-bold text-primary">Shipping & Delivery</span></button>
+          <button class="flex items-center w-full group opacity-60 hover:opacity-100 transition-opacity"><span class="w-2 h-2 rounded-full bg-on-surface-variant mr-3"></span><span class="font-headline font-bold">Returns & Exchanges</span></button>
+          <button class="flex items-center w-full group opacity-60 hover:opacity-100 transition-opacity"><span class="w-2 h-2 rounded-full bg-on-surface-variant mr-3"></span><span class="font-headline font-bold">Order Tracking</span></button>
+          <button class="flex items-center w-full group opacity-60 hover:opacity-100 transition-opacity"><span class="w-2 h-2 rounded-full bg-on-surface-variant mr-3"></span><span class="font-headline font-bold">Safety Standards</span></button>
+        </div>
+        <div class="p-8 rounded-lg bg-secondary-container text-on-secondary-container">
+          <span class="material-symbols-outlined text-4xl mb-4">forum</span>
+          <h4 class="font-headline font-bold text-xl mb-2">Need a quick answer?</h4>
+          <p class="text-sm opacity-80 mb-6">Our average response time for live chat is under 2 minutes during business hours.</p>
+          <button class="w-full py-3 bg-on-secondary-container text-secondary-container rounded-full font-headline font-bold hover:scale-105 transition-transform">Chat with us</button>
+        </div>
+      </div>
+      <div class="md:col-span-8 space-y-6">
+        <div class="bg-surface-container-lowest p-8 rounded-lg">
+          <details class="group" open>
+            <summary class="flex justify-between items-center font-headline font-bold text-xl cursor-pointer list-none">How long does kinetic shipping take?<span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span></summary>
+            <div class="mt-6 text-on-surface-variant leading-relaxed">Every WowKidsVibe order is processed with kinetic speed. Domestic shipping typically takes 3-5 business days. We offer priority "Vibe Express" for 2-day delivery on selected items.</div>
+          </details>
+        </div>
+        <div class="bg-surface-container-lowest p-8 rounded-lg">
+          <details class="group">
+            <summary class="flex justify-between items-center font-headline font-bold text-xl cursor-pointer list-none">What is your return policy for toys?<span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span></summary>
+            <div class="mt-6 text-on-surface-variant leading-relaxed">We want you to love your curation. We offer a 30-day "Vibration Check" window. If it's not the right fit for your little one, return it in original packaging for a full refund or exchange.</div>
+          </details>
+        </div>
+        <div class="bg-surface-container-lowest p-8 rounded-lg">
+          <details class="group">
+            <summary class="flex justify-between items-center font-headline font-bold text-xl cursor-pointer list-none">Do you ship internationally?<span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span></summary>
+            <div class="mt-6 text-on-surface-variant leading-relaxed">Yes! We bring the kinetic lifestyle to over 40 countries worldwide. International shipping rates and times vary based on location, calculated at checkout.</div>
+          </details>
+        </div>
+        <div class="bg-surface-container-lowest p-8 rounded-lg">
+          <details class="group">
+            <summary class="flex justify-between items-center font-headline font-bold text-xl cursor-pointer list-none">Are the materials non-toxic and sustainable?<span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span></summary>
+            <div class="mt-6 text-on-surface-variant leading-relaxed">Sustainability is at our core. 100% of our wood toys are FSC-certified and use only water-based, non-toxic paints. We believe in kinetic play that respects the planet.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center animate-on-scroll">
+      <div class="relative rounded-lg overflow-hidden h-[500px] hidden lg:block">
+        <img alt="Premium wooden educational toys" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAi5tn1-nOy6MjblF766bRkIoZ94rEXrUuLWSkjGlJ0ctL4WLzVVD6w7QFKQ7UxWrlKsXA5NgVsPIqPkUBMYCsQURlmyU3-k7swDHOSPs3iRhD3Z_YMuuiznJHKeQfAmYmkBvCM97uD_VoyDImSPVIE5Xms_W4INAdz-Z1dE-YVaNKDdWHytf-IY2j8KbniVU-x9QttVx8xCPjWvbPqTZ5S_M-qSPV2ZvEZTsehl-lqyIjAr9SPqft-qCpLr6I1qPdMfsPKM3Iidc7Y" />
+        <div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
+        <div class="absolute bottom-8 left-8 right-8 p-8 bg-surface/80 backdrop-blur-md rounded-lg">
+          <p class="font-headline font-bold text-xl text-on-surface">"The best way to contact us is through the form. We promise a human response within 24 hours."</p>
+          <p class="mt-4 font-label text-sm uppercase text-primary">-- Curatorial Team</p>
+        </div>
+      </div>
+      <div class="bg-surface-container p-8 md:p-12 rounded-lg">
+        <h2 class="text-4xl font-headline font-extrabold mb-8 tracking-tight">Drop us a line</h2>
+        <form class="space-y-6" onsubmit="event.preventDefault(); import('./js/components/toast.js').then(m => m.showToast('Message sent! We\\'ll be in touch.', 'success'));">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant ml-2">Name</label>
+              <input class="w-full px-5 py-4 rounded-lg bg-surface-container-highest/50 border-none focus:ring-2 focus:ring-tertiary transition-all placeholder:text-on-surface-variant/40" placeholder="Your name" type="text" required />
+            </div>
+            <div class="space-y-2">
+              <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant ml-2">Email</label>
+              <input class="w-full px-5 py-4 rounded-lg bg-surface-container-highest/50 border-none focus:ring-2 focus:ring-tertiary transition-all placeholder:text-on-surface-variant/40" placeholder="hello@example.com" type="email" required />
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant ml-2">Subject</label>
+            <select class="w-full px-5 py-4 rounded-lg bg-surface-container-highest/50 border-none focus:ring-2 focus:ring-tertiary transition-all text-on-surface-variant">
+              <option>Order Support</option><option>Product Question</option><option>Wholesale Inquiry</option><option>Sustainability Vibe</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant ml-2">Message</label>
+            <textarea class="w-full px-5 py-4 rounded-lg bg-surface-container-highest/50 border-none focus:ring-2 focus:ring-tertiary transition-all placeholder:text-on-surface-variant/40 resize-none" placeholder="How can we help?" rows="5" required></textarea>
+          </div>
+          <button class="w-full py-5 kinetic-gradient text-white rounded-full font-headline font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/20" type="submit">Send Message</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div data-component="footer"></div>
+
+  <script type="module">
+    import { initHeader } from './js/components/header.js';
+    import { initFooter } from './js/components/footer.js';
+    initHeader();
+    initFooter();
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

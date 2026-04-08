@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Track Your Order — WowKidsVibe</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = { darkMode:"class", theme:{ extend:{
+      colors:{"on-secondary-fixed":"#433700","surface-variant":"#dedbe9","secondary-dim":"#5f4e00","on-primary-fixed":"#000000","secondary":"#6d5a00","error-container":"#fb5151","surface-container-low":"#f3effb","inverse-surface":"#0e0d15","on-secondary":"#fff2ce","on-background":"#2f2e36","tertiary-dim":"#7122b4","tertiary-container":"#cf9aff","secondary-fixed-dim":"#edc600","primary-dim":"#a20033","on-surface":"#2f2e36","primary-fixed-dim":"#ff5773","on-surface-variant":"#5c5a63","tertiary-fixed-dim":"#c588ff","on-error":"#ffefee","background":"#f9f5ff","surface-container-lowest":"#ffffff","on-secondary-fixed-variant":"#645300","secondary-container":"#fdd404","on-secondary-container":"#594a00","on-primary":"#ffefef","surface-dim":"#d6d2e2","tertiary":"#7e32c1","on-tertiary":"#fbefff","on-primary-fixed-variant":"#5f001b","tertiary-fixed":"#cf9aff","on-primary-container":"#4e0014","primary-container":"#ff7386","outline":"#78767f","surface-container-high":"#e4e1ee","inverse-on-surface":"#9e9ba5","on-tertiary-container":"#4a0080","surface-container-highest":"#dedbe9","error":"#b31b25","surface-bright":"#f9f5ff","inverse-primary":"#ff506f","primary":"#b60d3d","on-tertiary-fixed-variant":"#560094","error-dim":"#9f0519","surface-tint":"#b60d3d","primary-fixed":"#ff7386","on-tertiary-fixed":"#270048","on-error-container":"#570008","surface":"#f9f5ff","secondary-fixed":"#fdd404","outline-variant":"#aeacb6","surface-container":"#eae6f3"},
+      borderRadius:{DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px"},fontFamily:{headline:["Plus Jakarta Sans"],body:["Inter"],label:["Space Grotesk"]}
+    }}}
+  </script>
+  <link rel="stylesheet" href="css/global.css" />
+</head>
+<body class="bg-background text-on-background font-body min-h-screen">
+
+  <div data-component="header"></div>
+
+  <main class="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+    <section class="mb-16 text-center animate-on-scroll">
+      <h1 class="font-headline font-extrabold text-5xl md:text-6xl text-on-background tracking-tight mb-4">Where is the <span class="text-primary">Joy?</span></h1>
+      <p class="font-body text-on-surface-variant max-w-2xl mx-auto mb-10 text-lg">Enter your order details below to see exactly where your kinetic childhood essentials are on their journey.</p>
+      <div class="bg-surface-container-lowest p-8 md:p-12 rounded-xl soft-shadow max-w-3xl mx-auto">
+        <form id="tracking-form" class="grid grid-cols-1 md:grid-cols-2 gap-6" onsubmit="event.preventDefault();">
+          <div class="text-left">
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-2 block">Order Number</label>
+            <input class="w-full bg-surface-container-highest/30 border-none rounded-[0.75rem] py-4 px-6 focus:ring-2 focus:ring-tertiary transition-all font-body" placeholder="e.g. #WK-99210" type="text" />
+          </div>
+          <div class="text-left">
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-2 block">Email Address</label>
+            <input class="w-full bg-surface-container-highest/30 border-none rounded-[0.75rem] py-4 px-6 focus:ring-2 focus:ring-tertiary transition-all font-body" placeholder="alex@vibe.com" type="email" />
+          </div>
+          <div class="md:col-span-2">
+            <button class="kinetic-gradient text-on-primary w-full py-5 rounded-full font-headline font-bold text-lg shadow-xl hover:scale-[1.02] active:scale-95 transition-all" type="submit">Track My Vibe</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Sample Tracking Result (shown as demo) -->
+    <div id="tracking-result" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start animate-on-scroll">
+      <div class="lg:col-span-2 space-y-8">
+        <div class="bg-surface-container-low rounded-lg p-8 md:p-10">
+          <div class="flex justify-between items-center mb-12">
+            <div>
+              <span class="font-label text-xs uppercase tracking-widest bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-[8px]">In Transit</span>
+              <h2 class="font-headline font-bold text-3xl mt-2">Order #WK-99210</h2>
+            </div>
+            <div class="text-right">
+              <p class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Estimated Delivery</p>
+              <p class="font-headline font-extrabold text-2xl text-primary">Dec 24, 2024</p>
+            </div>
+          </div>
+          <!-- Timeline -->
+          <div class="relative py-12">
+            <div class="absolute top-1/2 left-0 w-full h-[3px] bg-surface-container-highest -translate-y-1/2"></div>
+            <div class="absolute top-1/2 left-0 w-2/3 h-[3px] kinetic-gradient -translate-y-1/2"></div>
+            <div class="relative flex justify-between items-center">
+              <div class="flex flex-col items-center gap-4 bg-surface-container-low px-2 z-10">
+                <div class="w-12 h-12 rounded-full kinetic-gradient flex items-center justify-center text-on-primary shadow-lg"><span class="material-symbols-outlined active-fill" style="font-variation-settings:'FILL' 1;">check_circle</span></div>
+                <div class="text-center"><p class="font-headline font-bold text-sm">Ordered</p><p class="font-body text-xs text-on-surface-variant">Dec 18</p></div>
+              </div>
+              <div class="flex flex-col items-center gap-4 bg-surface-container-low px-2 z-10">
+                <div class="w-12 h-12 rounded-full kinetic-gradient flex items-center justify-center text-on-primary shadow-lg"><span class="material-symbols-outlined active-fill" style="font-variation-settings:'FILL' 1;">inventory_2</span></div>
+                <div class="text-center"><p class="font-headline font-bold text-sm">Processing</p><p class="font-body text-xs text-on-surface-variant">Dec 19</p></div>
+              </div>
+              <div class="flex flex-col items-center gap-4 bg-surface-container-low px-2 z-10">
+                <div class="w-14 h-14 rounded-full kinetic-gradient flex items-center justify-center text-on-primary shadow-2xl ring-8 ring-primary-container/20"><span class="material-symbols-outlined active-fill" style="font-variation-settings:'FILL' 1;">local_shipping</span></div>
+                <div class="text-center"><p class="font-headline font-bold text-sm text-primary">Shipped</p><p class="font-body text-xs text-on-surface-variant">Dec 20</p></div>
+              </div>
+              <div class="flex flex-col items-center gap-4 bg-surface-container-low px-2 z-10 opacity-50">
+                <div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined">package_2</span></div>
+                <div class="text-center"><p class="font-headline font-bold text-sm">Delivered</p><p class="font-body text-xs text-on-surface-variant">Dec 24</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Journey Updates -->
+        <div class="space-y-4">
+          <h3 class="font-headline font-bold text-xl px-2">Journey Updates</h3>
+          <div class="bg-surface-container-lowest rounded-lg divide-y divide-surface-variant/20">
+            <div class="p-6 flex gap-6"><span class="font-label text-sm text-tertiary w-24 shrink-0">TODAY</span><div><p class="font-headline font-bold">Arrived at local sorting facility</p><p class="text-sm text-on-surface-variant">Brooklyn, NY — 04:32 PM</p></div></div>
+            <div class="p-6 flex gap-6"><span class="font-label text-sm text-on-surface-variant w-24 shrink-0">DEC 20</span><div><p class="font-headline font-bold opacity-80">Departure from warehouse</p><p class="text-sm text-on-surface-variant">Philadelphia, PA — 11:30 AM</p></div></div>
+            <div class="p-6 flex gap-6"><span class="font-label text-sm text-on-surface-variant w-24 shrink-0">DEC 19</span><div><p class="font-headline font-bold opacity-80">Quality check completed</p><p class="text-sm text-on-surface-variant">Distribution Center — 02:45 PM</p></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Side -->
+      <div class="space-y-6">
+        <div class="bg-secondary-container p-6 rounded-lg text-on-secondary-container relative overflow-hidden">
+          <div class="relative z-10">
+            <span class="material-symbols-outlined text-4xl mb-4">help_center</span>
+            <h4 class="font-headline font-extrabold text-xl mb-2">Need Help?</h4>
+            <p class="text-sm mb-6 opacity-90">Questions about your shipment? Our curators are standing by.</p>
+            <a href="contact.html" class="block w-full text-center bg-on-secondary-container text-white px-6 py-3 rounded-full font-headline font-bold text-sm hover:scale-105 transition-transform">Contact Support</a>
+          </div>
+          <span class="material-symbols-outlined absolute -bottom-4 -right-4 text-9xl opacity-10">support_agent</span>
+        </div>
+        <div class="bg-surface-container-low p-6 rounded-lg">
+          <h4 class="font-headline font-bold text-lg mb-4">Delivery To</h4>
+          <p class="font-body text-sm font-semibold text-on-background">Alex Henderson</p>
+          <p class="font-body text-sm text-on-surface-variant">42 Kinetic Lane, Suite 101<br/>Brooklyn, NY 11201<br/>United States</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div data-component="footer"></div>
+
+  <script type="module">
+    import { initHeader } from './js/components/header.js';
+    import { initFooter } from './js/components/footer.js';
+    initHeader();
+    initFooter();
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

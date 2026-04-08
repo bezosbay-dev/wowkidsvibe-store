@@ -1,0 +1,164 @@
+/* WowKidsVibe — Global Styles
+   Design System: "The Kinetic Curator" */
+
+/* Kinetic Gradient — Primary CTA */
+.kinetic-gradient {
+  background: linear-gradient(135deg, #b60d3d 0%, #ff7386 100%);
+}
+
+/* Glass Nav — Glassmorphism header */
+.glass-nav {
+  background: rgba(249, 245, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Soft Focus Shadow — Ambient elevation */
+.soft-shadow {
+  box-shadow: 0 40px 60px -10px rgba(47, 46, 54, 0.06);
+}
+
+/* Vibe Badge — Space Grotesk label */
+.vibe-badge {
+  font-family: 'Space Grotesk', sans-serif;
+  border-radius: 8px;
+}
+
+/* Coral Button variant */
+.coral-button {
+  background: linear-gradient(135deg, #FF5D73 0%, #FF8A9B 100%);
+}
+
+/* Premium Gradient alias */
+.premium-gradient {
+  background: linear-gradient(135deg, #b60d3d 0%, #ff7386 100%);
+}
+
+/* Material Icons baseline */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Active fill variant */
+.active-fill {
+  font-variation-settings: 'FILL' 1;
+}
+
+/* Active pill glow */
+.active-pill-glow {
+  box-shadow: 0 0 15px 2px rgba(126, 50, 193, 0.1);
+}
+
+/* Cart Drawer */
+.cart-drawer {
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.cart-drawer.open {
+  transform: translateX(0);
+}
+
+.cart-overlay {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.cart-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Toast notifications */
+.toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 20px 40px -10px rgba(47, 46, 54, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: toastIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  max-width: 360px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: #2f2e36;
+}
+
+.toast.toast-out {
+  animation: toastOut 0.3s ease forwards;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100px); }
+}
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(90deg, #f3effb 25%, #eae6f3 50%, #f3effb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 0.75rem;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Scroll animations */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Mobile menu */
+.mobile-menu {
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.mobile-menu.open {
+  transform: translateX(0);
+}
+
+/* Predictive search dropdown */
+.search-dropdown {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.search-dropdown.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(255, 115, 134, 0.3);
+  color: #2f2e36;
+}

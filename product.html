@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Product — WowKidsVibe</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {"on-secondary-fixed":"#433700","surface-variant":"#dedbe9","secondary-dim":"#5f4e00","on-primary-fixed":"#000000","secondary":"#6d5a00","error-container":"#fb5151","surface-container-low":"#f3effb","inverse-surface":"#0e0d15","on-secondary":"#fff2ce","on-background":"#2f2e36","tertiary-dim":"#7122b4","tertiary-container":"#cf9aff","secondary-fixed-dim":"#edc600","primary-dim":"#a20033","on-surface":"#2f2e36","primary-fixed-dim":"#ff5773","on-surface-variant":"#5c5a63","tertiary-fixed-dim":"#c588ff","on-error":"#ffefee","background":"#f9f5ff","surface-container-lowest":"#ffffff","on-secondary-fixed-variant":"#645300","secondary-container":"#fdd404","on-secondary-container":"#594a00","on-primary":"#ffefef","surface-dim":"#d6d2e2","tertiary":"#7e32c1","on-tertiary":"#fbefff","on-primary-fixed-variant":"#5f001b","tertiary-fixed":"#cf9aff","on-primary-container":"#4e0014","primary-container":"#ff7386","outline":"#78767f","surface-container-high":"#e4e1ee","inverse-on-surface":"#9e9ba5","on-tertiary-container":"#4a0080","surface-container-highest":"#dedbe9","error":"#b31b25","surface-bright":"#f9f5ff","inverse-primary":"#ff506f","primary":"#b60d3d","on-tertiary-fixed-variant":"#560094","error-dim":"#9f0519","surface-tint":"#b60d3d","primary-fixed":"#ff7386","on-tertiary-fixed":"#270048","on-error-container":"#570008","surface":"#f9f5ff","secondary-fixed":"#fdd404","outline-variant":"#aeacb6","surface-container":"#eae6f3"},
+          borderRadius: { DEFAULT:"1rem", lg:"2rem", xl:"3rem", full:"9999px" },
+          fontFamily: { headline:["Plus Jakarta Sans"], body:["Inter"], label:["Space Grotesk"] }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/global.css" />
+</head>
+<body class="bg-background text-on-background font-body">
+
+  <div data-component="header"></div>
+
+  <main class="pt-24 pb-32 max-w-7xl mx-auto px-6">
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center gap-2 mb-8 font-label text-xs uppercase tracking-[0.2em] text-on-surface-variant">
+      <a class="hover:text-primary transition-colors" href="index.html">Home</a>
+      <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+      <a class="hover:text-primary transition-colors" href="collection.html?handle=all">Shop</a>
+      <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+      <span id="product-breadcrumb" class="text-primary font-bold">Product</span>
+    </nav>
+
+    <!-- Debug info (visible until JS loads successfully) -->
+    <div id="debug-info" class="bg-yellow-50 border border-yellow-300 rounded-xl p-6 mb-8">
+      <p class="font-headline font-bold text-lg mb-2">Loading product page...</p>
+      <p class="text-sm text-on-surface-variant" id="debug-url"></p>
+      <p class="text-sm text-on-surface-variant" id="debug-handle"></p>
+      <p class="text-sm text-error font-bold mt-2" id="debug-error" style="display:none;"></p>
+    </div>
+
+    <!-- Product Detail -->
+    <div id="product-detail"></div>
+
+    <!-- Related Products -->
+    <section id="related-section" class="mt-24" style="display:none;">
+      <h2 class="text-2xl font-headline font-extrabold mb-8 flex items-center gap-3 uppercase tracking-tighter">
+        <span class="w-8 h-1 bg-primary rounded-full"></span> You May Also Like
+      </h2>
+      <div id="related-products" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+    </section>
+  </main>
+
+  <div data-component="footer"></div>
+
+  <!-- NON-MODULE debug script: runs immediately, proves page loaded -->
+  <script>
+    (function() {
+      var url = window.location.href;
+      var search = window.location.search;
+      var params = new URLSearchParams(search);
+      var handle = params.get('handle');
+
+      document.getElementById('debug-url').textContent = 'URL: ' + url;
+      document.getElementById('debug-handle').textContent = 'Handle: ' + (handle || '(none — no ?handle= in URL)');
+
+      console.log('[PRODUCT PAGE DEBUG] URL:', url);
+      console.log('[PRODUCT PAGE DEBUG] Search:', search);
+      console.log('[PRODUCT PAGE DEBUG] Handle:', handle);
+
+      if (!handle) {
+        document.getElementById('debug-error').style.display = 'block';
+        document.getElementById('debug-error').textContent = 'ERROR: No handle parameter found in URL. Expected: product.html?handle=your-product-handle';
+      }
+    })();
+  </script>
+
+  <!-- MODULE script: header, footer, and product page logic -->
+  <script type="module">
+    import { initHeader } from './js/components/header.js';
+    import { initFooter } from './js/components/footer.js';
+    import { SHOPIFY_CONFIG, STOREFRONT_URL } from './js/shopify-config.js';
+    import { addToCart } from './js/api/cart.js';
+    import { formatMoney } from './js/api/client.js';
+    import { showToast } from './js/components/toast.js';
+    import { openCartDrawer } from './js/components/header.js';
+
+    console.log('[PRODUCT MODULE] All imports loaded successfully');
+
+    initHeader();
+    initFooter();
+
+    // ─── State ───
+    let currentProduct = null;
+    let selectedVariant = null;
+    let quantity = 1;
+
+    // ─── Start ───
+    initProductPage();
+
+    async function initProductPage() {
+      const params = new URLSearchParams(window.location.search);
+      const handle = params.get('handle');
+
+      console.log('[PRODUCT MODULE] initProductPage, handle:', handle);
+
+      const debugEl = document.getElementById('debug-info');
+      const container = document.getElementById('product-detail');
+
+      if (!handle) {
+        if (debugEl) {
+          debugEl.innerHTML = '<p class="font-headline font-bold text-error text-lg">No product handle in URL</p><p class="text-on-surface-variant mt-2">Navigate here from the <a href="collection.html?handle=all" class="text-primary underline">collection page</a> by clicking a product.</p>';
+        }
+        return;
+      }
+
+      // Show skeleton
+      if (container) {
+        container.innerHTML = skeletonHTML();
+      }
+
+      try {
+        console.log('[PRODUCT MODULE] Calling Shopify API for handle:', handle);
+
+        // Direct fetch to avoid any caching issues
+        const response = await fetch(STOREFRONT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontToken,
+          },
+          body: JSON.stringify({
+            query: `query getProduct($handle: String!) {
+              product(handle: $handle) {
+                id title handle description descriptionHtml productType tags vendor
+                images(first: 10) { edges { node { url altText } } }
+                variants(first: 100) {
+                  edges { node {
+                    id title availableForSale quantityAvailable
+                    price { amount currencyCode }
+                    compareAtPrice { amount currencyCode }
+                    selectedOptions { name value }
+                    image { url altText }
+                  } }
+                }
+                options { id name values }
+                priceRange { minVariantPrice { amount currencyCode } }
+                compareAtPriceRange { minVariantPrice { amount currencyCode } }
+              }
+            }`,
+            variables: { handle: handle }
+          }),
+        });
+
+        console.log('[PRODUCT MODULE] API response status:', response.status);
+
+        if (!response.ok) {
+          throw new Error('API returned ' + response.status);
+        }
+
+        const json = await response.json();
+        console.log('[PRODUCT MODULE] API json:', json);
+
+        if (json.errors) {
+          throw new Error(json.errors.map(e => e.message).join(', '));
+        }
+
+        currentProduct = json.data.product;
+
+        if (!currentProduct) {
+          if (debugEl) debugEl.style.display = 'none';
+          container.innerHTML = `
+            <div class="text-center py-20">
+              <span class="material-symbols-outlined text-8xl text-on-surface-variant/30 mb-6 block">search_off</span>
+              <h2 class="font-headline font-extrabold text-2xl mb-3">Product not found</h2>
+              <p class="text-on-surface-variant mb-4">Handle: "${handle}"</p>
+              <p class="text-on-surface-variant mb-8">This product doesn't exist. Make sure to use the full product handle from Shopify.</p>
+              <a href="collection.html?handle=all" class="inline-block px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold hover:scale-[1.02] transition-all">Browse All Products</a>
+            </div>
+          `;
+          return;
+        }
+
+        // Hide debug, render product
+        if (debugEl) debugEl.style.display = 'none';
+        document.title = currentProduct.title + ' — WowKidsVibe';
+        renderProduct(container);
+        loadRecommendations();
+
+      } catch (err) {
+        console.error('[PRODUCT MODULE] FATAL ERROR:', err);
+        const debugErr = document.getElementById('debug-error');
+        if (debugErr) {
+          debugErr.style.display = 'block';
+          debugErr.textContent = 'JS Error: ' + err.message;
+        }
+        if (container) {
+          container.innerHTML = `
+            <div class="text-center py-20">
+              <span class="material-symbols-outlined text-8xl text-error/30 mb-6 block">error</span>
+              <h2 class="font-headline font-extrabold text-2xl mb-3">Failed to load product</h2>
+              <p class="text-on-surface-variant mb-2">${err.message}</p>
+              <p class="text-on-surface-variant mb-8">Check browser console (F12) for details.</p>
+              <a href="collection.html?handle=all" class="inline-block px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold hover:scale-[1.02] transition-all">Browse All Products</a>
+            </div>
+          `;
+        }
+      }
+    }
+
+    function renderProduct(container) {
+      const p = currentProduct;
+      const images = p.images.edges.map(e => e.node);
+      const variants = p.variants.edges.map(e => e.node);
+      selectedVariant = variants[0];
+      quantity = 1;
+
+      const mainImage = selectedVariant.image || images[0];
+      const price = selectedVariant.price;
+      const compareAt = selectedVariant.compareAtPrice;
+      const hasDiscount = compareAt && parseFloat(compareAt.amount) > parseFloat(price.amount);
+      const discountPercent = hasDiscount
+        ? Math.round((1 - parseFloat(price.amount) / parseFloat(compareAt.amount)) * 100)
+        : 0;
+
+      // Update breadcrumb
+      const breadcrumb = document.getElementById('product-breadcrumb');
+      if (breadcrumb) breadcrumb.textContent = p.title;
+
+      // Build thumbnails
+      let thumbsHTML = '';
+      if (images.length > 1) {
+        const thumbs = images.slice(0, 8).map(function(img, i) {
+          const ring = i === 0 ? 'ring-2 ring-primary ring-offset-2' : 'hover:opacity-80';
+          return '<button class="thumb-btn aspect-square rounded-xl overflow-hidden ' + ring + ' transition-all" data-index="' + i + '"><img class="w-full h-full object-cover" src="' + img.url + '" alt="" loading="lazy" /></button>';
+        }).join('');
+        thumbsHTML = '<div class="grid grid-cols-4 gap-3">' + thumbs + '</div>';
+      }
+
+      // Build option buttons
+      let optionsHTML = '';
+      p.options.forEach(function(option) {
+        if (option.name === 'Title') return;
+        const btns = option.values.map(function(val, i) {
+          const cls = i === 0 ? 'bg-primary text-on-primary shadow-md' : 'bg-surface-container-high text-on-surface hover:bg-surface-container-highest';
+          return '<button class="option-btn px-5 py-2.5 rounded-full font-headline font-bold text-sm transition-all ' + cls + '" data-option-name="' + option.name + '" data-option-value="' + val + '">' + val + '</button>';
+        }).join('');
+        optionsHTML += '<div class="space-y-3"><h3 class="font-label text-xs font-bold text-on-surface-variant uppercase tracking-[0.15em]">' + option.name + '</h3><div class="flex flex-wrap gap-2">' + btns + '</div></div>';
+      });
+
+      container.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <!-- Gallery -->
+          <div class="lg:col-span-6 space-y-4">
+            <div class="relative aspect-square rounded-2xl overflow-hidden bg-surface-container-low">
+              <img id="main-image" class="w-full h-full object-cover" src="${mainImage ? mainImage.url : ''}" alt="${p.title}" />
+            </div>
+            ${thumbsHTML}
+          </div>
+
+          <!-- Details -->
+          <div class="lg:col-span-6 space-y-6">
+            <header class="space-y-3">
+              <h1 class="text-3xl lg:text-4xl font-headline font-extrabold tracking-tight leading-tight text-on-surface">${p.title}</h1>
+              <div class="flex items-center gap-3">
+                <div class="flex text-[#C49B00]">
+                  <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                </div>
+                <span class="text-sm font-medium text-on-surface-variant">4.9/5</span>
+              </div>
+            </header>
+
+            <!-- Price -->
+            <div class="bg-surface-container-lowest p-6 rounded-2xl soft-shadow">
+              <div class="flex items-center gap-4 flex-wrap">
+                <span id="variant-price" class="text-4xl font-headline font-extrabold ${hasDiscount ? 'text-error' : 'text-on-surface'}">${formatMoney(price.amount, price.currencyCode)}</span>
+                ${hasDiscount ? '<span id="variant-compare-price" class="text-xl text-on-surface-variant line-through">' + formatMoney(compareAt.amount, compareAt.currencyCode) + '</span><span class="bg-primary-container text-on-primary-container font-label font-bold text-xs px-3 py-1 rounded-full">SAVE ' + discountPercent + '%</span>' : ''}
+              </div>
+            </div>
+
+            <!-- Urgency -->
+            <div class="flex items-center gap-3 p-3 bg-tertiary-container/20 rounded-xl text-tertiary text-sm font-medium">
+              <span class="material-symbols-outlined text-lg">visibility</span>
+              <span>${Math.floor(Math.random() * 20 + 5)} people viewing this right now</span>
+            </div>
+
+            <!-- Options -->
+            ${optionsHTML}
+
+            <!-- Quantity -->
+            <div class="space-y-3">
+              <h3 class="font-label text-xs font-bold text-on-surface-variant uppercase tracking-[0.15em]">Quantity</h3>
+              <div class="inline-flex items-center bg-surface-container-high rounded-full p-1">
+                <button id="qty-decrease" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors font-headline font-bold text-lg">-</button>
+                <span id="qty-value" class="px-5 font-headline font-bold text-lg min-w-[3rem] text-center">1</span>
+                <button id="qty-increase" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors font-headline font-bold text-lg">+</button>
+              </div>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div class="space-y-3 pt-4">
+              <button id="add-to-cart-main" class="w-full coral-button text-white font-headline font-extrabold py-5 rounded-full text-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-3 hover:scale-[1.01] active:scale-[0.98] transition-all">
+                <span class="material-symbols-outlined">shopping_bag</span> ADD TO CART
+              </button>
+              <button id="buy-now-btn" class="w-full bg-on-surface text-background font-headline font-extrabold py-5 rounded-full text-xl hover:bg-black transition-all">
+                BUY IT NOW
+              </button>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="grid grid-cols-3 gap-4 pt-6 border-t border-outline-variant/20">
+              <div class="flex flex-col items-center gap-2 text-center">
+                <span class="material-symbols-outlined text-primary text-2xl">local_shipping</span>
+                <span class="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant">Free Shipping</span>
+              </div>
+              <div class="flex flex-col items-center gap-2 text-center">
+                <span class="material-symbols-outlined text-primary text-2xl">replay</span>
+                <span class="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant">30-Day Returns</span>
+              </div>
+              <div class="flex flex-col items-center gap-2 text-center">
+                <span class="material-symbols-outlined text-primary text-2xl">verified_user</span>
+                <span class="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant">Safe Checkout</span>
+              </div>
+            </div>
+
+            <!-- Description -->
+            ${p.descriptionHtml ? '<div class="pt-6 border-t border-outline-variant/20"><h3 class="font-headline font-bold text-lg mb-4">About this product</h3><div class="prose prose-sm text-on-surface-variant font-body max-w-none">' + p.descriptionHtml + '</div></div>' : ''}
+          </div>
+        </div>
+      `;
+
+      // Wire up interactions
+      setupGallery(images);
+      setupVariantOptions(variants);
+      setupQuantity();
+      setupAddToCart();
+    }
+
+    function setupGallery(images) {
+      const mainImg = document.getElementById('main-image');
+      if (!mainImg) return;
+      document.querySelectorAll('.thumb-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const idx = parseInt(btn.dataset.index);
+          if (images[idx]) mainImg.src = images[idx].url;
+          document.querySelectorAll('.thumb-btn').forEach(function(b) {
+            b.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
+          });
+          btn.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+        });
+      });
+    }
+
+    function setupVariantOptions(variants) {
+      const selectedOptions = {};
+      currentProduct.options.forEach(function(opt) {
+        selectedOptions[opt.name] = opt.values[0];
+      });
+
+      document.querySelectorAll('.option-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const name = btn.dataset.optionName;
+          const value = btn.dataset.optionValue;
+          selectedOptions[name] = value;
+
+          document.querySelectorAll('.option-btn[data-option-name="' + name + '"]').forEach(function(b) {
+            b.classList.remove('bg-primary', 'text-on-primary', 'shadow-md');
+            b.classList.add('bg-surface-container-high', 'text-on-surface');
+          });
+          btn.classList.remove('bg-surface-container-high', 'text-on-surface');
+          btn.classList.add('bg-primary', 'text-on-primary', 'shadow-md');
+
+          const match = variants.find(function(v) {
+            return v.selectedOptions.every(function(o) {
+              return selectedOptions[o.name] === o.value;
+            });
+          });
+
+          if (match) {
+            selectedVariant = match;
+            const priceEl = document.getElementById('variant-price');
+            if (priceEl) priceEl.textContent = formatMoney(match.price.amount, match.price.currencyCode);
+            if (match.image) document.getElementById('main-image').src = match.image.url;
+          }
+        });
+      });
+    }
+
+    function setupQuantity() {
+      const qtyVal = document.getElementById('qty-value');
+      document.getElementById('qty-decrease')?.addEventListener('click', function() {
+        if (quantity > 1) { quantity--; qtyVal.textContent = quantity; }
+      });
+      document.getElementById('qty-increase')?.addEventListener('click', function() {
+        if (quantity < 99) { quantity++; qtyVal.textContent = quantity; }
+      });
+    }
+
+    function setupAddToCart() {
+      const atcBtn = document.getElementById('add-to-cart-main');
+      if (atcBtn) {
+        atcBtn.addEventListener('click', async function() {
+          if (!selectedVariant) return;
+          atcBtn.disabled = true;
+          atcBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Adding...';
+          try {
+            await addToCart(selectedVariant.id, quantity);
+            showToast('Added to cart!', 'success');
+            openCartDrawer();
+          } catch (err) {
+            console.error('Add to cart error:', err);
+            showToast('Failed to add to cart', 'error');
+          } finally {
+            atcBtn.disabled = false;
+            atcBtn.innerHTML = '<span class="material-symbols-outlined">shopping_bag</span> ADD TO CART';
+          }
+        });
+      }
+
+      const buyBtn = document.getElementById('buy-now-btn');
+      if (buyBtn) {
+        buyBtn.addEventListener('click', async function() {
+          if (!selectedVariant) return;
+          buyBtn.disabled = true;
+          buyBtn.textContent = 'Processing...';
+          try {
+            const cart = await addToCart(selectedVariant.id, quantity);
+            if (cart && cart.checkoutUrl) window.location.href = cart.checkoutUrl;
+          } catch (err) {
+            console.error('Buy now error:', err);
+            showToast('Failed to checkout', 'error');
+            buyBtn.disabled = false;
+            buyBtn.textContent = 'BUY IT NOW';
+          }
+        });
+      }
+    }
+
+    async function loadRecommendations() {
+      if (!currentProduct) return;
+      try {
+        const resp = await fetch(STOREFRONT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontToken },
+          body: JSON.stringify({
+            query: `query ($productId: ID!) { productRecommendations(productId: $productId) { id title handle featuredImage { url altText } priceRange { minVariantPrice { amount currencyCode } } compareAtPriceRange { minVariantPrice { amount currencyCode } } } }`,
+            variables: { productId: currentProduct.id }
+          }),
+        });
+        const json = await resp.json();
+        const recs = json.data?.productRecommendations;
+        if (!recs || recs.length === 0) return;
+
+        document.getElementById('related-section').style.display = 'block';
+        document.getElementById('related-products').innerHTML = recs.slice(0, 4).map(function(p) {
+          return '<a href="/product.html?handle=' + p.handle + '" class="group block"><div class="aspect-square rounded-2xl bg-surface-container-low overflow-hidden mb-4">' + (p.featuredImage ? '<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="' + p.featuredImage.url + '" alt="' + (p.featuredImage.altText || p.title) + '" loading="lazy" />' : '') + '</div><h3 class="font-headline font-bold text-sm mb-1 line-clamp-2">' + p.title + '</h3><span class="text-primary font-headline font-extrabold">' + formatMoney(p.priceRange.minVariantPrice.amount, p.priceRange.minVariantPrice.currencyCode) + '</span></a>';
+        }).join('');
+      } catch (err) {
+        console.error('Recommendations error:', err);
+      }
+    }
+
+    function skeletonHTML() {
+      return '<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start animate-pulse"><div class="lg:col-span-6 space-y-4"><div class="aspect-square skeleton rounded-2xl"></div><div class="grid grid-cols-4 gap-3"><div class="aspect-square skeleton rounded-xl"></div><div class="aspect-square skeleton rounded-xl"></div><div class="aspect-square skeleton rounded-xl"></div><div class="aspect-square skeleton rounded-xl"></div></div></div><div class="lg:col-span-6 space-y-6"><div class="skeleton h-10 w-3/4 rounded-xl"></div><div class="skeleton h-6 w-1/3 rounded-lg"></div><div class="skeleton h-24 w-full rounded-2xl"></div><div class="skeleton h-12 w-full rounded-2xl"></div><div class="skeleton h-16 w-full rounded-full"></div><div class="skeleton h-16 w-full rounded-full"></div></div></div>';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Collection — WowKidsVibe</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {"on-secondary-fixed":"#433700","surface-variant":"#dedbe9","secondary-dim":"#5f4e00","on-primary-fixed":"#000000","secondary":"#6d5a00","error-container":"#fb5151","surface-container-low":"#f3effb","inverse-surface":"#0e0d15","on-secondary":"#fff2ce","on-background":"#2f2e36","tertiary-dim":"#7122b4","tertiary-container":"#cf9aff","secondary-fixed-dim":"#edc600","primary-dim":"#a20033","on-surface":"#2f2e36","primary-fixed-dim":"#ff5773","on-surface-variant":"#5c5a63","tertiary-fixed-dim":"#c588ff","on-error":"#ffefee","background":"#f9f5ff","surface-container-lowest":"#ffffff","on-secondary-fixed-variant":"#645300","secondary-container":"#fdd404","on-secondary-container":"#594a00","on-primary":"#ffefef","surface-dim":"#d6d2e2","tertiary":"#7e32c1","on-tertiary":"#fbefff","on-primary-fixed-variant":"#5f001b","tertiary-fixed":"#cf9aff","on-primary-container":"#4e0014","primary-container":"#ff7386","outline":"#78767f","surface-container-high":"#e4e1ee","inverse-on-surface":"#9e9ba5","on-tertiary-container":"#4a0080","surface-container-highest":"#dedbe9","error":"#b31b25","surface-bright":"#f9f5ff","inverse-primary":"#ff506f","primary":"#b60d3d","on-tertiary-fixed-variant":"#560094","error-dim":"#9f0519","surface-tint":"#b60d3d","primary-fixed":"#ff7386","on-tertiary-fixed":"#270048","on-error-container":"#570008","surface":"#f9f5ff","secondary-fixed":"#fdd404","outline-variant":"#aeacb6","surface-container":"#eae6f3"},
+          borderRadius: { DEFAULT:"1rem", lg:"2rem", xl:"3rem", full:"9999px" },
+          fontFamily: { headline:["Plus Jakarta Sans"], body:["Inter"], label:["Space Grotesk"] }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/global.css" />
+</head>
+<body class="bg-background text-on-background font-body antialiased">
+
+  <div data-component="header"></div>
+
+  <main class="pt-28 pb-20 max-w-7xl mx-auto px-6">
+    <!-- Breadcrumbs & Title -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+      <div class="space-y-2">
+        <nav class="flex items-center gap-2 text-on-surface-variant font-label text-xs tracking-widest uppercase">
+          <a class="hover:text-primary" href="index.html">Home</a>
+          <span class="material-symbols-outlined text-[10px]">arrow_forward_ios</span>
+          <span class="text-primary font-bold">Shop All</span>
+        </nav>
+        <h1 id="collection-title" class="text-5xl md:text-6xl font-headline font-extrabold tracking-tight text-on-surface">Curated <span class="text-primary">Kinetic</span> Joy</h1>
+      </div>
+      <p id="product-count" class="font-label text-sm text-on-surface-variant bg-surface-container-high px-4 py-2 rounded-full">Showing 24 Premium Items</p>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-12">
+      <!-- Sidebar Filters -->
+      <aside class="lg:w-72 shrink-0">
+        <div class="sticky top-32 space-y-10">
+          <!-- Sort -->
+          <div>
+            <h3 class="font-headline font-bold text-lg mb-6 flex items-center gap-2">
+              <span class="w-2 h-6 premium-gradient rounded-full"></span> Sort By
+            </h3>
+            <div class="space-y-2">
+              <button data-sort="best-selling" class="block w-full text-left px-3 py-2 rounded-lg font-headline font-bold text-primary hover:bg-surface-container-low transition-colors">Best Selling</button>
+              <button data-sort="newest" class="block w-full text-left px-3 py-2 rounded-lg font-headline font-bold text-on-surface/60 hover:bg-surface-container-low hover:text-primary transition-colors">Newest</button>
+              <button data-sort="price-low" class="block w-full text-left px-3 py-2 rounded-lg font-headline font-bold text-on-surface/60 hover:bg-surface-container-low hover:text-primary transition-colors">Price: Low to High</button>
+              <button data-sort="price-high" class="block w-full text-left px-3 py-2 rounded-lg font-headline font-bold text-on-surface/60 hover:bg-surface-container-low hover:text-primary transition-colors">Price: High to Low</button>
+              <button data-sort="title-az" class="block w-full text-left px-3 py-2 rounded-lg font-headline font-bold text-on-surface/60 hover:bg-surface-container-low hover:text-primary transition-colors">A - Z</button>
+            </div>
+          </div>
+
+          <!-- Trending Tags -->
+          <div class="p-6 bg-surface-container-low rounded-lg">
+            <h3 class="font-label font-bold text-xs uppercase tracking-tighter text-tertiary mb-4">Trending Now</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="vibe-badge bg-tertiary-container text-on-tertiary-container text-[10px] px-3 py-1 font-bold">ECO-CONSCIOUS</span>
+              <span class="vibe-badge bg-primary-container text-on-primary-container text-[10px] px-3 py-1 font-bold">MONTESSORI</span>
+              <span class="vibe-badge bg-secondary-container text-on-secondary-container text-[10px] px-3 py-1 font-bold">STEM</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Product Grid -->
+      <section class="flex-1">
+        <div id="collection-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Load More -->
+        <div class="mt-24 flex justify-center">
+          <button id="load-more-btn" class="group relative px-12 py-5 premium-gradient text-white rounded-full font-headline font-bold text-lg overflow-hidden shadow-2xl transition-all hover:scale-105 active:scale-95" style="display:none;">
+            <span class="relative z-10 flex items-center gap-3">
+              Discover More Joy
+              <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            </span>
+            <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div data-component="footer"></div>
+
+  <script type="module">
+    import { initHeader } from './js/components/header.js';
+    import { initFooter } from './js/components/footer.js';
+    import { initCollectionPage } from './js/pages/collection.js';
+    initHeader();
+    initFooter();
+    initCollectionPage();
+  </script>
+</body>
+</html>

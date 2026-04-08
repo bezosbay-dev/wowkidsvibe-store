@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Page Not Found — WowKidsVibe</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = { darkMode:"class", theme:{ extend:{
+      colors:{"on-secondary-fixed":"#433700","surface-variant":"#dedbe9","secondary-dim":"#5f4e00","on-primary-fixed":"#000000","secondary":"#6d5a00","error-container":"#fb5151","surface-container-low":"#f3effb","inverse-surface":"#0e0d15","on-secondary":"#fff2ce","on-background":"#2f2e36","tertiary-dim":"#7122b4","tertiary-container":"#cf9aff","secondary-fixed-dim":"#edc600","primary-dim":"#a20033","on-surface":"#2f2e36","primary-fixed-dim":"#ff5773","on-surface-variant":"#5c5a63","tertiary-fixed-dim":"#c588ff","on-error":"#ffefee","background":"#f9f5ff","surface-container-lowest":"#ffffff","on-secondary-fixed-variant":"#645300","secondary-container":"#fdd404","on-secondary-container":"#594a00","on-primary":"#ffefef","surface-dim":"#d6d2e2","tertiary":"#7e32c1","on-tertiary":"#fbefff","on-primary-fixed-variant":"#5f001b","tertiary-fixed":"#cf9aff","on-primary-container":"#4e0014","primary-container":"#ff7386","outline":"#78767f","surface-container-high":"#e4e1ee","inverse-on-surface":"#9e9ba5","on-tertiary-container":"#4a0080","surface-container-highest":"#dedbe9","error":"#b31b25","surface-bright":"#f9f5ff","inverse-primary":"#ff506f","primary":"#b60d3d","on-tertiary-fixed-variant":"#560094","error-dim":"#9f0519","surface-tint":"#b60d3d","primary-fixed":"#ff7386","on-tertiary-fixed":"#270048","on-error-container":"#570008","surface":"#f9f5ff","secondary-fixed":"#fdd404","outline-variant":"#aeacb6","surface-container":"#eae6f3"},
+      borderRadius:{DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px"},fontFamily:{headline:["Plus Jakarta Sans"],body:["Inter"],label:["Space Grotesk"]}
+    }}}
+  </script>
+  <link rel="stylesheet" href="../css/global.css" />
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex flex-col">
+
+  <div data-component="header"></div>
+
+  <main class="flex-1 pt-32 pb-20 px-6">
+    <!-- Hero 404 Section -->
+    <section class="max-w-3xl mx-auto text-center mb-20">
+      <div class="relative mb-8">
+        <span class="text-[10rem] md:text-[14rem] font-headline font-extrabold leading-none bg-gradient-to-br from-primary via-primary-container to-tertiary bg-clip-text text-transparent select-none">404</span>
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span class="material-symbols-outlined text-7xl text-tertiary/20 animate-bounce">explore_off</span>
+        </div>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-headline font-extrabold tracking-tight mb-4">Oops! This page wandered off</h1>
+      <p class="text-on-surface-variant text-lg max-w-lg mx-auto mb-10">Looks like this page is on its own adventure. Let's get you back to the fun stuff!</p>
+
+      <!-- Search -->
+      <form id="search-form" class="flex gap-3 max-w-lg mx-auto mb-10">
+        <div class="flex-1 relative">
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+          <input id="search-input" class="w-full pl-12 pr-5 py-4 bg-surface-container-lowest rounded-xl border-none focus:ring-2 focus:ring-tertiary transition-all soft-shadow" placeholder="Search for something fun..." type="text" />
+        </div>
+        <button type="submit" class="px-6 py-4 kinetic-gradient text-white rounded-xl font-headline font-bold hover:scale-[1.02] transition-all">Search</button>
+      </form>
+
+      <a href="../index.html" class="inline-flex items-center gap-2 px-8 py-4 kinetic-gradient text-white rounded-full font-headline font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-lg">
+        <span class="material-symbols-outlined">home</span> Back to Home
+      </a>
+    </section>
+
+    <!-- Popular Collections -->
+    <section class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-headline font-extrabold text-center mb-10 animate-on-scroll">
+        <span class="w-8 h-1 bg-primary rounded-full inline-block mr-3 align-middle"></span>
+        Popular Collections
+        <span class="w-8 h-1 bg-primary rounded-full inline-block ml-3 align-middle"></span>
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <a href="../collection.html?handle=all" class="group bg-surface-container-lowest rounded-2xl p-6 soft-shadow hover:scale-[1.02] transition-all text-center animate-on-scroll">
+          <div class="w-16 h-16 rounded-2xl kinetic-gradient flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-white text-3xl">toys</span>
+          </div>
+          <h3 class="font-headline font-bold mb-1">All Products</h3>
+          <p class="text-sm text-on-surface-variant">Browse everything</p>
+        </a>
+        <a href="../collection.html?handle=new-arrivals" class="group bg-surface-container-lowest rounded-2xl p-6 soft-shadow hover:scale-[1.02] transition-all text-center animate-on-scroll">
+          <div class="w-16 h-16 rounded-2xl bg-tertiary flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-white text-3xl">new_releases</span>
+          </div>
+          <h3 class="font-headline font-bold mb-1">New Arrivals</h3>
+          <p class="text-sm text-on-surface-variant">Fresh finds</p>
+        </a>
+        <a href="../collection.html?handle=best-sellers" class="group bg-surface-container-lowest rounded-2xl p-6 soft-shadow hover:scale-[1.02] transition-all text-center animate-on-scroll">
+          <div class="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-on-secondary text-3xl">trending_up</span>
+          </div>
+          <h3 class="font-headline font-bold mb-1">Best Sellers</h3>
+          <p class="text-sm text-on-surface-variant">Top picks</p>
+        </a>
+        <a href="../collection.html?handle=sale" class="group bg-surface-container-lowest rounded-2xl p-6 soft-shadow hover:scale-[1.02] transition-all text-center animate-on-scroll">
+          <div class="w-16 h-16 rounded-2xl bg-error flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-white text-3xl">local_offer</span>
+          </div>
+          <h3 class="font-headline font-bold mb-1">On Sale</h3>
+          <p class="text-sm text-on-surface-variant">Great deals</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <div data-component="footer"></div>
+
+  <script type="module">
+    import { initHeader } from '../js/components/header.js';
+    import { initFooter } from '../js/components/footer.js';
+
+    initHeader();
+    initFooter();
+
+    document.getElementById('search-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = document.getElementById('search-input').value.trim();
+      if (q) window.location.href = `../search.html?q=${encodeURIComponent(q)}`;
+    });
+  </script>
+</body>
+</html>

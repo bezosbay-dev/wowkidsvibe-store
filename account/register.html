@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Create Account — WowKidsVibe</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = { darkMode:"class", theme:{ extend:{
+      colors:{"on-secondary-fixed":"#433700","surface-variant":"#dedbe9","secondary-dim":"#5f4e00","on-primary-fixed":"#000000","secondary":"#6d5a00","error-container":"#fb5151","surface-container-low":"#f3effb","inverse-surface":"#0e0d15","on-secondary":"#fff2ce","on-background":"#2f2e36","tertiary-dim":"#7122b4","tertiary-container":"#cf9aff","secondary-fixed-dim":"#edc600","primary-dim":"#a20033","on-surface":"#2f2e36","primary-fixed-dim":"#ff5773","on-surface-variant":"#5c5a63","tertiary-fixed-dim":"#c588ff","on-error":"#ffefee","background":"#f9f5ff","surface-container-lowest":"#ffffff","on-secondary-fixed-variant":"#645300","secondary-container":"#fdd404","on-secondary-container":"#594a00","on-primary":"#ffefef","surface-dim":"#d6d2e2","tertiary":"#7e32c1","on-tertiary":"#fbefff","on-primary-fixed-variant":"#5f001b","tertiary-fixed":"#cf9aff","on-primary-container":"#4e0014","primary-container":"#ff7386","outline":"#78767f","surface-container-high":"#e4e1ee","inverse-on-surface":"#9e9ba5","on-tertiary-container":"#4a0080","surface-container-highest":"#dedbe9","error":"#b31b25","surface-bright":"#f9f5ff","inverse-primary":"#ff506f","primary":"#b60d3d","on-tertiary-fixed-variant":"#560094","error-dim":"#9f0519","surface-tint":"#b60d3d","primary-fixed":"#ff7386","on-tertiary-fixed":"#270048","on-error-container":"#570008","surface":"#f9f5ff","secondary-fixed":"#fdd404","outline-variant":"#aeacb6","surface-container":"#eae6f3"},
+      borderRadius:{DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px"},fontFamily:{headline:["Plus Jakarta Sans"],body:["Inter"],label:["Space Grotesk"]}
+    }}}
+  </script>
+  <link rel="stylesheet" href="../css/global.css" />
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex flex-col">
+
+  <div data-component="header"></div>
+
+  <main class="flex-1 flex items-center justify-center pt-32 pb-20 px-6">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-10">
+        <h1 class="text-4xl font-headline font-extrabold tracking-tight mb-3">Join the Vibe</h1>
+        <p class="text-on-surface-variant">Create your WowKidsVibe account</p>
+      </div>
+      <form id="register-form" class="bg-surface-container-lowest rounded-2xl p-8 soft-shadow space-y-6">
+        <div id="register-error" class="hidden bg-error-container/20 text-error p-4 rounded-xl text-sm font-medium"></div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant ml-2">First Name</label>
+            <input id="reg-first" class="w-full px-5 py-4 rounded-xl bg-surface-container-highest/30 border-none focus:ring-2 focus:ring-tertiary transition-all" placeholder="First" type="text" required />
+          </div>
+          <div class="space-y-2">
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant ml-2">Last Name</label>
+            <input id="reg-last" class="w-full px-5 py-4 rounded-xl bg-surface-container-highest/30 border-none focus:ring-2 focus:ring-tertiary transition-all" placeholder="Last" type="text" required />
+          </div>
+        </div>
+        <div class="space-y-2">
+          <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant ml-2">Email</label>
+          <input id="reg-email" class="w-full px-5 py-4 rounded-xl bg-surface-container-highest/30 border-none focus:ring-2 focus:ring-tertiary transition-all" placeholder="vibe-seeker@email.com" type="email" required />
+        </div>
+        <div class="space-y-2">
+          <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant ml-2">Password</label>
+          <input id="reg-password" class="w-full px-5 py-4 rounded-xl bg-surface-container-highest/30 border-none focus:ring-2 focus:ring-tertiary transition-all" placeholder="Min 8 characters" type="password" minlength="8" required />
+        </div>
+        <button id="register-btn" class="w-full py-5 kinetic-gradient text-white rounded-full font-headline font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-lg" type="submit">
+          Create Account
+        </button>
+        <p class="text-center text-sm text-on-surface-variant">
+          Already have an account? <a href="login.html" class="text-primary font-bold hover:underline">Sign in</a>
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <div data-component="footer"></div>
+
+  <script type="module">
+    import { initHeader } from '../js/components/header.js';
+    import { initFooter } from '../js/components/footer.js';
+    import { customerCreate, customerLogin } from '../js/api/customer.js';
+    import { showToast } from '../js/components/toast.js';
+
+    initHeader();
+    initFooter();
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('register-btn');
+      const errorEl = document.getElementById('register-error');
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+      const firstName = document.getElementById('reg-first').value;
+      const lastName = document.getElementById('reg-last').value;
+
+      btn.disabled = true;
+      btn.textContent = 'Creating account...';
+      errorEl.classList.add('hidden');
+
+      try {
+        await customerCreate(email, password, firstName, lastName);
+        await customerLogin(email, password);
+        showToast('Account created! Welcome to WowKidsVibe!', 'success');
+        window.location.href = 'orders.html';
+      } catch (err) {
+        errorEl.textContent = err.message || 'Failed to create account';
+        errorEl.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+      }
+    });
+  </script>
+</body>
+</html>

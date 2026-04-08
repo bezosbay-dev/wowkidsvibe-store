@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Returns & Refunds — WowKidsVibe</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = { darkMode:"class", theme:{ extend:{
+      colors:{"on-secondary-fixed":"#433700","surface-variant":"#dedbe9","secondary-dim":"#5f4e00","on-primary-fixed":"#000000","secondary":"#6d5a00","error-container":"#fb5151","surface-container-low":"#f3effb","inverse-surface":"#0e0d15","on-secondary":"#fff2ce","on-background":"#2f2e36","tertiary-dim":"#7122b4","tertiary-container":"#cf9aff","secondary-fixed-dim":"#edc600","primary-dim":"#a20033","on-surface":"#2f2e36","primary-fixed-dim":"#ff5773","on-surface-variant":"#5c5a63","tertiary-fixed-dim":"#c588ff","on-error":"#ffefee","background":"#f9f5ff","surface-container-lowest":"#ffffff","on-secondary-fixed-variant":"#645300","secondary-container":"#fdd404","on-secondary-container":"#594a00","on-primary":"#ffefef","surface-dim":"#d6d2e2","tertiary":"#7e32c1","on-tertiary":"#fbefff","on-primary-fixed-variant":"#5f001b","tertiary-fixed":"#cf9aff","on-primary-container":"#4e0014","primary-container":"#ff7386","outline":"#78767f","surface-container-high":"#e4e1ee","inverse-on-surface":"#9e9ba5","on-tertiary-container":"#4a0080","surface-container-highest":"#dedbe9","error":"#b31b25","surface-bright":"#f9f5ff","inverse-primary":"#ff506f","primary":"#b60d3d","on-tertiary-fixed-variant":"#560094","error-dim":"#9f0519","surface-tint":"#b60d3d","primary-fixed":"#ff7386","on-tertiary-fixed":"#270048","on-error-container":"#570008","surface":"#f9f5ff","secondary-fixed":"#fdd404","outline-variant":"#aeacb6","surface-container":"#eae6f3"},
+      borderRadius:{DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px"},fontFamily:{headline:["Plus Jakarta Sans"],body:["Inter"],label:["Space Grotesk"]}
+    }}}
+  </script>
+  <link rel="stylesheet" href="../css/global.css" />
+</head>
+<body class="bg-background text-on-background font-body">
+
+  <div data-component="header"></div>
+
+  <main class="pt-32 pb-20 px-6">
+    <!-- Hero -->
+    <section class="max-w-4xl mx-auto text-center mb-16">
+      <div class="inline-flex items-center gap-2 px-4 py-2 bg-tertiary-container/30 rounded-full mb-6 animate-on-scroll">
+        <span class="material-symbols-outlined text-tertiary text-sm">verified</span>
+        <span class="font-label text-xs uppercase tracking-widest text-tertiary">Hassle-Free Returns</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-headline font-extrabold tracking-tight mb-4 animate-on-scroll">Returns & Refunds</h1>
+      <p class="text-on-surface-variant text-lg max-w-2xl mx-auto animate-on-scroll">We want you to love every purchase. If something isn't right, we'll make it easy to return or exchange.</p>
+    </section>
+
+    <!-- Policy Content -->
+    <div class="max-w-3xl mx-auto space-y-8">
+      <!-- Quick Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12 animate-on-scroll">
+        <div class="bg-surface-container-lowest rounded-2xl p-6 soft-shadow text-center">
+          <span class="material-symbols-outlined text-4xl text-primary mb-3 block">schedule</span>
+          <p class="font-headline font-bold text-2xl mb-1">30 Days</p>
+          <p class="text-sm text-on-surface-variant">Return window</p>
+        </div>
+        <div class="bg-surface-container-lowest rounded-2xl p-6 soft-shadow text-center">
+          <span class="material-symbols-outlined text-4xl text-tertiary mb-3 block">local_shipping</span>
+          <p class="font-headline font-bold text-2xl mb-1">Free</p>
+          <p class="text-sm text-on-surface-variant">Return shipping</p>
+        </div>
+        <div class="bg-surface-container-lowest rounded-2xl p-6 soft-shadow text-center">
+          <span class="material-symbols-outlined text-4xl text-secondary mb-3 block">payments</span>
+          <p class="font-headline font-bold text-2xl mb-1">5-7 Days</p>
+          <p class="text-sm text-on-surface-variant">Refund processing</p>
+        </div>
+      </div>
+
+      <!-- Shopify Policy Content (replaced dynamically if available) -->
+      <div id="policy-content">
+        <div class="bg-surface-container-lowest rounded-2xl p-8 soft-shadow animate-on-scroll">
+          <h2 class="text-2xl font-headline font-extrabold mb-4 flex items-center gap-3">
+            <span class="w-8 h-1 bg-primary rounded-full"></span> Return Eligibility
+          </h2>
+          <div class="space-y-3 text-on-surface-variant leading-relaxed">
+            <p>We accept returns within <strong class="text-on-surface">30 days</strong> of delivery for most items. To be eligible for a return, your item must be:</p>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>Unused and in the same condition as received</li>
+              <li>In its original packaging with all tags attached</li>
+              <li>Accompanied by a receipt or proof of purchase</li>
+            </ul>
+            <p>Certain items are exempt from returns, including gift cards, downloadable products, and personalized items.</p>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-2xl p-8 soft-shadow animate-on-scroll">
+          <h2 class="text-2xl font-headline font-extrabold mb-4 flex items-center gap-3">
+            <span class="w-8 h-1 bg-tertiary rounded-full"></span> How to Start a Return
+          </h2>
+          <div class="space-y-4 text-on-surface-variant leading-relaxed">
+            <div class="flex gap-4 items-start">
+              <span class="w-8 h-8 rounded-full kinetic-gradient flex items-center justify-center text-white font-headline font-bold text-sm flex-shrink-0">1</span>
+              <div>
+                <p class="font-bold text-on-surface mb-1">Contact Us</p>
+                <p>Email us at <strong class="text-primary">support@wowkidsvibe.com</strong> with your order number and reason for return.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <span class="w-8 h-8 rounded-full kinetic-gradient flex items-center justify-center text-white font-headline font-bold text-sm flex-shrink-0">2</span>
+              <div>
+                <p class="font-bold text-on-surface mb-1">Receive Return Label</p>
+                <p>We'll send you a prepaid return shipping label and instructions within 24 hours.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <span class="w-8 h-8 rounded-full kinetic-gradient flex items-center justify-center text-white font-headline font-bold text-sm flex-shrink-0">3</span>
+              <div>
+                <p class="font-bold text-on-surface mb-1">Ship Your Item</p>
+                <p>Pack the item securely, attach the label, and drop it off at any authorized shipping location.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <span class="w-8 h-8 rounded-full kinetic-gradient flex items-center justify-center text-white font-headline font-bold text-sm flex-shrink-0">4</span>
+              <div>
+                <p class="font-bold text-on-surface mb-1">Get Your Refund</p>
+                <p>Once we receive and inspect your return, your refund will be processed within 5-7 business days.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-2xl p-8 soft-shadow animate-on-scroll">
+          <h2 class="text-2xl font-headline font-extrabold mb-4 flex items-center gap-3">
+            <span class="w-8 h-1 bg-secondary rounded-full"></span> Refund Details
+          </h2>
+          <div class="space-y-3 text-on-surface-variant leading-relaxed">
+            <p>Once your return is received and inspected, we'll notify you by email about the approval or rejection of your refund.</p>
+            <p>If approved, your refund will be processed and a credit will automatically be applied to your original method of payment within <strong class="text-on-surface">5-7 business days</strong>.</p>
+            <p><strong class="text-on-surface">Partial refunds</strong> may be granted for items not in their original condition, items with missing parts, or items returned more than 30 days after delivery.</p>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-2xl p-8 soft-shadow animate-on-scroll">
+          <h2 class="text-2xl font-headline font-extrabold mb-4 flex items-center gap-3">
+            <span class="w-8 h-1 bg-primary rounded-full"></span> Exchanges
+          </h2>
+          <div class="space-y-3 text-on-surface-variant leading-relaxed">
+            <p>We only replace items if they are defective or damaged. If you need to exchange an item for the same product, contact us at <strong class="text-primary">support@wowkidsvibe.com</strong>.</p>
+            <p>For a different size, color, or product, we recommend returning the original item for a refund and placing a new order.</p>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-2xl p-8 soft-shadow animate-on-scroll">
+          <h2 class="text-2xl font-headline font-extrabold mb-4 flex items-center gap-3">
+            <span class="w-8 h-1 bg-tertiary rounded-full"></span> Damaged or Defective Items
+          </h2>
+          <div class="space-y-3 text-on-surface-variant leading-relaxed">
+            <p>If you receive a damaged or defective item, please contact us immediately at <strong class="text-primary">support@wowkidsvibe.com</strong> with photos of the damage.</p>
+            <p>We'll arrange a replacement or full refund at no additional cost, including return shipping.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact CTA -->
+      <div class="bg-surface-container-lowest rounded-2xl p-8 soft-shadow text-center animate-on-scroll">
+        <span class="material-symbols-outlined text-5xl text-tertiary mb-4 block">support_agent</span>
+        <h3 class="font-headline font-extrabold text-xl mb-2">Still Have Questions?</h3>
+        <p class="text-on-surface-variant mb-6">Our support team is here to help with any return or refund inquiries.</p>
+        <a href="../contact.html" class="inline-flex items-center gap-2 px-8 py-4 kinetic-gradient text-white rounded-full font-headline font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-lg">
+          <span class="material-symbols-outlined">mail</span> Contact Support
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <div data-component="footer"></div>
+
+  <script type="module">
+    import { initHeader } from '../js/components/header.js';
+    import { initFooter } from '../js/components/footer.js';
+    import { shopifyFetch } from '../js/api/client.js';
+
+    initHeader();
+    initFooter();
+
+    // Try to load Shopify refund policy
+    async function loadPolicy() {
+      try {
+        const data = await shopifyFetch(`{ shop { refundPolicy { body title } } }`);
+        if (data?.shop?.refundPolicy?.body) {
+          const policyHtml = data.shop.refundPolicy.body;
+          document.getElementById('policy-content').innerHTML = `
+            <div class="bg-surface-container-lowest rounded-2xl p-8 soft-shadow prose max-w-none animate-on-scroll">
+              <div class="text-on-surface-variant leading-relaxed space-y-4">${policyHtml}</div>
+            </div>
+          `;
+        }
+      } catch {
+        // Keep static fallback content
+      }
+    }
+    loadPolicy();
+  </script>
+</body>
+</html>
