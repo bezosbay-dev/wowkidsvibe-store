@@ -35,19 +35,19 @@ function renderHeader() {
     </div>
 
     <!-- TopAppBar -->
-    <nav class="fixed top-10 w-full z-50 px-6" id="main-nav">
-      <div class="max-w-7xl mx-auto glass-nav rounded-2xl soft-shadow flex justify-between items-center px-6 py-4">
-        <a href="${b}index.html" class="text-2xl font-extrabold tracking-tighter text-[#FF4D6D] font-headline">
+    <nav class="fixed top-10 w-full z-50 px-2 sm:px-4 lg:px-6" id="main-nav">
+      <div class="max-w-7xl mx-auto glass-nav rounded-2xl soft-shadow flex justify-between items-center px-3 sm:px-5 lg:px-6 py-3 sm:py-4 flex-nowrap min-w-0">
+        <a href="${b}index.html" class="font-extrabold tracking-tighter text-[#FF4D6D] font-headline whitespace-nowrap" style="font-size:clamp(1.1rem,2.5vw,1.5rem);">
           WowKidsVibe
         </a>
 
-        <div class="hidden md:flex items-center gap-8 font-headline font-bold text-lg">
-          <a class="text-zinc-600 hover:text-[#FF4D6D] hover:scale-105 transition-all duration-200" href="${b}collection.html?handle=all">Shop All</a>
-          <a class="text-zinc-600 hover:text-[#FF4D6D] hover:scale-105 transition-all duration-200" href="${b}collection.html?handle=new-arrivals">New Arrivals</a>
-          <a class="text-zinc-600 hover:text-[#FF4D6D] hover:scale-105 transition-all duration-200" href="${b}collection.html?handle=best-sellers">Best Sellers</a>
+        <div class="hidden md:flex items-center gap-6 lg:gap-8 font-headline font-bold text-base lg:text-lg flex-shrink-0">
+          <a class="text-zinc-600 hover:text-[#FF4D6D] hover:scale-105 transition-all duration-200 whitespace-nowrap" href="${b}collection.html?handle=all">Shop All</a>
+          <a class="text-zinc-600 hover:text-[#FF4D6D] hover:scale-105 transition-all duration-200 whitespace-nowrap" href="${b}collection.html?handle=new-arrivals">New Arrivals</a>
+          <a class="text-zinc-600 hover:text-[#FF4D6D] hover:scale-105 transition-all duration-200 whitespace-nowrap" href="${b}collection.html?handle=best-sellers">Best Sellers</a>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-1 sm:gap-2 lg:gap-4 flex-shrink-0 flex-nowrap">
           <!-- Search -->
           <div class="relative hidden lg:block">
             <div class="flex items-center bg-surface-container-highest/30 rounded-full px-4 py-2 ring-1 ring-outline-variant/15">
@@ -60,24 +60,24 @@ function renderHeader() {
           </div>
 
           <!-- Mobile Search -->
-          <button class="lg:hidden p-2 hover:scale-105 transition-all text-on-background" id="mobile-search-btn">
-            <span class="material-symbols-outlined">search</span>
+          <button class="lg:hidden w-9 h-9 flex items-center justify-center hover:scale-105 transition-all text-on-background flex-shrink-0" id="mobile-search-btn">
+            <span class="material-symbols-outlined text-[22px]">search</span>
           </button>
 
           <!-- Account -->
-          <a href="${b}account/login.html" class="p-2 hover:scale-105 transition-all text-on-background">
-            <span class="material-symbols-outlined">person</span>
+          <a href="${b}account/login.html" class="w-9 h-9 flex items-center justify-center hover:scale-105 transition-all text-on-background flex-shrink-0">
+            <span class="material-symbols-outlined text-[22px]">person</span>
           </a>
 
           <!-- Cart -->
-          <button class="p-2 hover:scale-105 transition-all text-on-background relative" id="cart-toggle">
-            <span class="material-symbols-outlined">shopping_cart</span>
-            <span id="cart-badge" class="absolute top-0 right-0 bg-primary text-on-primary text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
+          <button class="w-9 h-9 flex items-center justify-center hover:scale-105 transition-all text-on-background relative flex-shrink-0" id="cart-toggle">
+            <span class="material-symbols-outlined text-[22px]">shopping_cart</span>
+            <span id="cart-badge" class="absolute -top-0.5 -right-0.5 bg-primary text-on-primary text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
           </button>
 
           <!-- Mobile Menu Toggle -->
-          <button class="md:hidden p-2 text-on-background" id="mobile-menu-toggle">
-            <span class="material-symbols-outlined">menu</span>
+          <button class="md:hidden w-9 h-9 flex items-center justify-center text-on-background flex-shrink-0" id="mobile-menu-toggle">
+            <span class="material-symbols-outlined text-[22px]">menu</span>
           </button>
         </div>
       </div>
