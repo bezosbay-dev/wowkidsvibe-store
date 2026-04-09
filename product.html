@@ -13,7 +13,7 @@
       darkMode: "class",
       theme: {
         extend: {
-          colors: {"on-secondary-fixed":"#433700","surface-variant":"#dedbe9","secondary-dim":"#5f4e00","on-primary-fixed":"#000000","secondary":"#6d5a00","error-container":"#fb5151","surface-container-low":"#f3effb","inverse-surface":"#0e0d15","on-secondary":"#fff2ce","on-background":"#2f2e36","tertiary-dim":"#7122b4","tertiary-container":"#cf9aff","secondary-fixed-dim":"#edc600","primary-dim":"#a20033","on-surface":"#2f2e36","primary-fixed-dim":"#ff5773","on-surface-variant":"#5c5a63","tertiary-fixed-dim":"#c588ff","on-error":"#ffefee","background":"#f9f5ff","surface-container-lowest":"#ffffff","on-secondary-fixed-variant":"#645300","secondary-container":"#fdd404","on-secondary-container":"#594a00","on-primary":"#ffefef","surface-dim":"#d6d2e2","tertiary":"#7e32c1","on-tertiary":"#fbefff","on-primary-fixed-variant":"#5f001b","tertiary-fixed":"#cf9aff","on-primary-container":"#4e0014","primary-container":"#ff7386","outline":"#78767f","surface-container-high":"#e4e1ee","inverse-on-surface":"#9e9ba5","on-tertiary-container":"#4a0080","surface-container-highest":"#dedbe9","error":"#b31b25","surface-bright":"#f9f5ff","inverse-primary":"#ff506f","primary":"#b60d3d","on-tertiary-fixed-variant":"#560094","error-dim":"#9f0519","surface-tint":"#b60d3d","primary-fixed":"#ff7386","on-tertiary-fixed":"#270048","on-error-container":"#570008","surface":"#f9f5ff","secondary-fixed":"#fdd404","outline-variant":"#aeacb6","surface-container":"#eae6f3","pdp-dark":"#0f0f1a","pdp-card":"#1a1a2e","pdp-border":"#2a2a40","pdp-text":"#e0e0e0","pdp-muted":"#9a9ab0","pdp-green":"#22c55e"},
+          colors: {"on-secondary-fixed":"#433700","surface-variant":"#dedbe9","secondary-dim":"#5f4e00","on-primary-fixed":"#000000","secondary":"#6d5a00","error-container":"#fb5151","surface-container-low":"#f3effb","inverse-surface":"#0e0d15","on-secondary":"#fff2ce","on-background":"#2f2e36","tertiary-dim":"#7122b4","tertiary-container":"#cf9aff","secondary-fixed-dim":"#edc600","primary-dim":"#a20033","on-surface":"#2f2e36","primary-fixed-dim":"#ff5773","on-surface-variant":"#5c5a63","tertiary-fixed-dim":"#c588ff","on-error":"#ffefee","background":"#f9f5ff","surface-container-lowest":"#ffffff","on-secondary-fixed-variant":"#645300","secondary-container":"#fdd404","on-secondary-container":"#594a00","on-primary":"#ffefef","surface-dim":"#d6d2e2","tertiary":"#7e32c1","on-tertiary":"#fbefff","on-primary-fixed-variant":"#5f001b","tertiary-fixed":"#cf9aff","on-primary-container":"#4e0014","primary-container":"#ff7386","outline":"#78767f","surface-container-high":"#e4e1ee","inverse-on-surface":"#9e9ba5","on-tertiary-container":"#4a0080","surface-container-highest":"#dedbe9","error":"#b31b25","surface-bright":"#f9f5ff","inverse-primary":"#ff506f","primary":"#b60d3d","on-tertiary-fixed-variant":"#560094","error-dim":"#9f0519","surface-tint":"#b60d3d","primary-fixed":"#ff7386","on-tertiary-fixed":"#270048","on-error-container":"#570008","surface":"#f9f5ff","secondary-fixed":"#fdd404","outline-variant":"#aeacb6","surface-container":"#eae6f3"},
           borderRadius: { DEFAULT:"1rem", lg:"2rem", xl:"3rem", full:"9999px" },
           fontFamily: { headline:["Plus Jakarta Sans"], body:["Inter"], label:["Space Grotesk"] }
         }
@@ -22,136 +22,72 @@
   </script>
   <link rel="stylesheet" href="css/global.css" />
   <style>
-    /* PDP Dark Theme */
-    .pdp-body { background: #0f0f1a; color: #e0e0e0; min-height: 100vh; }
-
-    /* Bundle option styles */
-    .bundle-opt { cursor:pointer; border:2px solid #2a2a40; border-radius:12px; padding:14px 16px; transition:all .2s ease; background:#1a1a2e; position:relative; }
-    .bundle-opt:hover { border-color:#3a3a50; }
-    .bundle-opt.selected { border-color:#22c55e; background:rgba(34,197,94,.06); }
-    .bundle-opt .b-radio { width:22px; height:22px; min-width:22px; border:2px solid #4a4a60; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:all .2s; }
-    .bundle-opt.selected .b-radio { border-color:#22c55e; background:#22c55e; }
+    /* Bundle options */
+    .bundle-opt { cursor:pointer; border:2px solid #e4e1ee; border-radius:14px; padding:14px 16px; transition:all .2s; position:relative; background:#fff; }
+    .bundle-opt:hover { border-color:#b60d3d; }
+    .bundle-opt.selected { border-color:#16a34a; background:#f0fdf4; }
+    .bundle-opt .b-radio { width:22px; height:22px; min-width:22px; border:2px solid #aeacb6; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+    .bundle-opt.selected .b-radio { border-color:#16a34a; background:#16a34a; }
     .bundle-opt.selected .b-radio::after { content:''; width:8px; height:8px; background:#fff; border-radius:50%; display:block; }
 
     /* Variant pill */
-    .var-pill { padding:8px 18px; border-radius:9999px; border:2px solid #2a2a40; background:#1a1a2e; color:#e0e0e0; font-weight:700; font-size:13px; cursor:pointer; transition:all .15s; }
-    .var-pill:hover { border-color:#4a4a60; }
-    .var-pill.active { border-color:#22c55e; background:#22c55e; color:#000; }
+    .var-pill { padding:8px 18px; border-radius:9999px; border:2px solid #e4e1ee; background:#fff; color:#2f2e36; font-weight:700; font-size:13px; cursor:pointer; transition:all .15s; }
+    .var-pill:hover { border-color:#b60d3d; }
+    .var-pill.active { border-color:#b60d3d; background:#b60d3d; color:#fff; }
 
     /* Quantity */
-    .qty-box { display:inline-flex; align-items:center; background:#1a1a2e; border:2px solid #2a2a40; border-radius:12px; overflow:hidden; }
-    .qty-box button { width:44px; height:44px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:#e0e0e0; background:transparent; border:none; cursor:pointer; transition:background .15s; }
-    .qty-box button:hover { background:rgba(255,255,255,.05); }
-    .qty-box span { min-width:48px; text-align:center; font-weight:700; font-size:16px; }
+    .qty-box { display:inline-flex; align-items:center; background:#f3effb; border:2px solid #e4e1ee; border-radius:12px; overflow:hidden; }
+    .qty-box button { width:44px; height:44px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:#2f2e36; background:transparent; border:none; cursor:pointer; transition:background .15s; }
+    .qty-box button:hover { background:#e4e1ee; }
+    .qty-box span { min-width:48px; text-align:center; font-weight:700; font-size:16px; color:#2f2e36; }
 
-    /* CTA Buttons */
-    .btn-atc { width:100%; padding:16px; border-radius:14px; border:2px solid #3a3a50; background:#1a1a2e; color:#fff; font-weight:800; font-size:16px; display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; transition:all .15s; }
-    .btn-atc:hover { border-color:#5a5a70; background:#222238; }
-    .btn-buynow { width:100%; padding:16px; border-radius:14px; border:none; background:#e0e0e0; color:#0f0f1a; font-weight:800; font-size:16px; cursor:pointer; transition:all .15s; }
-    .btn-buynow:hover { background:#fff; }
-    .btn-fav { width:100%; padding:14px; border-radius:14px; border:2px solid #2a2a40; background:transparent; color:#e0e0e0; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; transition:all .15s; }
-    .btn-fav:hover { border-color:#4a4a60; }
-
-    /* Thumbnail row */
+    /* Thumbnails */
     .thumb-scroll { display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
     .thumb-scroll::-webkit-scrollbar { display:none; }
     .thumb-item { flex-shrink:0; width:68px; height:68px; border-radius:10px; overflow:hidden; border:2px solid transparent; cursor:pointer; transition:border-color .2s; }
-    .thumb-item.active { border-color:#22c55e; }
-    .thumb-item:hover { border-color:#4a4a60; }
+    .thumb-item.active { border-color:#b60d3d; }
+    .thumb-item:hover { border-color:#aeacb6; }
 
     /* Bottom mobile nav */
-    .mobile-bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:90; background:#0f0f1a; border-top:1px solid #2a2a40; display:flex; padding:8px 0 max(8px, env(safe-area-inset-bottom)); }
-    .mobile-bottom-nav a { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; font-size:10px; font-weight:600; color:#9a9ab0; text-decoration:none; padding:6px 0; transition:color .15s; }
-    .mobile-bottom-nav a:hover, .mobile-bottom-nav a.active { color:#fff; }
+    .mobile-bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:90; background:#fff; border-top:1px solid #e4e1ee; display:flex; padding:6px 0 max(6px, env(safe-area-inset-bottom)); box-shadow:0 -2px 10px rgba(0,0,0,.05); }
+    .mobile-bottom-nav a { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; font-size:10px; font-weight:600; color:#5c5a63; text-decoration:none; padding:6px 0; transition:color .15s; }
+    .mobile-bottom-nav a:hover, .mobile-bottom-nav a.active { color:#b60d3d; }
     @media(min-width:1024px) { .mobile-bottom-nav { display:none; } }
 
     /* Skeleton */
-    .skel { background:linear-gradient(90deg,#1a1a2e 25%,#222238 50%,#1a1a2e 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:12px; }
+    .skel { background:linear-gradient(90deg,#f3effb 25%,#e4e1ee 50%,#f3effb 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:12px; }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
     /* Description strip images */
     #desc-content img, #desc-content video, #desc-content iframe, #desc-content picture, #desc-content source { display:none!important; }
 
-    /* Hide shared header/footer announcement bar on this page - we use our own header */
-    [data-component="header"] { display:none; }
-    [data-component="footer"] { display:none; }
-
-    /* Mobile padding for bottom nav */
+    /* Mobile bottom padding */
     @media(max-width:1023px) { .pdp-main { padding-bottom:80px; } }
   </style>
 </head>
-<body class="pdp-body font-body">
+<body class="bg-background text-on-background font-body">
 
-  <!-- ═══ PDP HEADER ═══ -->
-  <header class="sticky top-0 z-50 bg-[#0f0f1a]/95 backdrop-blur-xl border-b border-pdp-border">
-    <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-      <!-- Left: Hamburger (mobile) -->
-      <button id="pdp-menu-btn" class="lg:hidden p-1 text-pdp-text">
-        <span class="material-symbols-outlined text-[26px]">menu</span>
-      </button>
-      <!-- Desktop nav links -->
-      <div class="hidden lg:flex items-center gap-6">
-        <a href="index.html" class="text-pdp-muted hover:text-white text-sm font-medium transition-colors">Home</a>
-        <a href="collection.html?handle=all" class="text-pdp-muted hover:text-white text-sm font-medium transition-colors">Shop All</a>
-        <a href="about.html" class="text-pdp-muted hover:text-white text-sm font-medium transition-colors">About</a>
-      </div>
+  <!-- Shared Header -->
+  <div data-component="header"></div>
 
-      <!-- Center: Store Name -->
-      <a href="index.html" class="font-headline font-extrabold text-xl tracking-tight text-white">
-        WowKidsVibe
-      </a>
-
-      <!-- Right: Icons -->
-      <div class="flex items-center gap-2">
-        <a href="search.html" class="p-1.5 text-pdp-text hover:text-white transition-colors">
-          <span class="material-symbols-outlined text-[22px]">search</span>
-        </a>
-        <button id="pdp-theme-btn" class="p-1.5 text-pdp-text hover:text-white transition-colors hidden">
-          <span class="material-symbols-outlined text-[22px]">light_mode</span>
-        </button>
-        <a href="cart.html" class="p-1.5 text-pdp-text hover:text-white transition-colors relative" id="pdp-cart-link">
-          <span class="material-symbols-outlined text-[22px]">shopping_cart</span>
-          <span id="pdp-cart-badge" class="absolute -top-0.5 -right-0.5 bg-pdp-green text-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <!-- ═══ MOBILE SLIDE MENU ═══ -->
-  <div id="pdp-menu-overlay" class="fixed inset-0 bg-black/50 z-[80] hidden" style="transition:opacity .3s"></div>
-  <div id="pdp-mobile-menu" class="fixed top-0 left-0 w-[280px] h-full bg-[#0f0f1a] z-[81] overflow-y-auto" style="transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1)">
-    <div class="p-5">
-      <div class="flex justify-between items-center mb-6">
-        <span class="font-headline font-extrabold text-lg text-white">WowKidsVibe</span>
-        <button id="pdp-menu-close" class="p-1 text-pdp-muted"><span class="material-symbols-outlined">close</span></button>
-      </div>
-      <nav class="space-y-1">
-        <a class="block py-3 px-3 text-pdp-text hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all" href="index.html">Home</a>
-        <a class="block py-3 px-3 text-pdp-text hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all" href="collection.html?handle=all">Shop All</a>
-        <a class="block py-3 px-3 text-pdp-text hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all" href="about.html">About Us</a>
-        <a class="block py-3 px-3 text-pdp-text hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all" href="contact.html">Contact</a>
-        <a class="block py-3 px-3 text-pdp-text hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all" href="order-tracking.html">Track Order</a>
-      </nav>
-      <div class="mt-6 pt-6 border-t border-pdp-border space-y-1">
-        <a class="block py-3 px-3 text-pdp-muted hover:text-white rounded-xl font-medium transition-all" href="account/login.html">My Account</a>
-        <a class="block py-3 px-3 text-pdp-muted hover:text-white rounded-xl font-medium transition-all" href="cart.html">Cart</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ MAIN ═══ -->
-  <main class="pdp-main max-w-7xl mx-auto px-4 lg:px-8 pt-4 lg:pt-8 pb-12">
+  <!-- Main Content -->
+  <main class="pdp-main pt-24 pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div id="product-detail"></div>
     <div id="description-section" style="display:none"></div>
+
+    <!-- You May Also Like -->
     <section id="related-section" class="mt-16 lg:mt-24" style="display:none">
-      <h2 class="text-xl font-headline font-extrabold mb-6 text-white flex items-center gap-3">
-        <span class="w-6 h-0.5 bg-pdp-green rounded-full"></span> You May Also Like
+      <h2 class="text-xl font-headline font-extrabold mb-6 text-on-surface flex items-center gap-3">
+        <span class="w-6 h-0.5 bg-primary rounded-full"></span> You May Also Like
       </h2>
       <div id="related-products" class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory" style="scrollbar-width:none;-webkit-overflow-scrolling:touch;"></div>
     </section>
   </main>
 
-  <!-- ═══ BOTTOM MOBILE NAV ═══ -->
+  <!-- Shared Footer -->
+  <div data-component="footer"></div>
+
+  <!-- Bottom Mobile Nav -->
   <nav class="mobile-bottom-nav">
     <a href="index.html"><span class="material-symbols-outlined text-[22px]">home</span>Home</a>
     <a href="collection.html?handle=all"><span class="material-symbols-outlined text-[22px]">storefront</span>Shop</a>
@@ -159,42 +95,22 @@
     <a href="cart.html"><span class="material-symbols-outlined text-[22px]">shopping_bag</span>Cart</a>
   </nav>
 
-  <!-- ═══ SCRIPT ═══ -->
   <script type="module">
+    import { initHeader, openCartDrawer } from './js/components/header.js';
+    import { initFooter } from './js/components/footer.js';
     import { SHOPIFY_CONFIG, STOREFRONT_URL } from './js/shopify-config.js';
-    import { addToCart, getCart } from './js/api/cart.js';
+    import { addToCart } from './js/api/cart.js';
     import { formatMoney } from './js/api/client.js';
     import { showToast } from './js/components/toast.js';
+
+    initHeader();
+    initFooter();
 
     let currentProduct = null;
     let selectedVariant = null;
     let quantity = 1;
     let bundleQty = 1;
 
-    // ── Mobile menu ──
-    const menuBtn = document.getElementById('pdp-menu-btn');
-    const menuClose = document.getElementById('pdp-menu-close');
-    const menuOverlay = document.getElementById('pdp-menu-overlay');
-    const mobileMenu = document.getElementById('pdp-mobile-menu');
-    function openMenu() { mobileMenu.style.transform='translateX(0)'; menuOverlay.classList.remove('hidden'); }
-    function closeMenu() { mobileMenu.style.transform='translateX(-100%)'; menuOverlay.classList.add('hidden'); }
-    menuBtn?.addEventListener('click', openMenu);
-    menuClose?.addEventListener('click', closeMenu);
-    menuOverlay?.addEventListener('click', closeMenu);
-
-    // ── Cart badge ──
-    async function updateBadge() {
-      try {
-        const cart = await getCart();
-        const count = cart?.lines?.edges?.reduce((s, e) => s + e.node.quantity, 0) || 0;
-        const badge = document.getElementById('pdp-cart-badge');
-        if (badge) { badge.textContent = count; badge.classList.toggle('hidden', count === 0); }
-      } catch(e) {}
-    }
-    updateBadge();
-    window.addEventListener('cart:updated', updateBadge);
-
-    // ── Init ──
     initProductPage();
 
     async function initProductPage() {
@@ -202,7 +118,7 @@
       const container = document.getElementById('product-detail');
 
       if (!handle) {
-        container.innerHTML = `<div class="text-center py-20"><span class="material-symbols-outlined text-7xl text-pdp-muted/30 mb-6 block">shopping_bag</span><h2 class="font-headline font-extrabold text-2xl mb-3 text-white">Select a product to view</h2><p class="text-pdp-muted mb-8">Browse our collection and click on a product.</p><a href="collection.html?handle=all" class="inline-block px-8 py-4 bg-pdp-green text-black rounded-full font-headline font-bold text-sm hover:brightness-110 transition-all">Browse All Products</a></div>`;
+        container.innerHTML = '<div class="text-center py-20"><span class="material-symbols-outlined text-7xl text-on-surface-variant/30 mb-6 block">shopping_bag</span><h2 class="font-headline font-extrabold text-2xl mb-3">Select a product to view</h2><p class="text-on-surface-variant mb-8">Browse our collection and click on a product.</p><a href="collection.html?handle=all" class="inline-block px-8 py-4 kinetic-gradient text-white rounded-full font-headline font-bold text-sm hover:scale-[1.02] transition-all shadow-lg">Browse All Products</a></div>';
         return;
       }
 
@@ -213,35 +129,18 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontToken },
           body: JSON.stringify({
-            query: `query getProduct($handle: String!) {
-              product(handle: $handle) {
-                id title handle description descriptionHtml productType tags vendor
-                images(first: 10) { edges { node { url altText } } }
-                variants(first: 100) {
-                  edges { node {
-                    id title availableForSale
-                    price { amount currencyCode }
-                    compareAtPrice { amount currencyCode }
-                    selectedOptions { name value }
-                    image { url altText }
-                  } }
-                }
-                options { id name values }
-                priceRange { minVariantPrice { amount currencyCode } }
-                compareAtPriceRange { minVariantPrice { amount currencyCode } }
-              }
-            }`,
-            variables: { handle }
+            query: 'query getProduct($handle: String!) { product(handle: $handle) { id title handle description descriptionHtml productType tags vendor images(first: 10) { edges { node { url altText } } } variants(first: 100) { edges { node { id title availableForSale price { amount currencyCode } compareAtPrice { amount currencyCode } selectedOptions { name value } image { url altText } } } } options { id name values } priceRange { minVariantPrice { amount currencyCode } } compareAtPriceRange { minVariantPrice { amount currencyCode } } } }',
+            variables: { handle: handle }
           }),
         });
 
         if (!response.ok) throw new Error('API returned ' + response.status);
-        const json = await response.json();
-        if (json.errors) throw new Error(json.errors.map(e => e.message).join(', '));
+        var json = await response.json();
+        if (json.errors) throw new Error(json.errors.map(function(e) { return e.message; }).join(', '));
         currentProduct = json.data.product;
 
         if (!currentProduct) {
-          container.innerHTML = `<div class="text-center py-20"><span class="material-symbols-outlined text-7xl text-pdp-muted/30 mb-6 block">search_off</span><h2 class="font-headline font-extrabold text-2xl mb-3 text-white">Product not found</h2><p class="text-pdp-muted mb-8">This product doesn't exist or has been removed.</p><a href="collection.html?handle=all" class="inline-block px-8 py-3 bg-pdp-green text-black rounded-full font-headline font-bold text-sm">Browse Products</a></div>`;
+          container.innerHTML = '<div class="text-center py-20"><span class="material-symbols-outlined text-7xl text-on-surface-variant/30 mb-6 block">search_off</span><h2 class="font-headline font-extrabold text-2xl mb-3">Product not found</h2><p class="text-on-surface-variant mb-8">This product doesn\'t exist or has been removed.</p><a href="collection.html?handle=all" class="inline-block px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold">Browse Products</a></div>';
           return;
         }
 
@@ -250,256 +149,252 @@
         loadRecommendations();
       } catch(err) {
         console.error('Product page error:', err);
-        container.innerHTML = `<div class="text-center py-20"><span class="material-symbols-outlined text-7xl text-red-400/50 mb-6 block">error</span><h2 class="font-headline font-extrabold text-xl mb-3 text-white">Failed to load product</h2><p class="text-pdp-muted mb-6">${err.message}</p><a href="collection.html?handle=all" class="inline-block px-8 py-3 bg-pdp-green text-black rounded-full font-headline font-bold text-sm">Browse Products</a></div>`;
+        container.innerHTML = '<div class="text-center py-20"><span class="material-symbols-outlined text-7xl text-error/30 mb-6 block">error</span><h2 class="font-headline font-extrabold text-xl mb-3">Failed to load product</h2><p class="text-on-surface-variant mb-2">' + err.message + '</p><a href="collection.html?handle=all" class="inline-block px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold mt-6">Browse Products</a></div>';
       }
     }
 
     function renderProduct(container) {
-      const p = currentProduct;
-      const images = p.images.edges.map(e => e.node);
-      const variants = p.variants.edges.map(e => e.node);
+      var p = currentProduct;
+      var images = p.images.edges.map(function(e) { return e.node; });
+      var variants = p.variants.edges.map(function(e) { return e.node; });
       selectedVariant = variants[0];
       quantity = 1;
       bundleQty = 1;
 
-      const mainImage = selectedVariant.image || images[0];
-      const price = selectedVariant.price;
-      const compareAt = selectedVariant.compareAtPrice;
-      const hasDiscount = compareAt && parseFloat(compareAt.amount) > parseFloat(price.amount);
-      const discountPct = hasDiscount ? Math.round((1 - parseFloat(price.amount) / parseFloat(compareAt.amount)) * 100) : 0;
-      const priceNum = parseFloat(price.amount);
-      const compareNum = hasDiscount ? parseFloat(compareAt.amount) : priceNum;
-      const cur = price.currencyCode;
+      var mainImage = selectedVariant.image || images[0];
+      var price = selectedVariant.price;
+      var compareAt = selectedVariant.compareAtPrice;
+      var hasDiscount = compareAt && parseFloat(compareAt.amount) > parseFloat(price.amount);
+      var discountPct = hasDiscount ? Math.round((1 - parseFloat(price.amount) / parseFloat(compareAt.amount)) * 100) : 0;
+      var priceNum = parseFloat(price.amount);
+      var compareNum = hasDiscount ? parseFloat(compareAt.amount) : priceNum;
+      var cur = price.currencyCode;
 
       // Breadcrumb — max 20 chars
-      const shortTitle = p.title.length > 20 ? p.title.substring(0, 20) + '...' : p.title;
-      const category = p.productType || 'Shop';
+      var shortTitle = p.title.length > 20 ? p.title.substring(0, 20) + '...' : p.title;
+      var category = p.productType || 'Shop';
 
       // Delivery dates
-      const now = new Date();
-      const d1 = new Date(now); d1.setDate(d1.getDate() + 3);
-      const d2 = new Date(now); d2.setDate(d2.getDate() + 7);
-      const fmt = d => d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
-      const deliveryStr = fmt(d1) + ' – ' + fmt(d2);
+      var now = new Date();
+      var d1 = new Date(now); d1.setDate(d1.getDate() + 3);
+      var d2 = new Date(now); d2.setDate(d2.getDate() + 7);
+      var fmtDate = function(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); };
+      var deliveryStr = fmtDate(d1) + ' – ' + fmtDate(d2);
 
       // Bundle calculations
-      const b1Total = priceNum;
-      const b2Total = Math.round(priceNum * 2 * 0.90 * 100) / 100;
-      const b3Total = Math.round(priceNum * 3 * 0.85 * 100) / 100;
-      const b1Save = hasDiscount ? Math.round((compareNum - priceNum) * 100) / 100 : 0;
-      const b2Save = Math.round((compareNum * 2 - b2Total) * 100) / 100;
-      const b3Save = Math.round((compareNum * 3 - b3Total) * 100) / 100;
+      var b1Total = priceNum;
+      var b2Total = Math.round(priceNum * 2 * 0.90 * 100) / 100;
+      var b3Total = Math.round(priceNum * 3 * 0.85 * 100) / 100;
+      var b1Save = hasDiscount ? Math.round((compareNum - priceNum) * 100) / 100 : 0;
+      var b2Save = Math.round((compareNum * 2 - b2Total) * 100) / 100;
+      var b3Save = Math.round((compareNum * 3 - b3Total) * 100) / 100;
 
-      // Short description (plain text, max 200 chars)
-      const shortDesc = p.description ? (p.description.length > 200 ? p.description.substring(0, 200) + '...' : p.description) : '';
+      // Short description
+      var shortDesc = p.description ? (p.description.length > 200 ? p.description.substring(0, 200) + '...' : p.description) : '';
 
       // Thumbnails
-      const thumbsHTML = images.length > 0 ? images.map((img, i) =>
-        `<div class="thumb-item ${i===0?'active':''}" data-index="${i}"><img class="w-full h-full object-cover" src="${img.url}" alt="" loading="lazy" /></div>`
-      ).join('') : '';
-
-      // Variant options
-      let optionsHTML = '';
-      p.options.forEach(opt => {
-        if (opt.name === 'Title') return;
-        const pills = opt.values.map((val, i) =>
-          `<button class="var-pill ${i===0?'active':''}" data-option-name="${opt.name}" data-option-value="${val}">${val}</button>`
-        ).join('');
-        optionsHTML += `<div class="space-y-3"><h3 class="font-headline font-bold text-sm text-white">${opt.name}</h3><div class="flex flex-wrap gap-2">${pills}</div></div>`;
-      });
-
-      const inStock = selectedVariant.availableForSale;
-
-      container.innerHTML = `
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-start">
-
-          <!-- ═══ LEFT: GALLERY ═══ -->
-          <div class="lg:sticky lg:top-20">
-            <!-- Breadcrumb (mobile only - shows above image) -->
-            <nav class="lg:hidden flex items-center gap-1.5 mb-3 text-[11px] text-pdp-muted">
-              <a href="index.html" class="hover:text-white transition-colors">Home</a>
-              <span>/</span>
-              <a href="collection.html?handle=all" class="hover:text-white transition-colors">${category}</a>
-              <span>/</span>
-              <span class="text-white font-semibold">${shortTitle}</span>
-            </nav>
-
-            <!-- Main Image -->
-            <div class="relative rounded-2xl overflow-hidden bg-[#1a1a2e]">
-              <img id="main-image" class="w-full aspect-square object-contain bg-white" src="${mainImage ? mainImage.url : ''}" alt="${p.title}" />
-            </div>
-
-            <!-- Thumbnails -->
-            ${images.length > 1 ? `<div class="thumb-scroll mt-3">${thumbsHTML}</div>` : ''}
-          </div>
-
-          <!-- ═══ RIGHT: PRODUCT INFO ═══ -->
-          <div class="space-y-5">
-
-            <!-- Breadcrumb (desktop only) -->
-            <nav class="hidden lg:flex items-center gap-1.5 text-[11px] text-pdp-muted">
-              <a href="index.html" class="hover:text-white transition-colors">Home</a>
-              <span>/</span>
-              <a href="collection.html?handle=all" class="hover:text-white transition-colors">${category}</a>
-              <span>/</span>
-              <span class="text-white font-semibold">${shortTitle}</span>
-            </nav>
-
-            <!-- Title -->
-            <h1 class="text-xl lg:text-2xl font-headline font-extrabold text-white leading-snug line-clamp-2">${p.title}</h1>
-
-            <!-- Stars -->
-            <div class="flex items-center gap-2">
-              <div class="flex text-yellow-400">
-                ${[1,2,3,4,5].map(() => '<span class="material-symbols-outlined text-sm" style="font-variation-settings:\'FILL\' 1">star</span>').join('')}
-              </div>
-              <span class="text-sm font-bold text-white">4.9</span>
-              <span class="text-xs text-pdp-muted">(2,847 reviews)</span>
-            </div>
-
-            <!-- Price Row -->
-            <div class="flex items-center gap-3 flex-wrap pb-4 border-b border-pdp-border">
-              <span id="variant-price" class="text-2xl lg:text-3xl font-headline font-extrabold text-white">${formatMoney(price.amount, cur)}</span>
-              ${hasDiscount ? `<span id="variant-compare" class="text-base text-pdp-muted line-through">${formatMoney(compareAt.amount, cur)}</span><span class="text-[11px] font-bold text-pdp-green bg-pdp-green/10 px-2.5 py-1 rounded-full font-label uppercase">SAVE ${discountPct}%</span>` : ''}
-            </div>
-
-            <!-- Short Description -->
-            ${shortDesc ? `<p class="text-sm text-pdp-muted leading-relaxed pb-4 border-b border-pdp-border">${shortDesc}</p>` : ''}
-
-            <!-- ═══ BUNDLE & SAVE ═══ -->
-            <div class="border-2 border-pdp-border rounded-2xl overflow-hidden">
-              <div class="flex items-center justify-center gap-2 py-3 border-b border-pdp-border">
-                <span class="material-symbols-outlined text-white text-lg">redeem</span>
-                <span class="font-headline font-extrabold text-xs text-white uppercase tracking-[0.15em]">Bundle & Save</span>
-              </div>
-              <div class="p-3 space-y-3" id="bundle-options">
-
-                <!-- Buy 1 -->
-                <div class="bundle-opt selected" data-bundle="1" data-total="${b1Total}" data-save="${b1Save}">
-                  <div class="flex items-center gap-3">
-                    <div class="b-radio"></div>
-                    <div class="flex-1 min-w-0">
-                      <div class="font-headline font-bold text-sm text-white">Buy 1</div>
-                      <div class="text-xs text-pdp-muted mt-0.5">Standard Discount</div>
-                    </div>
-                    <div class="text-right flex-shrink-0">
-                      <div class="font-label font-bold text-base text-white">${formatMoney(b1Total, cur)}</div>
-                      ${hasDiscount ? `<div class="text-xs text-pdp-muted line-through">${formatMoney(compareNum, cur)}</div>` : ''}
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Buy 2 -->
-                <div class="bundle-opt" data-bundle="2" data-total="${b2Total}" data-save="${b2Save}">
-                  <div class="absolute -top-2 right-3 bg-pdp-green text-black text-[9px] font-extrabold px-3 py-0.5 rounded-full font-label uppercase tracking-wide">Most Popular</div>
-                  <div class="flex items-center gap-3">
-                    <div class="b-radio"></div>
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 flex-wrap">
-                        <span class="font-headline font-bold text-sm text-white">Buy 2</span>
-                        <span class="text-[9px] font-bold bg-pdp-green/15 text-pdp-green px-2 py-0.5 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[9px]">local_shipping</span>Free Shipping</span>
-                      </div>
-                      <div class="text-xs text-pdp-muted mt-0.5">Extra 10% OFF</div>
-                    </div>
-                    <div class="text-right flex-shrink-0">
-                      <div class="font-label font-bold text-base text-white">${formatMoney(b2Total, cur)}</div>
-                      <div class="text-xs text-pdp-muted line-through">${formatMoney(compareNum * 2, cur)}</div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Buy 3 -->
-                <div class="bundle-opt" data-bundle="3" data-total="${b3Total}" data-save="${b3Save}">
-                  <div class="flex items-center gap-3">
-                    <div class="b-radio"></div>
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 flex-wrap">
-                        <span class="font-headline font-bold text-sm text-white">Buy 3</span>
-                        <span class="text-[9px] font-bold bg-pdp-green/15 text-pdp-green px-2 py-0.5 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[9px]">local_shipping</span>Free Shipping</span>
-                      </div>
-                      <div class="text-xs text-pdp-muted mt-0.5">Extra 15% OFF</div>
-                    </div>
-                    <div class="text-right flex-shrink-0">
-                      <div class="font-label font-bold text-base text-white">${formatMoney(b3Total, cur)}</div>
-                      <div class="text-xs text-pdp-muted line-through">${formatMoney(compareNum * 3, cur)}</div>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <!-- Savings bar -->
-              <div id="bundle-savings" class="mx-3 mb-3 px-4 py-2.5 rounded-xl bg-pdp-green/10 flex items-center justify-center gap-2 ${b1Save > 0 ? '' : 'hidden'}">
-                <span class="text-base">🔥</span>
-                <span class="text-pdp-green font-headline font-bold text-sm">You save <span id="savings-amount">${formatMoney(b1Save, cur)}</span></span>
-              </div>
-            </div>
-
-            <!-- Variant Selectors -->
-            ${optionsHTML}
-
-            <!-- Quantity -->
-            <div class="space-y-3">
-              <h3 class="font-headline font-bold text-sm text-white">Quantity</h3>
-              <div class="qty-box">
-                <button id="qty-dec">−</button>
-                <span id="qty-val">1</span>
-                <button id="qty-inc">+</button>
-              </div>
-            </div>
-
-            <!-- Add to Cart -->
-            <button id="btn-atc" class="btn-atc">
-              <span class="material-symbols-outlined text-xl">shopping_cart</span>
-              Add to Cart
-            </button>
-
-            <!-- Buy Now -->
-            <button id="btn-buy" class="btn-buynow">Buy Now</button>
-
-            <!-- Add to Favorites -->
-            <button id="btn-fav" class="btn-fav">
-              <span class="material-symbols-outlined text-lg">favorite_border</span>
-              Add to Favorites
-            </button>
-
-            <!-- Trust Badges -->
-            <div class="space-y-3 pt-4">
-              <div class="flex items-center gap-3 text-sm text-pdp-muted">
-                <span class="material-symbols-outlined text-lg text-pdp-text">local_shipping</span>
-                <span>Estimated delivery: <strong class="text-pdp-text">${deliveryStr}</strong></span>
-              </div>
-              <div class="flex items-center gap-3 text-sm text-pdp-muted">
-                <span class="material-symbols-outlined text-lg text-pdp-text">history</span>
-                <span>30-day free returns</span>
-              </div>
-              <div class="flex items-center gap-3 text-sm text-pdp-muted">
-                <span class="material-symbols-outlined text-lg text-pdp-text">verified_user</span>
-                <span>Secure checkout</span>
-              </div>
-              <div class="flex items-center gap-3 text-sm">
-                <span class="material-symbols-outlined text-lg text-pdp-green">check_circle</span>
-                <span class="text-pdp-green font-medium">${inStock ? 'In stock — ready to ship' : 'Out of stock'}</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      `;
-
-      // ── Description below columns ──
-      if (p.descriptionHtml) {
-        const sec = document.getElementById('description-section');
-        sec.style.display = 'block';
-        sec.innerHTML = `
-          <div class="mt-12 lg:mt-16 border-t border-pdp-border pt-8 max-w-3xl">
-            <h2 class="text-lg font-headline font-extrabold text-white mb-4 flex items-center gap-2">
-              <span class="w-5 h-0.5 bg-pdp-green rounded-full"></span> About This Product
-            </h2>
-            <div id="desc-content" class="text-sm text-pdp-muted leading-relaxed space-y-3">${stripImages(p.descriptionHtml)}</div>
-          </div>`;
+      var thumbsHTML = '';
+      if (images.length > 0) {
+        thumbsHTML = images.map(function(img, i) {
+          return '<div class="thumb-item ' + (i === 0 ? 'active' : '') + '" data-index="' + i + '"><img class="w-full h-full object-cover" src="' + img.url + '" alt="" loading="lazy" /></div>';
+        }).join('');
       }
 
-      // Wire interactions
+      // Variant options
+      var optionsHTML = '';
+      p.options.forEach(function(opt) {
+        if (opt.name === 'Title') return;
+        var pills = opt.values.map(function(val, i) {
+          return '<button class="var-pill ' + (i === 0 ? 'active' : '') + '" data-option-name="' + opt.name + '" data-option-value="' + val + '">' + val + '</button>';
+        }).join('');
+        optionsHTML += '<div class="space-y-3"><h3 class="font-headline font-bold text-sm text-on-surface">' + opt.name + '</h3><div class="flex flex-wrap gap-2">' + pills + '</div></div>';
+      });
+
+      var inStock = selectedVariant.availableForSale;
+
+      container.innerHTML =
+        '<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-start">' +
+
+          '<!-- LEFT: GALLERY -->' +
+          '<div class="lg:sticky lg:top-28">' +
+            '<!-- Breadcrumb mobile -->' +
+            '<nav class="lg:hidden flex items-center gap-1.5 mb-3 text-[11px] text-on-surface-variant font-label">' +
+              '<a href="index.html" class="hover:text-primary transition-colors">Home</a>' +
+              '<span>/</span>' +
+              '<a href="collection.html?handle=all" class="hover:text-primary transition-colors">' + category + '</a>' +
+              '<span>/</span>' +
+              '<span class="text-on-surface font-semibold">' + shortTitle + '</span>' +
+            '</nav>' +
+            '<div class="relative rounded-2xl overflow-hidden bg-white shadow-sm">' +
+              '<img id="main-image" class="w-full aspect-square object-contain" src="' + (mainImage ? mainImage.url : '') + '" alt="' + p.title + '" />' +
+            '</div>' +
+            (images.length > 1 ? '<div class="thumb-scroll mt-3">' + thumbsHTML + '</div>' : '') +
+          '</div>' +
+
+          '<!-- RIGHT: PRODUCT INFO -->' +
+          '<div class="space-y-5">' +
+
+            '<!-- Breadcrumb desktop -->' +
+            '<nav class="hidden lg:flex items-center gap-1.5 text-[11px] text-on-surface-variant font-label">' +
+              '<a href="index.html" class="hover:text-primary transition-colors">Home</a>' +
+              '<span>/</span>' +
+              '<a href="collection.html?handle=all" class="hover:text-primary transition-colors">' + category + '</a>' +
+              '<span>/</span>' +
+              '<span class="text-on-surface font-semibold">' + shortTitle + '</span>' +
+            '</nav>' +
+
+            '<!-- Title -->' +
+            '<h1 class="text-xl lg:text-2xl font-headline font-extrabold text-on-surface leading-snug">' + p.title + '</h1>' +
+
+            '<!-- Stars -->' +
+            '<div class="flex items-center gap-2">' +
+              '<div class="flex text-yellow-400">' +
+                '<span class="material-symbols-outlined text-sm" style="font-variation-settings:\'FILL\' 1">star</span>'.repeat(5) +
+              '</div>' +
+              '<span class="text-sm font-bold text-on-surface">4.9</span>' +
+              '<span class="text-xs text-on-surface-variant">(2,847 reviews)</span>' +
+            '</div>' +
+
+            '<!-- Price -->' +
+            '<div class="flex items-center gap-3 flex-wrap pb-4 border-b border-outline-variant/20">' +
+              '<span id="variant-price" class="text-2xl lg:text-3xl font-headline font-extrabold ' + (hasDiscount ? 'text-primary' : 'text-on-surface') + '">' + formatMoney(price.amount, cur) + '</span>' +
+              (hasDiscount ? '<span id="variant-compare" class="text-base text-on-surface-variant line-through">' + formatMoney(compareAt.amount, cur) + '</span><span class="text-[11px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full font-label uppercase">SAVE ' + discountPct + '%</span>' : '') +
+            '</div>' +
+
+            '<!-- Short Description -->' +
+            (shortDesc ? '<p class="text-sm text-on-surface-variant leading-relaxed pb-4 border-b border-outline-variant/20">' + shortDesc + '</p>' : '') +
+
+            '<!-- BUNDLE & SAVE -->' +
+            '<div class="border-2 border-outline-variant/30 rounded-2xl overflow-hidden bg-surface-container-lowest">' +
+              '<div class="flex items-center justify-center gap-2 py-3 border-b border-outline-variant/20 bg-surface-container-low">' +
+                '<span class="material-symbols-outlined text-on-surface text-lg">redeem</span>' +
+                '<span class="font-headline font-extrabold text-xs text-on-surface uppercase tracking-[0.15em]">Bundle & Save</span>' +
+              '</div>' +
+              '<div class="p-3 space-y-3" id="bundle-options">' +
+
+                '<!-- Buy 1 -->' +
+                '<div class="bundle-opt selected" data-bundle="1" data-total="' + b1Total + '" data-save="' + b1Save + '">' +
+                  '<div class="flex items-center gap-3">' +
+                    '<div class="b-radio"></div>' +
+                    '<div class="flex-1 min-w-0">' +
+                      '<div class="font-headline font-bold text-sm text-on-surface">Buy 1</div>' +
+                      '<div class="text-xs text-on-surface-variant mt-0.5">Standard Discount</div>' +
+                    '</div>' +
+                    '<div class="text-right flex-shrink-0">' +
+                      '<div class="font-label font-bold text-base text-on-surface">' + formatMoney(b1Total, cur) + '</div>' +
+                      (hasDiscount ? '<div class="text-xs text-on-surface-variant line-through">' + formatMoney(compareNum, cur) + '</div>' : '') +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+
+                '<!-- Buy 2 -->' +
+                '<div class="bundle-opt" data-bundle="2" data-total="' + b2Total + '" data-save="' + b2Save + '">' +
+                  '<div class="absolute -top-2.5 right-3 bg-green-500 text-white text-[9px] font-extrabold px-3 py-0.5 rounded-full font-label uppercase tracking-wide">Most Popular</div>' +
+                  '<div class="flex items-center gap-3">' +
+                    '<div class="b-radio"></div>' +
+                    '<div class="flex-1 min-w-0">' +
+                      '<div class="flex items-center gap-2 flex-wrap">' +
+                        '<span class="font-headline font-bold text-sm text-on-surface">Buy 2</span>' +
+                        '<span class="text-[9px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px]">local_shipping</span>Free Shipping</span>' +
+                      '</div>' +
+                      '<div class="text-xs text-on-surface-variant mt-0.5">Extra 10% OFF</div>' +
+                    '</div>' +
+                    '<div class="text-right flex-shrink-0">' +
+                      '<div class="font-label font-bold text-base text-on-surface">' + formatMoney(b2Total, cur) + '</div>' +
+                      '<div class="text-xs text-on-surface-variant line-through">' + formatMoney(compareNum * 2, cur) + '</div>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+
+                '<!-- Buy 3 -->' +
+                '<div class="bundle-opt" data-bundle="3" data-total="' + b3Total + '" data-save="' + b3Save + '">' +
+                  '<div class="flex items-center gap-3">' +
+                    '<div class="b-radio"></div>' +
+                    '<div class="flex-1 min-w-0">' +
+                      '<div class="flex items-center gap-2 flex-wrap">' +
+                        '<span class="font-headline font-bold text-sm text-on-surface">Buy 3</span>' +
+                        '<span class="text-[9px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px]">local_shipping</span>Free Shipping</span>' +
+                      '</div>' +
+                      '<div class="text-xs text-on-surface-variant mt-0.5">Extra 15% OFF</div>' +
+                    '</div>' +
+                    '<div class="text-right flex-shrink-0">' +
+                      '<div class="font-label font-bold text-base text-on-surface">' + formatMoney(b3Total, cur) + '</div>' +
+                      '<div class="text-xs text-on-surface-variant line-through">' + formatMoney(compareNum * 3, cur) + '</div>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+
+              '</div>' +
+              '<div id="bundle-savings" class="mx-3 mb-3 px-4 py-2.5 rounded-xl bg-green-50 flex items-center justify-center gap-2 ' + (b1Save > 0 ? '' : 'hidden') + '">' +
+                '<span class="text-base">&#128293;</span>' +
+                '<span class="text-green-600 font-headline font-bold text-sm">You save <span id="savings-amount">' + formatMoney(b1Save, cur) + '</span></span>' +
+              '</div>' +
+            '</div>' +
+
+            '<!-- Variant Selectors -->' +
+            optionsHTML +
+
+            '<!-- Quantity -->' +
+            '<div class="space-y-3">' +
+              '<h3 class="font-headline font-bold text-sm text-on-surface">Quantity</h3>' +
+              '<div class="qty-box">' +
+                '<button id="qty-dec">&minus;</button>' +
+                '<span id="qty-val">1</span>' +
+                '<button id="qty-inc">+</button>' +
+              '</div>' +
+            '</div>' +
+
+            '<!-- Add to Cart -->' +
+            '<button id="btn-atc" class="w-full py-4 rounded-2xl kinetic-gradient text-white font-headline font-extrabold text-base flex items-center justify-center gap-3 shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-[0.98] transition-all">' +
+              '<span class="material-symbols-outlined text-xl">shopping_cart</span> Add to Cart' +
+            '</button>' +
+
+            '<!-- Buy Now -->' +
+            '<button id="btn-buy" class="w-full py-4 rounded-2xl bg-on-surface text-background font-headline font-extrabold text-base hover:bg-black transition-all">' +
+              'Buy Now' +
+            '</button>' +
+
+            '<!-- Add to Favorites -->' +
+            '<button id="btn-fav" class="w-full py-3.5 rounded-2xl border-2 border-outline-variant/30 bg-transparent text-on-surface font-headline font-bold text-sm flex items-center justify-center gap-2 hover:border-primary/30 transition-all">' +
+              '<span class="material-symbols-outlined text-lg">favorite_border</span> Add to Favorites' +
+            '</button>' +
+
+            '<!-- Trust Badges -->' +
+            '<div class="space-y-3 pt-4">' +
+              '<div class="flex items-center gap-3 text-sm text-on-surface-variant">' +
+                '<span class="material-symbols-outlined text-lg">local_shipping</span>' +
+                '<span>Estimated delivery: <strong class="text-on-surface">' + deliveryStr + '</strong></span>' +
+              '</div>' +
+              '<div class="flex items-center gap-3 text-sm text-on-surface-variant">' +
+                '<span class="material-symbols-outlined text-lg">history</span>' +
+                '<span>30-day free returns</span>' +
+              '</div>' +
+              '<div class="flex items-center gap-3 text-sm text-on-surface-variant">' +
+                '<span class="material-symbols-outlined text-lg">verified_user</span>' +
+                '<span>Secure checkout</span>' +
+              '</div>' +
+              '<div class="flex items-center gap-3 text-sm">' +
+                '<span class="material-symbols-outlined text-lg text-green-600">check_circle</span>' +
+                '<span class="text-green-600 font-medium">' + (inStock ? 'In stock — ready to ship' : 'Out of stock') + '</span>' +
+              '</div>' +
+            '</div>' +
+
+          '</div>' +
+        '</div>';
+
+      // Description below columns
+      if (p.descriptionHtml) {
+        var sec = document.getElementById('description-section');
+        sec.style.display = 'block';
+        sec.innerHTML =
+          '<div class="mt-12 lg:mt-16 border-t border-outline-variant/20 pt-8 max-w-3xl">' +
+            '<h2 class="text-lg font-headline font-extrabold text-on-surface mb-4 flex items-center gap-2">' +
+              '<span class="w-5 h-0.5 bg-primary rounded-full"></span> About This Product' +
+            '</h2>' +
+            '<div id="desc-content" class="text-sm text-on-surface-variant leading-relaxed space-y-3">' + stripImages(p.descriptionHtml) + '</div>' +
+          '</div>';
+      }
+
       setupGallery(images);
       setupVariants(variants);
       setupQty();
@@ -509,199 +404,218 @@
     }
 
     function stripImages(html) {
-      const d = document.createElement('div');
+      var d = document.createElement('div');
       d.innerHTML = html;
-      d.querySelectorAll('img,video,iframe,picture,source,svg').forEach(e => e.remove());
+      var els = d.querySelectorAll('img,video,iframe,picture,source,svg');
+      for (var i = 0; i < els.length; i++) els[i].remove();
       return d.innerHTML;
     }
 
-    // ── Gallery ──
     function setupGallery(images) {
-      const main = document.getElementById('main-image');
+      var main = document.getElementById('main-image');
       if (!main) return;
-      document.querySelectorAll('.thumb-item').forEach(t => {
-        t.addEventListener('click', () => {
-          const i = parseInt(t.dataset.index);
-          if (images[i]) main.src = images[i].url;
-          document.querySelectorAll('.thumb-item').forEach(x => x.classList.remove('active'));
-          t.classList.add('active');
-        });
-      });
+      var thumbs = document.querySelectorAll('.thumb-item');
+      for (var i = 0; i < thumbs.length; i++) {
+        (function(t) {
+          t.addEventListener('click', function() {
+            var idx = parseInt(t.dataset.index);
+            if (images[idx]) main.src = images[idx].url;
+            for (var j = 0; j < thumbs.length; j++) thumbs[j].classList.remove('active');
+            t.classList.add('active');
+          });
+        })(thumbs[i]);
+      }
     }
 
-    // ── Variants ──
     function setupVariants(variants) {
-      const sel = {};
-      currentProduct.options.forEach(o => { sel[o.name] = o.values[0]; });
+      var sel = {};
+      currentProduct.options.forEach(function(o) { sel[o.name] = o.values[0]; });
 
-      document.querySelectorAll('.var-pill').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const name = btn.dataset.optionName;
-          sel[name] = btn.dataset.optionValue;
+      var pills = document.querySelectorAll('.var-pill');
+      for (var i = 0; i < pills.length; i++) {
+        (function(btn) {
+          btn.addEventListener('click', function() {
+            var name = btn.dataset.optionName;
+            sel[name] = btn.dataset.optionValue;
 
-          document.querySelectorAll(`.var-pill[data-option-name="${name}"]`).forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
+            var siblings = document.querySelectorAll('.var-pill[data-option-name="' + name + '"]');
+            for (var j = 0; j < siblings.length; j++) siblings[j].classList.remove('active');
+            btn.classList.add('active');
 
-          const match = variants.find(v => v.selectedOptions.every(o => sel[o.name] === o.value));
-          if (match) {
-            selectedVariant = match;
-            const el = document.getElementById('variant-price');
-            if (el) el.textContent = formatMoney(match.price.amount, match.price.currencyCode);
-            const cmpEl = document.getElementById('variant-compare');
-            if (cmpEl && match.compareAtPrice) cmpEl.textContent = formatMoney(match.compareAtPrice.amount, match.compareAtPrice.currencyCode);
-            if (match.image) document.getElementById('main-image').src = match.image.url;
+            var match = variants.find(function(v) {
+              return v.selectedOptions.every(function(o) { return sel[o.name] === o.value; });
+            });
 
-            // Recalculate bundle prices
-            recalcBundles(match.price.currencyCode);
-          }
-        });
-      });
+            if (match) {
+              selectedVariant = match;
+              var el = document.getElementById('variant-price');
+              if (el) el.textContent = formatMoney(match.price.amount, match.price.currencyCode);
+              var cmpEl = document.getElementById('variant-compare');
+              if (cmpEl && match.compareAtPrice) cmpEl.textContent = formatMoney(match.compareAtPrice.amount, match.compareAtPrice.currencyCode);
+              if (match.image) document.getElementById('main-image').src = match.image.url;
+              recalcBundles(match.price.currencyCode);
+            }
+          });
+        })(pills[i]);
+      }
     }
 
     function recalcBundles(cur) {
-      const p = parseFloat(selectedVariant.price.amount);
-      const c = selectedVariant.compareAtPrice ? parseFloat(selectedVariant.compareAtPrice.amount) : p;
-      const b1 = p, b2 = Math.round(p*2*0.90*100)/100, b3 = Math.round(p*3*0.85*100)/100;
-      const s1 = Math.round((c-p)*100)/100, s2 = Math.round((c*2-b2)*100)/100, s3 = Math.round((c*3-b3)*100)/100;
-      const opts = document.querySelectorAll('.bundle-opt');
-      if (opts[0]) { opts[0].dataset.total=b1; opts[0].dataset.save=s1; opts[0].querySelector('.font-label').textContent=formatMoney(b1,cur); const st=opts[0].querySelector('.line-through'); if(st) st.textContent=formatMoney(c,cur); }
-      if (opts[1]) { opts[1].dataset.total=b2; opts[1].dataset.save=s2; opts[1].querySelector('.font-label').textContent=formatMoney(b2,cur); opts[1].querySelector('.line-through').textContent=formatMoney(c*2,cur); }
-      if (opts[2]) { opts[2].dataset.total=b3; opts[2].dataset.save=s3; opts[2].querySelector('.font-label').textContent=formatMoney(b3,cur); opts[2].querySelector('.line-through').textContent=formatMoney(c*3,cur); }
-
-      // Update savings for currently selected bundle
-      const active = document.querySelector('.bundle-opt.selected');
+      var pr = parseFloat(selectedVariant.price.amount);
+      var cp = selectedVariant.compareAtPrice ? parseFloat(selectedVariant.compareAtPrice.amount) : pr;
+      var b1 = pr, b2 = Math.round(pr * 2 * 0.90 * 100) / 100, b3 = Math.round(pr * 3 * 0.85 * 100) / 100;
+      var s1 = Math.round((cp - pr) * 100) / 100, s2 = Math.round((cp * 2 - b2) * 100) / 100, s3 = Math.round((cp * 3 - b3) * 100) / 100;
+      var opts = document.querySelectorAll('.bundle-opt');
+      if (opts[0]) {
+        opts[0].dataset.total = b1; opts[0].dataset.save = s1;
+        var p0 = opts[0].querySelector('.font-label'); if (p0) p0.textContent = formatMoney(b1, cur);
+        var s0 = opts[0].querySelector('.line-through'); if (s0) s0.textContent = formatMoney(cp, cur);
+      }
+      if (opts[1]) {
+        opts[1].dataset.total = b2; opts[1].dataset.save = s2;
+        var p1 = opts[1].querySelector('.font-label'); if (p1) p1.textContent = formatMoney(b2, cur);
+        var s1e = opts[1].querySelector('.line-through'); if (s1e) s1e.textContent = formatMoney(cp * 2, cur);
+      }
+      if (opts[2]) {
+        opts[2].dataset.total = b3; opts[2].dataset.save = s3;
+        var p2 = opts[2].querySelector('.font-label'); if (p2) p2.textContent = formatMoney(b3, cur);
+        var s2e = opts[2].querySelector('.line-through'); if (s2e) s2e.textContent = formatMoney(cp * 3, cur);
+      }
+      var active = document.querySelector('.bundle-opt.selected');
       if (active) {
-        const sv = parseFloat(active.dataset.save);
-        const savBar = document.getElementById('bundle-savings');
-        const savAmt = document.getElementById('savings-amount');
+        var sv = parseFloat(active.dataset.save);
+        var savBar = document.getElementById('bundle-savings');
+        var savAmt = document.getElementById('savings-amount');
         if (sv > 0) { savBar.classList.remove('hidden'); savAmt.textContent = formatMoney(sv, cur); }
         else { savBar.classList.add('hidden'); }
       }
     }
 
-    // ── Bundle clicks ──
     function setupBundleClicks(cur) {
-      document.querySelectorAll('.bundle-opt').forEach(opt => {
-        opt.addEventListener('click', () => {
-          document.querySelectorAll('.bundle-opt').forEach(o => o.classList.remove('selected'));
-          opt.classList.add('selected');
-          bundleQty = parseInt(opt.dataset.bundle);
-
-          const sv = parseFloat(opt.dataset.save);
-          const savBar = document.getElementById('bundle-savings');
-          const savAmt = document.getElementById('savings-amount');
-          if (sv > 0) { savBar.classList.remove('hidden'); savAmt.textContent = formatMoney(sv, cur); }
-          else { savBar.classList.add('hidden'); }
-        });
-      });
+      var opts = document.querySelectorAll('.bundle-opt');
+      for (var i = 0; i < opts.length; i++) {
+        (function(opt) {
+          opt.addEventListener('click', function() {
+            for (var j = 0; j < opts.length; j++) opts[j].classList.remove('selected');
+            opt.classList.add('selected');
+            bundleQty = parseInt(opt.dataset.bundle);
+            var sv = parseFloat(opt.dataset.save);
+            var savBar = document.getElementById('bundle-savings');
+            var savAmt = document.getElementById('savings-amount');
+            if (sv > 0) { savBar.classList.remove('hidden'); savAmt.textContent = formatMoney(sv, cur); }
+            else { savBar.classList.add('hidden'); }
+          });
+        })(opts[i]);
+      }
     }
 
-    // ── Quantity ──
     function setupQty() {
-      const v = document.getElementById('qty-val');
-      document.getElementById('qty-dec')?.addEventListener('click', () => {
-        if (quantity > 1) { quantity--; v.textContent = quantity; }
-      });
-      document.getElementById('qty-inc')?.addEventListener('click', () => {
-        if (quantity < 99) { quantity++; v.textContent = quantity; }
-      });
+      var v = document.getElementById('qty-val');
+      var dec = document.getElementById('qty-dec');
+      var inc = document.getElementById('qty-inc');
+      if (dec) dec.addEventListener('click', function() { if (quantity > 1) { quantity--; v.textContent = quantity; } });
+      if (inc) inc.addEventListener('click', function() { if (quantity < 99) { quantity++; v.textContent = quantity; } });
     }
 
-    // ── CTA ──
     function setupCTA() {
-      const atc = document.getElementById('btn-atc');
-      atc?.addEventListener('click', async () => {
-        if (!selectedVariant) return;
-        atc.disabled = true;
-        const orig = atc.innerHTML;
-        atc.innerHTML = '<span class="material-symbols-outlined animate-spin text-xl">progress_activity</span> Adding...';
-        try {
-          await addToCart(selectedVariant.id, bundleQty * quantity);
-          showToast('Added to cart!', 'success');
-          updateBadge();
-          atc.innerHTML = '<span class="material-symbols-outlined text-xl">check_circle</span> Added!';
-          setTimeout(() => { atc.innerHTML = orig; }, 1500);
-        } catch(e) {
-          console.error(e);
-          showToast('Failed to add to cart', 'error');
-          atc.innerHTML = orig;
-        } finally { atc.disabled = false; }
-      });
+      var atc = document.getElementById('btn-atc');
+      if (atc) {
+        atc.addEventListener('click', async function() {
+          if (!selectedVariant) return;
+          atc.disabled = true;
+          var orig = atc.innerHTML;
+          atc.innerHTML = '<span class="material-symbols-outlined animate-spin text-xl">progress_activity</span> Adding...';
+          try {
+            await addToCart(selectedVariant.id, bundleQty * quantity);
+            showToast('Added to cart!', 'success');
+            try { openCartDrawer(); } catch(e) {}
+            atc.innerHTML = '<span class="material-symbols-outlined text-xl">check_circle</span> Added!';
+            setTimeout(function() { atc.innerHTML = orig; }, 1500);
+          } catch(e) {
+            console.error(e);
+            showToast('Failed to add to cart', 'error');
+            atc.innerHTML = orig;
+          } finally { atc.disabled = false; }
+        });
+      }
 
-      const buy = document.getElementById('btn-buy');
-      buy?.addEventListener('click', async () => {
-        if (!selectedVariant) return;
-        buy.disabled = true;
-        const orig = buy.innerHTML;
-        buy.textContent = 'Processing...';
-        try {
-          const cart = await addToCart(selectedVariant.id, bundleQty * quantity);
-          if (cart?.checkoutUrl) window.location.href = cart.checkoutUrl;
-        } catch(e) {
-          console.error(e);
-          showToast('Failed to checkout', 'error');
-          buy.disabled = false;
-          buy.innerHTML = orig;
-        }
-      });
+      var buy = document.getElementById('btn-buy');
+      if (buy) {
+        buy.addEventListener('click', async function() {
+          if (!selectedVariant) return;
+          buy.disabled = true;
+          var orig = buy.innerHTML;
+          buy.textContent = 'Processing...';
+          try {
+            var cart = await addToCart(selectedVariant.id, bundleQty * quantity);
+            if (cart && cart.checkoutUrl) window.location.href = cart.checkoutUrl;
+          } catch(e) {
+            console.error(e);
+            showToast('Failed to checkout', 'error');
+            buy.disabled = false;
+            buy.innerHTML = orig;
+          }
+        });
+      }
     }
 
-    // ── Favorite ──
     function setupFavorite() {
-      const btn = document.getElementById('btn-fav');
-      let saved = false;
-      btn?.addEventListener('click', () => {
-        saved = !saved;
-        btn.innerHTML = saved
-          ? '<span class="material-symbols-outlined text-lg" style="font-variation-settings:\'FILL\' 1;color:#ef4444;">favorite</span> Added to Favorites'
-          : '<span class="material-symbols-outlined text-lg">favorite_border</span> Add to Favorites';
-        showToast(saved ? 'Added to favorites!' : 'Removed from favorites', 'success');
-      });
+      var btn = document.getElementById('btn-fav');
+      var saved = false;
+      if (btn) {
+        btn.addEventListener('click', function() {
+          saved = !saved;
+          if (saved) {
+            btn.innerHTML = '<span class="material-symbols-outlined text-lg" style="font-variation-settings:\'FILL\' 1;color:#ef4444;">favorite</span> Added to Favorites';
+          } else {
+            btn.innerHTML = '<span class="material-symbols-outlined text-lg">favorite_border</span> Add to Favorites';
+          }
+          showToast(saved ? 'Added to favorites!' : 'Removed from favorites', 'success');
+        });
+      }
     }
 
-    // ── Recommendations ──
     async function loadRecommendations() {
       if (!currentProduct) return;
       try {
-        const resp = await fetch(STOREFRONT_URL, {
+        var resp = await fetch(STOREFRONT_URL, {
           method: 'POST',
-          headers: { 'Content-Type':'application/json', 'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontToken },
+          headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontToken },
           body: JSON.stringify({
-            query: `query($id:ID!){productRecommendations(productId:$id){id title handle featuredImage{url altText} priceRange{minVariantPrice{amount currencyCode}} compareAtPriceRange{minVariantPrice{amount currencyCode}} variants(first:1){edges{node{id}}}}}`,
+            query: 'query($id:ID!){productRecommendations(productId:$id){id title handle featuredImage{url altText} priceRange{minVariantPrice{amount currencyCode}} compareAtPriceRange{minVariantPrice{amount currencyCode}} variants(first:1){edges{node{id}}}}}',
             variables: { id: currentProduct.id }
           }),
         });
-        const json = await resp.json();
-        const recs = json.data?.productRecommendations;
-        if (!recs?.length) return;
+        var json = await resp.json();
+        var recs = json.data && json.data.productRecommendations;
+        if (!recs || recs.length === 0) return;
 
         document.getElementById('related-section').style.display = 'block';
-        document.getElementById('related-products').innerHTML = recs.slice(0,6).map(r => {
-          const pr = r.priceRange.minVariantPrice;
-          const ca = r.compareAtPriceRange?.minVariantPrice;
-          const disc = ca && parseFloat(ca.amount) > parseFloat(pr.amount);
-          const pct = disc ? Math.round((1 - parseFloat(pr.amount)/parseFloat(ca.amount))*100) : 0;
-          const vid = r.variants?.edges?.[0]?.node?.id || '';
-          return `<a href="product.html?handle=${r.handle}" class="snap-start flex-shrink-0 w-[160px] lg:w-[200px] group block">
-            <div class="aspect-square rounded-xl overflow-hidden bg-[#1a1a2e] mb-3 relative">
-              ${disc ? `<div class="absolute top-2 left-2 z-10 bg-pdp-green text-black text-[9px] font-bold px-2 py-0.5 rounded-full">-${pct}%</div>` : ''}
-              ${r.featuredImage ? `<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${r.featuredImage.url}" alt="${r.featuredImage.altText||r.title}" loading="lazy" />` : '<div class="w-full h-full flex items-center justify-center text-pdp-muted"><span class="material-symbols-outlined text-4xl">image</span></div>'}
-            </div>
-            <h3 class="font-headline font-bold text-xs text-white line-clamp-2 mb-1">${r.title}</h3>
-            <div class="flex items-center gap-2">
-              <span class="text-sm font-bold text-white">${formatMoney(pr.amount, pr.currencyCode)}</span>
-              ${disc ? `<span class="text-[11px] text-pdp-muted line-through">${formatMoney(ca.amount, ca.currencyCode)}</span>` : ''}
-            </div>
-          </a>`;
+        document.getElementById('related-products').innerHTML = recs.slice(0, 6).map(function(r) {
+          var pr = r.priceRange.minVariantPrice;
+          var ca = r.compareAtPriceRange && r.compareAtPriceRange.minVariantPrice;
+          var disc = ca && parseFloat(ca.amount) > parseFloat(pr.amount);
+          var pct = disc ? Math.round((1 - parseFloat(pr.amount) / parseFloat(ca.amount)) * 100) : 0;
+          return '<a href="product.html?handle=' + r.handle + '" class="snap-start flex-shrink-0 w-[160px] lg:w-[200px] group block">' +
+            '<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low mb-3 relative">' +
+              (disc ? '<div class="absolute top-2 left-2 z-10 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">-' + pct + '%</div>' : '') +
+              (r.featuredImage ? '<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="' + r.featuredImage.url + '" alt="' + (r.featuredImage.altText || r.title) + '" loading="lazy" />' : '<div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-4xl">image</span></div>') +
+            '</div>' +
+            '<h3 class="font-headline font-bold text-xs text-on-surface line-clamp-2 mb-1">' + r.title + '</h3>' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="text-sm font-bold text-primary">' + formatMoney(pr.amount, pr.currencyCode) + '</span>' +
+              (disc ? '<span class="text-[11px] text-on-surface-variant line-through">' + formatMoney(ca.amount, ca.currencyCode) + '</span>' : '') +
+            '</div>' +
+          '</a>';
         }).join('');
       } catch(e) { console.error('Recs error:', e); }
     }
 
     function skeletonHTML() {
-      return `<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-start">
-        <div><div class="aspect-square skel rounded-2xl"></div><div class="flex gap-3 mt-3">${'<div class="w-[68px] h-[68px] skel rounded-xl flex-shrink-0"></div>'.repeat(4)}</div></div>
-        <div class="space-y-4"><div class="skel h-3 w-1/3 rounded"></div><div class="skel h-8 w-full rounded-xl"></div><div class="skel h-4 w-1/4 rounded"></div><div class="skel h-7 w-2/5 rounded"></div><div class="skel h-40 w-full rounded-2xl"></div><div class="skel h-10 w-full rounded-xl"></div><div class="skel h-12 w-full rounded-2xl"></div><div class="skel h-12 w-full rounded-2xl"></div></div>
-      </div>`;
+      return '<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-start">' +
+        '<div><div class="aspect-square skel rounded-2xl"></div><div class="flex gap-3 mt-3"><div class="w-[68px] h-[68px] skel rounded-xl flex-shrink-0"></div><div class="w-[68px] h-[68px] skel rounded-xl flex-shrink-0"></div><div class="w-[68px] h-[68px] skel rounded-xl flex-shrink-0"></div><div class="w-[68px] h-[68px] skel rounded-xl flex-shrink-0"></div></div></div>' +
+        '<div class="space-y-4"><div class="skel h-3 w-1/3 rounded"></div><div class="skel h-8 w-full rounded-xl"></div><div class="skel h-4 w-1/4 rounded"></div><div class="skel h-7 w-2/5 rounded"></div><div class="skel h-40 w-full rounded-2xl"></div><div class="skel h-10 w-full rounded-xl"></div><div class="skel h-12 w-full rounded-2xl"></div><div class="skel h-12 w-full rounded-2xl"></div></div>' +
+      '</div>';
     }
   </script>
 </body>

@@ -1,6 +1,9 @@
 /* WowKidsVibe — Global Styles
    Design System: "The Kinetic Curator" */
 
+/* Prevent horizontal overflow on mobile */
+html, body { overflow-x: hidden; max-width: 100vw; }
+
 /* Kinetic Gradient — Primary CTA */
 .kinetic-gradient {
   background: linear-gradient(135deg, #b60d3d 0%, #ff7386 100%);
