@@ -25,63 +25,71 @@ export function initHeader() {
 function renderHeader() {
   const b = getBasePath();
   return `
-    <!-- Announcement Bar -->
-    <div class="bg-primary text-on-primary py-2 px-4 sticky top-0 z-[60] flex flex-col md:flex-row justify-center items-center gap-2 md:gap-6 font-label text-xs uppercase tracking-widest">
-      <span>Flash Sale: Up to 40% Off Storewide</span>
-      <div class="flex items-center gap-2 bg-on-primary/10 px-3 py-1 rounded-full">
-        <span class="opacity-70">Ends In:</span>
-        <span class="font-bold" id="countdown-timer">04:12:55</span>
-      </div>
-    </div>
-
-    <!-- TopAppBar -->
-    <nav class="fixed top-10 w-full z-50 px-2 sm:px-4 lg:px-6" id="main-nav">
-      <div class="max-w-7xl mx-auto glass-nav rounded-2xl soft-shadow flex justify-between items-center px-3 sm:px-5 lg:px-6 py-3 sm:py-4 flex-nowrap min-w-0">
-        <a href="${b}index.html" class="font-extrabold tracking-tighter text-[#FF4D6D] font-headline whitespace-nowrap" style="font-size:clamp(1.1rem,2.5vw,1.5rem);">
-          WowKidsVibe
-        </a>
-
-        <div class="hidden md:flex items-center gap-6 lg:gap-8 font-headline font-bold text-base lg:text-lg flex-shrink-0">
-          <a class="text-zinc-600 hover:text-[#FF4D6D] hover:scale-105 transition-all duration-200 whitespace-nowrap" href="${b}collection.html?handle=all">Shop All</a>
-          <a class="text-zinc-600 hover:text-[#FF4D6D] hover:scale-105 transition-all duration-200 whitespace-nowrap" href="${b}collection.html?handle=new-arrivals">New Arrivals</a>
-          <a class="text-zinc-600 hover:text-[#FF4D6D] hover:scale-105 transition-all duration-200 whitespace-nowrap" href="${b}collection.html?handle=best-sellers">Best Sellers</a>
-        </div>
-
-        <div class="flex items-center gap-1 sm:gap-2 lg:gap-4 flex-shrink-0 flex-nowrap">
-          <!-- Search -->
-          <div class="relative hidden lg:block">
-            <div class="flex items-center bg-surface-container-highest/30 rounded-full px-4 py-2 ring-1 ring-outline-variant/15">
-              <span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
-              <input id="header-search" class="bg-transparent border-none focus:ring-0 text-sm w-48 placeholder-on-surface-variant/50" placeholder="Explore imagination..." type="text" autocomplete="off" />
-            </div>
-            <div id="search-dropdown" class="search-dropdown absolute top-full mt-2 right-0 w-80 bg-white rounded-xl soft-shadow overflow-hidden z-50">
-              <div id="search-results" class="p-4"></div>
-            </div>
+    <!-- Fixed Header Wrapper — full width, single unit -->
+    <div class="fixed top-0 left-0 w-full z-50" id="header-wrapper">
+      <!-- Announcement Bar -->
+      <div class="w-full bg-primary text-on-primary font-label text-xs uppercase tracking-widest">
+        <div class="max-w-[1200px] mx-auto px-4 py-1.5 flex items-center justify-center gap-2 sm:gap-6 flex-wrap">
+          <span>Flash Sale: Up to 40% Off Storewide</span>
+          <div class="flex items-center gap-2 bg-on-primary/10 px-3 py-0.5 rounded-full">
+            <span class="opacity-70">Ends In:</span>
+            <span class="font-bold" id="countdown-timer">04:12:55</span>
           </div>
+        </div>
+      </div>
 
-          <!-- Mobile Search -->
-          <button class="lg:hidden w-9 h-9 flex items-center justify-center hover:scale-105 transition-all text-on-background flex-shrink-0" id="mobile-search-btn">
-            <span class="material-symbols-outlined text-[22px]">search</span>
-          </button>
-
-          <!-- Account -->
-          <a href="${b}account/login.html" class="w-9 h-9 flex items-center justify-center hover:scale-105 transition-all text-on-background flex-shrink-0">
-            <span class="material-symbols-outlined text-[22px]">person</span>
+      <!-- Nav Bar — full width, fixed 64px height, no style changes on scroll -->
+      <nav class="w-full bg-white/95 backdrop-blur-xl" id="main-nav" style="box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+        <div class="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between flex-nowrap">
+          <!-- Left: Logo -->
+          <a href="${b}index.html" class="font-extrabold tracking-tighter text-[#FF4D6D] font-headline whitespace-nowrap flex-shrink-0" style="font-size:clamp(1.15rem,2.5vw,1.5rem);">
+            WowKidsVibe
           </a>
 
-          <!-- Cart -->
-          <button class="w-9 h-9 flex items-center justify-center hover:scale-105 transition-all text-on-background relative flex-shrink-0" id="cart-toggle">
-            <span class="material-symbols-outlined text-[22px]">shopping_cart</span>
-            <span id="cart-badge" class="absolute -top-0.5 -right-0.5 bg-primary text-on-primary text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
-          </button>
+          <!-- Center: Nav Links (desktop) -->
+          <div class="hidden md:flex items-center gap-6 font-headline font-bold text-sm lg:text-base flex-shrink-0">
+            <a class="text-zinc-600 hover:text-[#FF4D6D] transition-colors whitespace-nowrap" href="${b}collection.html?handle=all">Shop All</a>
+            <a class="text-zinc-600 hover:text-[#FF4D6D] transition-colors whitespace-nowrap" href="${b}collection.html?handle=new-arrivals">New Arrivals</a>
+            <a class="text-zinc-600 hover:text-[#FF4D6D] transition-colors whitespace-nowrap" href="${b}collection.html?handle=best-sellers">Best Sellers</a>
+          </div>
 
-          <!-- Mobile Menu Toggle -->
-          <button class="md:hidden w-9 h-9 flex items-center justify-center text-on-background flex-shrink-0" id="mobile-menu-toggle">
-            <span class="material-symbols-outlined text-[22px]">menu</span>
-          </button>
+          <!-- Right: Search + Icons -->
+          <div class="flex items-center gap-3 flex-shrink-0 flex-nowrap">
+            <!-- Desktop Search -->
+            <div class="relative hidden lg:block">
+              <div class="flex items-center bg-gray-100 rounded-full px-3 py-1.5">
+                <span class="material-symbols-outlined text-gray-400 text-sm mr-2">search</span>
+                <input id="header-search" class="bg-transparent border-none focus:ring-0 text-sm w-40 xl:w-48 placeholder-gray-400" placeholder="Search..." type="text" autocomplete="off" />
+              </div>
+              <div id="search-dropdown" class="search-dropdown absolute top-full mt-2 right-0 w-80 bg-white rounded-xl overflow-hidden z-50" style="box-shadow:0 20px 40px -10px rgba(0,0,0,0.15);">
+                <div id="search-results" class="p-4"></div>
+              </div>
+            </div>
+
+            <!-- Mobile Search -->
+            <button class="lg:hidden w-9 h-9 flex items-center justify-center text-zinc-700 flex-shrink-0" id="mobile-search-btn">
+              <span class="material-symbols-outlined text-[22px]">search</span>
+            </button>
+
+            <!-- Account -->
+            <a href="${b}account/login.html" class="w-9 h-9 flex items-center justify-center text-zinc-700 flex-shrink-0">
+              <span class="material-symbols-outlined text-[22px]">person</span>
+            </a>
+
+            <!-- Cart -->
+            <button class="w-9 h-9 flex items-center justify-center text-zinc-700 relative flex-shrink-0" id="cart-toggle">
+              <span class="material-symbols-outlined text-[22px]">shopping_cart</span>
+              <span id="cart-badge" class="absolute -top-0.5 -right-0.5 bg-primary text-on-primary text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
+            </button>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden w-9 h-9 flex items-center justify-center text-zinc-700 flex-shrink-0" id="mobile-menu-toggle">
+              <span class="material-symbols-outlined text-[22px]">menu</span>
+            </button>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
 
     <!-- Mobile Menu -->
     <div id="mobile-menu-overlay" class="fixed inset-0 bg-black/30 z-[55] cart-overlay" style="display:none;"></div>
