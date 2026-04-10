@@ -26,69 +26,67 @@
 
   <div data-component="header"></div>
 
-  <main class="pt-28 pb-20 max-w-7xl mx-auto px-6">
+  <main class="pt-28 pb-20 max-w-7xl mx-auto px-4 sm:px-6">
     <!-- Breadcrumbs & Title -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-10 gap-3 sm:gap-4">
       <div class="space-y-2">
         <nav class="flex items-center gap-2 text-on-surface-variant font-label text-xs tracking-widest uppercase">
           <a class="hover:text-primary" href="index.html">Home</a>
           <span class="material-symbols-outlined text-[10px]">arrow_forward_ios</span>
-          <span class="text-primary font-bold">Shop All</span>
+          <span id="crumb-current" class="text-primary font-bold">Shop All</span>
         </nav>
-        <h1 id="collection-title" class="text-5xl md:text-6xl font-headline font-extrabold tracking-tight text-on-surface">Curated <span class="text-primary">Kinetic</span> Joy</h1>
+        <h1 id="collection-title" class="text-3xl sm:text-5xl md:text-6xl font-headline font-extrabold tracking-tight text-on-surface">Curated <span class="text-primary">Kinetic</span> Joy</h1>
       </div>
-      <p id="product-count" class="font-label text-sm text-on-surface-variant bg-surface-container-high px-4 py-2 rounded-full">Showing 24 Premium Items</p>
+      <p id="product-count" class="font-label text-sm text-on-surface-variant bg-surface-container-high px-4 py-2 rounded-full self-start md:self-end">Showing 0 items</p>
     </div>
 
-    <div class="flex flex-col lg:flex-row gap-12">
-      <!-- Sidebar Filters -->
-      <aside class="lg:w-72 shrink-0">
-        <div class="sticky top-32 space-y-10">
-          <!-- Sort -->
-          <div>
-            <h3 class="font-headline font-bold text-lg mb-6 flex items-center gap-2">
-              <span class="w-2 h-6 premium-gradient rounded-full"></span> Sort By
-            </h3>
-            <div class="space-y-2">
-              <button data-sort="best-selling" class="block w-full text-left px-3 py-2 rounded-lg font-headline font-bold text-primary hover:bg-surface-container-low transition-colors">Best Selling</button>
-              <button data-sort="newest" class="block w-full text-left px-3 py-2 rounded-lg font-headline font-bold text-on-surface/60 hover:bg-surface-container-low hover:text-primary transition-colors">Newest</button>
-              <button data-sort="price-low" class="block w-full text-left px-3 py-2 rounded-lg font-headline font-bold text-on-surface/60 hover:bg-surface-container-low hover:text-primary transition-colors">Price: Low to High</button>
-              <button data-sort="price-high" class="block w-full text-left px-3 py-2 rounded-lg font-headline font-bold text-on-surface/60 hover:bg-surface-container-low hover:text-primary transition-colors">Price: High to Low</button>
-              <button data-sort="title-az" class="block w-full text-left px-3 py-2 rounded-lg font-headline font-bold text-on-surface/60 hover:bg-surface-container-low hover:text-primary transition-colors">A - Z</button>
-            </div>
-          </div>
-
-          <!-- Trending Tags -->
-          <div class="p-6 bg-surface-container-low rounded-lg">
-            <h3 class="font-label font-bold text-xs uppercase tracking-tighter text-tertiary mb-4">Trending Now</h3>
-            <div class="flex flex-wrap gap-2">
-              <span class="vibe-badge bg-tertiary-container text-on-tertiary-container text-[10px] px-3 py-1 font-bold">ECO-CONSCIOUS</span>
-              <span class="vibe-badge bg-primary-container text-on-primary-container text-[10px] px-3 py-1 font-bold">MONTESSORI</span>
-              <span class="vibe-badge bg-secondary-container text-on-secondary-container text-[10px] px-3 py-1 font-bold">STEM</span>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      <!-- Product Grid -->
-      <section class="flex-1">
-        <div id="collection-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
-          <!-- Populated by JS -->
-        </div>
-
-        <!-- Load More -->
-        <div class="mt-24 flex justify-center">
-          <button id="load-more-btn" class="group relative px-12 py-5 premium-gradient text-white rounded-full font-headline font-bold text-lg overflow-hidden shadow-2xl transition-all hover:scale-105 active:scale-95" style="display:none;">
-            <span class="relative z-10 flex items-center gap-3">
-              Discover More Joy
-              <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-            </span>
-            <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-          </button>
-        </div>
-      </section>
+    <!-- Category Pills -->
+    <div class="mb-6">
+      <div id="category-pills" class="flex gap-2 sm:gap-3 overflow-x-auto pb-3 snap-x" style="scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+        <!-- Populated by JS -->
+      </div>
     </div>
+
+    <!-- Sort By dropdown -->
+    <div class="flex items-center justify-end mb-6">
+      <label class="flex items-center gap-3 bg-surface-container-lowest border-2 border-outline-variant/30 rounded-full px-4 py-2">
+        <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Sort by</span>
+        <select id="sort-select" class="bg-transparent border-none font-headline font-bold text-sm text-on-surface focus:outline-none focus:ring-0 pr-2">
+          <option value="best-selling">Best Selling</option>
+          <option value="newest">Newest</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="title-az">A - Z</option>
+        </select>
+      </label>
+    </div>
+
+    <!-- Product Grid -->
+    <section>
+      <div id="collection-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Load More -->
+      <div class="mt-16 sm:mt-24 flex justify-center">
+        <button id="load-more-btn" class="group relative px-10 sm:px-12 py-4 sm:py-5 premium-gradient text-white rounded-full font-headline font-bold text-base sm:text-lg overflow-hidden shadow-2xl transition-all hover:scale-105 active:scale-95" style="display:none;">
+          <span class="relative z-10 flex items-center gap-3">
+            Discover More Joy
+            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </span>
+          <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+        </button>
+      </div>
+    </section>
   </main>
+
+  <style>
+    #category-pills::-webkit-scrollbar { display:none; }
+    .cat-pill { flex-shrink:0; display:inline-flex; align-items:center; gap:6px; padding:10px 18px; background:#fff; border:2px solid #e4e1ee; border-radius:9999px; font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:13px; color:#5c5a63; cursor:pointer; transition:all .2s; white-space:nowrap; scroll-snap-align:start; }
+    .cat-pill:hover { border-color:#b60d3d; color:#b60d3d; }
+    .cat-pill.active { background:#b60d3d; border-color:#b60d3d; color:#fff; box-shadow:0 6px 14px rgba(182,13,61,0.25); }
+    .cat-pill .pill-emoji { font-size:15px; line-height:1; }
+  </style>
 
   <div data-component="footer"></div>
 

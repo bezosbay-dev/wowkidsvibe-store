@@ -2,12 +2,25 @@ import { getProducts } from '../api/products.js';
 import { getCollections } from '../api/collections.js';
 import { renderProductCard, setupAddToCartButtons } from '../components/product-card.js';
 import { productCardSkeleton } from '../components/skeleton.js';
+import { CATEGORIES } from '../categories.js';
 
 export async function initHomePage() {
+  renderCategoryRow();
   loadTrendingProducts();
   loadCollections();
   setupCountdownTimer();
   setupScrollAnimations();
+}
+
+function renderCategoryRow() {
+  const row = document.getElementById('category-row');
+  if (!row) return;
+  row.innerHTML = CATEGORIES.filter(c => c.key !== 'all').map(c =>
+    `<a class="cat-card" href="collection.html?category=${c.key}">
+       <span class="cat-emoji">${c.emoji}</span>
+       <span class="cat-label">${c.label}</span>
+     </a>`
+  ).join('');
 }
 
 async function loadTrendingProducts() {

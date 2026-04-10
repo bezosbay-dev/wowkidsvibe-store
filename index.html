@@ -32,11 +32,20 @@
 
   <!-- Hero Slider Section -->
   <header class="pt-24 sm:pt-32 pb-10 sm:pb-16 px-4 sm:px-6 overflow-hidden">
-    <div class="max-w-7xl mx-auto relative rounded-xl overflow-hidden min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] flex items-center bg-surface-container-low">
-      <div class="absolute inset-0 z-0">
-        <img class="w-full h-full object-cover opacity-90" alt="Happy children playing with wooden toys in a bright sunlit minimalist playroom" src="https://lh3.googleusercontent.com/aida/ADBb0ugp3x1phPyUXdWrejfetVkWz-NUNikH-wMSXo4clJ62SCpWbgWbVpr3wuzpDmJvkWYcAVx50aZPfqnA1TodUu_NNkBa4wkdq_Bxt23jErmSZ9h3y8H3mfFBl7s1DvAV2IXvoAKyIGmraa4jVw6wMcMTF06Izi5NwYKF8j_qjPGJx1VDHG9YeKkhAQuU-bDzqruRPiclzIe5OODKxDCst0WgputJRLHHykzza8zulnb3bnBmYtxLWMJOJrp1c1QsihazfVG5htJUm2E" />
-        <div class="absolute inset-0 bg-gradient-to-r from-background/95 via-background/60 to-transparent"></div>
-      </div>
+    <div id="hero-bg" class="max-w-7xl mx-auto relative rounded-xl overflow-hidden min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] flex items-center bg-surface-container-low" style="background-image:url('https://lh3.googleusercontent.com/aida/ADBb0ugp3x1phPyUXdWrejfetVkWz-NUNikH-wMSXo4clJ62SCpWbgWbVpr3wuzpDmJvkWYcAVx50aZPfqnA1TodUu_NNkBa4wkdq_Bxt23jErmSZ9h3y8H3mfFBl7s1DvAV2IXvoAKyIGmraa4jVw6wMcMTF06Izi5NwYKF8j_qjPGJx1VDHG9YeKkhAQuU-bDzqruRPiclzIe5OODKxDCst0WgputJRLHHykzza8zulnb3bnBmYtxLWMJOJrp1c1QsihazfVG5htJUm2E');background-size:cover;background-position:center;background-repeat:no-repeat;">
+      <div class="absolute inset-0 z-0 pointer-events-none" style="background:rgba(0,0,0,0.3);"></div>
+      <div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-r from-background/80 via-background/40 to-transparent"></div>
+      <script>
+        // Swap in custom hero bg if assets/hero-bg.jpg exists (user-uploaded)
+        (function(){
+          var img = new Image();
+          img.onload = function(){
+            var el = document.getElementById('hero-bg');
+            if (el) el.style.backgroundImage = "url('assets/hero-bg.jpg')";
+          };
+          img.src = 'assets/hero-bg.jpg';
+        })();
+      </script>
       <div class="relative z-10 px-5 sm:px-8 md:px-20 max-w-2xl py-8 sm:py-0">
         <div class="inline-block px-3 py-1 rounded-lg bg-tertiary-container text-on-tertiary-container font-label text-xs sm:text-sm mb-4 sm:mb-6">
           NEW COLLECTION 2024
@@ -58,6 +67,23 @@
       </div>
     </div>
   </header>
+
+  <!-- Category Emoji Row -->
+  <section class="px-4 sm:px-6 -mt-4 sm:-mt-8 mb-4 sm:mb-8">
+    <div class="max-w-7xl mx-auto">
+      <div id="category-row" class="flex gap-3 sm:gap-4 overflow-x-auto pb-3 snap-x snap-mandatory" style="scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+    <style>
+      #category-row::-webkit-scrollbar { display:none; }
+      .cat-card { flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-width:90px; padding:14px 10px; background:#fff; border-radius:16px; border:1.5px solid #e4e1ee; text-decoration:none; color:#2f2e36; transition:all .2s; scroll-snap-align:start; box-shadow:0 2px 8px rgba(47,46,54,0.04); }
+      .cat-card:hover { border-color:#b60d3d; transform:translateY(-2px); box-shadow:0 6px 16px rgba(182,13,61,0.12); }
+      .cat-card .cat-emoji { font-size:26px; line-height:1; }
+      .cat-card .cat-label { font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:11px; text-align:center; white-space:nowrap; }
+      @media (min-width:640px) { .cat-card { min-width:110px; padding:18px 14px; } .cat-card .cat-emoji { font-size:32px; } .cat-card .cat-label { font-size:12px; } }
+    </style>
+  </section>
 
   <!-- Shop by Vibe: Bento Grid -->
   <section class="py-12 sm:py-20 px-4 sm:px-6 animate-on-scroll">

@@ -44,9 +44,40 @@
         </div>
         <div class="space-y-2">
           <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant ml-2">Password</label>
-          <input id="reg-password" class="w-full px-5 py-4 rounded-xl bg-surface-container-highest/30 border-none focus:ring-2 focus:ring-tertiary transition-all" placeholder="Min 8 characters" type="password" minlength="8" required />
+          <div class="relative">
+            <input id="reg-password" class="w-full pl-5 pr-12 py-4 rounded-xl bg-surface-container-highest/30 border-none focus:ring-2 focus:ring-tertiary transition-all" placeholder="Create a strong password" type="password" minlength="8" required />
+            <button type="button" id="reg-pw-toggle" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-on-surface-variant hover:text-primary transition-colors">
+              <span class="material-symbols-outlined text-xl">visibility</span>
+            </button>
+          </div>
+          <!-- Strength bar -->
+          <div class="flex gap-1 mt-2">
+            <div class="pw-seg h-1.5 flex-1 rounded-full bg-outline-variant/30"></div>
+            <div class="pw-seg h-1.5 flex-1 rounded-full bg-outline-variant/30"></div>
+            <div class="pw-seg h-1.5 flex-1 rounded-full bg-outline-variant/30"></div>
+            <div class="pw-seg h-1.5 flex-1 rounded-full bg-outline-variant/30"></div>
+          </div>
+          <div id="pw-strength-label" class="font-label text-[11px] uppercase tracking-widest text-on-surface-variant ml-2 mt-1">&nbsp;</div>
+          <!-- Requirement checklist -->
+          <ul class="mt-3 space-y-1.5 text-xs">
+            <li id="pw-req-length"  class="flex items-center gap-2 text-on-surface-variant"><span class="material-symbols-outlined text-sm">radio_button_unchecked</span>At least 8 characters</li>
+            <li id="pw-req-upper"   class="flex items-center gap-2 text-on-surface-variant"><span class="material-symbols-outlined text-sm">radio_button_unchecked</span>One uppercase letter (A-Z)</li>
+            <li id="pw-req-lower"   class="flex items-center gap-2 text-on-surface-variant"><span class="material-symbols-outlined text-sm">radio_button_unchecked</span>One lowercase letter (a-z)</li>
+            <li id="pw-req-number"  class="flex items-center gap-2 text-on-surface-variant"><span class="material-symbols-outlined text-sm">radio_button_unchecked</span>One number (0-9)</li>
+            <li id="pw-req-special" class="flex items-center gap-2 text-on-surface-variant"><span class="material-symbols-outlined text-sm">radio_button_unchecked</span>One special character (!@#$%^&amp;*)</li>
+          </ul>
         </div>
-        <button id="register-btn" class="w-full py-5 kinetic-gradient text-white rounded-full font-headline font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-lg" type="submit">
+        <div class="space-y-2">
+          <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant ml-2">Confirm Password</label>
+          <div class="relative">
+            <input id="reg-password-confirm" class="w-full pl-5 pr-12 py-4 rounded-xl bg-surface-container-highest/30 border-none focus:ring-2 focus:ring-tertiary transition-all" placeholder="Re-enter your password" type="password" required />
+            <span id="pw-match-icon" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 hidden">
+              <span class="material-symbols-outlined text-xl">check_circle</span>
+            </span>
+          </div>
+          <div id="pw-match-label" class="font-label text-[11px] ml-2 mt-1">&nbsp;</div>
+        </div>
+        <button id="register-btn" class="w-full py-5 kinetic-gradient text-white rounded-full font-headline font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100" type="submit">
           Create Account
         </button>
         <p class="text-center text-sm text-on-surface-variant">
@@ -67,12 +98,118 @@
     initHeader();
     initFooter();
 
+    // ── Password strength + match + show/hide ──
+    const pwInput   = document.getElementById('reg-password');
+    const pwConfirm = document.getElementById('reg-password-confirm');
+    const pwToggle  = document.getElementById('reg-pw-toggle');
+    const segs      = document.querySelectorAll('.pw-seg');
+    const strengthLabel = document.getElementById('pw-strength-label');
+    const matchLabel    = document.getElementById('pw-match-label');
+    const matchIcon     = document.getElementById('pw-match-icon');
+    const submitBtn     = document.getElementById('register-btn');
+
+    const REQS = {
+      length:  { el: document.getElementById('pw-req-length'),  test: v => v.length >= 8 },
+      upper:   { el: document.getElementById('pw-req-upper'),   test: v => /[A-Z]/.test(v) },
+      lower:   { el: document.getElementById('pw-req-lower'),   test: v => /[a-z]/.test(v) },
+      number:  { el: document.getElementById('pw-req-number'),  test: v => /[0-9]/.test(v) },
+      special: { el: document.getElementById('pw-req-special'), test: v => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(v) }
+    };
+
+    function updateRequirement(key, ok) {
+      const li = REQS[key].el;
+      if (!li) return;
+      const icon = li.querySelector('.material-symbols-outlined');
+      if (ok) {
+        li.classList.remove('text-on-surface-variant');
+        li.classList.add('text-green-600');
+        icon.textContent = 'check_circle';
+      } else {
+        li.classList.remove('text-green-600');
+        li.classList.add('text-on-surface-variant');
+        icon.textContent = 'radio_button_unchecked';
+      }
+    }
+
+    function scorePassword(v) {
+      let score = 0;
+      Object.keys(REQS).forEach(k => { if (REQS[k].test(v)) score++; });
+      return score; // 0-5
+    }
+
+    function paintStrength(score) {
+      const colors = ['bg-outline-variant/30', 'bg-red-500', 'bg-orange-400', 'bg-yellow-400', 'bg-green-500'];
+      const labels = ['', 'Weak', 'Fair', 'Strong', 'Very Strong'];
+      const labelColors = ['text-on-surface-variant', 'text-red-600', 'text-orange-600', 'text-yellow-600', 'text-green-600'];
+      // fill segments based on score 0-5 → 0-4 bars
+      const bars = Math.min(4, Math.max(0, score - 1));
+      segs.forEach((s, i) => {
+        s.className = 'pw-seg h-1.5 flex-1 rounded-full ' + (i < bars + 1 && score > 0 ? colors[Math.min(4, bars + 1)] : 'bg-outline-variant/30');
+      });
+      const labelIdx = score <= 1 ? (score === 0 ? 0 : 1) : Math.min(4, score - 1);
+      strengthLabel.textContent = labels[labelIdx] || '\u00A0';
+      strengthLabel.className = 'font-label text-[11px] uppercase tracking-widest ml-2 mt-1 ' + (labelColors[labelIdx] || 'text-on-surface-variant');
+    }
+
+    function updateMatch() {
+      const a = pwInput.value;
+      const b = pwConfirm.value;
+      if (!b) {
+        matchLabel.textContent = '\u00A0';
+        matchIcon.classList.add('hidden');
+        return false;
+      }
+      if (a === b) {
+        matchLabel.textContent = 'Passwords match';
+        matchLabel.className = 'font-label text-[11px] ml-2 mt-1 text-green-600';
+        matchIcon.classList.remove('hidden');
+        matchIcon.querySelector('span').textContent = 'check_circle';
+        matchIcon.classList.remove('text-red-500');
+        matchIcon.classList.add('text-green-600');
+        return true;
+      } else {
+        matchLabel.textContent = 'Passwords do not match';
+        matchLabel.className = 'font-label text-[11px] ml-2 mt-1 text-red-600';
+        matchIcon.classList.remove('hidden');
+        matchIcon.querySelector('span').textContent = 'cancel';
+        matchIcon.classList.remove('text-green-600');
+        matchIcon.classList.add('text-red-500');
+        return false;
+      }
+    }
+
+    function validateAll() {
+      const v = pwInput.value;
+      Object.keys(REQS).forEach(k => updateRequirement(k, REQS[k].test(v)));
+      const score = scorePassword(v);
+      paintStrength(score);
+      const match = updateMatch();
+      const canSubmit = score === 5 && match;
+      submitBtn.disabled = !canSubmit;
+      return canSubmit;
+    }
+
+    pwInput.addEventListener('input', validateAll);
+    pwConfirm.addEventListener('input', validateAll);
+    validateAll();
+
+    pwToggle.addEventListener('click', () => {
+      const isPw = pwInput.type === 'password';
+      pwInput.type = isPw ? 'text' : 'password';
+      pwConfirm.type = isPw ? 'text' : 'password';
+      pwToggle.querySelector('span').textContent = isPw ? 'visibility_off' : 'visibility';
+    });
+
     document.getElementById('register-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!validateAll()) {
+        showToast('Please meet all password requirements', 'error');
+        return;
+      }
       const btn = document.getElementById('register-btn');
       const errorEl = document.getElementById('register-error');
       const email = document.getElementById('reg-email').value;
-      const password = document.getElementById('reg-password').value;
+      const password = pwInput.value;
       const firstName = document.getElementById('reg-first').value;
       const lastName = document.getElementById('reg-last').value;
 

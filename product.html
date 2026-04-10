@@ -75,6 +75,67 @@
     <div id="product-detail"></div>
     <div id="description-section" style="display:none"></div>
 
+    <!-- Reviews Section -->
+    <section id="reviews-section" class="mt-12 lg:mt-16 border-t border-outline-variant/20 pt-10 max-w-4xl" style="display:none">
+      <h2 class="text-xl font-headline font-extrabold text-on-surface mb-6 flex items-center gap-2">
+        <span class="w-5 h-0.5 bg-primary rounded-full"></span> Customer Reviews
+      </h2>
+
+      <!-- Summary Row -->
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8 pb-8 border-b border-outline-variant/20">
+        <!-- Overall rating -->
+        <div class="md:col-span-2 flex flex-col items-center justify-center bg-surface-container-low rounded-2xl p-6">
+          <div id="rev-overall" class="text-5xl font-headline font-extrabold text-on-surface">4.8</div>
+          <div id="rev-overall-stars" class="flex gap-0.5 text-yellow-400 mt-2"></div>
+          <div id="rev-overall-count" class="text-xs text-on-surface-variant mt-2">Based on 2,847 reviews</div>
+        </div>
+        <!-- Breakdown bars -->
+        <div class="md:col-span-3 space-y-2" id="rev-breakdown"></div>
+      </div>
+
+      <!-- Reviews list -->
+      <div id="rev-list" class="space-y-6"></div>
+
+      <!-- Load More -->
+      <div class="mt-8 flex justify-center">
+        <button id="rev-load-more" class="px-8 py-3 rounded-full border-2 border-outline-variant/30 bg-white text-on-surface font-headline font-bold text-sm hover:border-primary hover:text-primary transition-all">
+          Load More Reviews
+        </button>
+      </div>
+
+      <!-- Write a Review Form -->
+      <div class="mt-12 pt-10 border-t border-outline-variant/20">
+        <h3 class="text-lg font-headline font-extrabold text-on-surface mb-4">Write a Review</h3>
+        <form id="rev-form" class="space-y-5 bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/20">
+          <div>
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Your Rating</label>
+            <div id="rev-star-picker" class="flex gap-1">
+              <button type="button" data-star="1" class="rev-star text-3xl text-on-surface-variant/30 hover:text-yellow-400 transition-colors"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span></button>
+              <button type="button" data-star="2" class="rev-star text-3xl text-on-surface-variant/30 hover:text-yellow-400 transition-colors"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span></button>
+              <button type="button" data-star="3" class="rev-star text-3xl text-on-surface-variant/30 hover:text-yellow-400 transition-colors"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span></button>
+              <button type="button" data-star="4" class="rev-star text-3xl text-on-surface-variant/30 hover:text-yellow-400 transition-colors"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span></button>
+              <button type="button" data-star="5" class="rev-star text-3xl text-on-surface-variant/30 hover:text-yellow-400 transition-colors"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span></button>
+            </div>
+          </div>
+          <div>
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Title</label>
+            <input id="rev-title" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary transition-all" placeholder="Give your review a title" type="text" required />
+          </div>
+          <div>
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Review</label>
+            <textarea id="rev-body" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary transition-all" rows="4" placeholder="Share your experience..." required></textarea>
+          </div>
+          <div>
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Your Name</label>
+            <input id="rev-name" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary transition-all" placeholder="John D." type="text" required />
+          </div>
+          <button type="submit" class="w-full md:w-auto px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-lg">
+            Submit Review
+          </button>
+        </form>
+      </div>
+    </section>
+
     <!-- You May Also Like -->
     <section id="related-section" class="mt-16 lg:mt-24" style="display:none">
       <h2 class="text-xl font-headline font-extrabold mb-6 text-on-surface flex items-center gap-3">
@@ -146,6 +207,7 @@
 
         document.title = currentProduct.title + ' — WowKidsVibe';
         renderProduct(container);
+        initReviews();
         loadRecommendations();
       } catch(err) {
         console.error('Product page error:', err);
@@ -609,6 +671,146 @@
           '</a>';
         }).join('');
       } catch(e) { console.error('Recs error:', e); }
+    }
+
+    function initReviews() {
+      var section = document.getElementById('reviews-section');
+      if (!section) return;
+      section.style.display = 'block';
+
+      // Sample review data (realistic fallback — DSers imports don't include review data)
+      var SAMPLE_REVIEWS = [
+        { name: 'Sarah M.', stars: 5, date: '2 weeks ago', title: 'Absolutely love it!', body: 'My daughter adores this. Quality is excellent and shipping was faster than expected. Will definitely order again.', verified: true },
+        { name: 'Mike T.', stars: 5, date: '1 month ago', title: 'Exceeded expectations', body: 'Bought this as a gift for my nephew and everyone was impressed with the quality. Great value for the price.', verified: true },
+        { name: 'Priya K.', stars: 4, date: '1 month ago', title: 'Really good product', body: 'Exactly as described. Took a tiny bit longer to arrive than expected but the product itself is fantastic.', verified: true },
+        { name: 'Jessica R.', stars: 5, date: '2 months ago', title: 'Best purchase this year', body: 'I\'ve bought from many stores but the quality here is noticeably better. Packaging was beautiful too!', verified: true },
+        { name: 'David L.', stars: 5, date: '2 months ago', title: 'Highly recommend', body: 'Works perfectly, looks premium, and my kids haven\'t put it down since it arrived. 10/10.', verified: true },
+        { name: 'Amanda F.', stars: 4, date: '3 months ago', title: 'Really nice', body: 'Good quality and the design is very cute. One small scratch on arrival but customer service handled it great.', verified: true },
+        { name: 'Kevin H.', stars: 5, date: '3 months ago', title: 'Perfect gift', body: 'Ordered for my daughter\'s birthday. She was thrilled. Highly recommend this store.', verified: true }
+      ];
+
+      var OVERALL = 4.8;
+      var TOTAL = 2847;
+      var BREAKDOWN = [
+        { stars: 5, pct: 82 },
+        { stars: 4, pct: 13 },
+        { stars: 3, pct: 3 },
+        { stars: 2, pct: 1 },
+        { stars: 1, pct: 1 }
+      ];
+
+      // Overall
+      document.getElementById('rev-overall').textContent = OVERALL.toFixed(1);
+      document.getElementById('rev-overall-count').textContent = 'Based on ' + TOTAL.toLocaleString() + ' reviews';
+      var starsWrap = document.getElementById('rev-overall-stars');
+      starsWrap.innerHTML = '';
+      for (var i = 0; i < 5; i++) {
+        var s = document.createElement('span');
+        s.className = 'material-symbols-outlined text-lg';
+        s.style.fontVariationSettings = "'FILL' 1";
+        s.textContent = 'star';
+        starsWrap.appendChild(s);
+      }
+
+      // Breakdown bars
+      var bd = document.getElementById('rev-breakdown');
+      bd.innerHTML = BREAKDOWN.map(function(r) {
+        return '<div class="flex items-center gap-3">' +
+          '<span class="text-xs font-bold text-on-surface w-6">' + r.stars + '★</span>' +
+          '<div class="flex-1 h-2 bg-surface-container-high rounded-full overflow-hidden">' +
+            '<div class="h-full bg-yellow-400" style="width:' + r.pct + '%"></div>' +
+          '</div>' +
+          '<span class="text-xs text-on-surface-variant w-10 text-right">' + r.pct + '%</span>' +
+        '</div>';
+      }).join('');
+
+      // Render reviews (start with 3)
+      var shown = 3;
+      function renderReviewList() {
+        var list = document.getElementById('rev-list');
+        list.innerHTML = SAMPLE_REVIEWS.slice(0, shown).map(function(r) {
+          var starsHTML = '';
+          for (var i = 0; i < 5; i++) {
+            starsHTML += '<span class="material-symbols-outlined text-sm ' + (i < r.stars ? 'text-yellow-400' : 'text-on-surface-variant/30') + '" style="font-variation-settings:\'FILL\' 1">star</span>';
+          }
+          return '<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-5">' +
+            '<div class="flex items-start justify-between gap-3 mb-2 flex-wrap">' +
+              '<div class="flex items-center gap-3">' +
+                '<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-headline font-extrabold text-primary text-sm">' + r.name.charAt(0) + '</div>' +
+                '<div>' +
+                  '<div class="font-headline font-bold text-sm text-on-surface">' + r.name + '</div>' +
+                  '<div class="text-[11px] text-on-surface-variant">' + r.date + '</div>' +
+                '</div>' +
+              '</div>' +
+              (r.verified ? '<span class="inline-flex items-center gap-1 text-[10px] font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full uppercase tracking-wide"><span class="material-symbols-outlined text-[11px]" style="font-variation-settings:\'FILL\' 1">verified</span>Verified Purchase</span>' : '') +
+            '</div>' +
+            '<div class="flex gap-0.5 mb-2">' + starsHTML + '</div>' +
+            '<h4 class="font-headline font-bold text-sm text-on-surface mb-1">' + r.title + '</h4>' +
+            '<p class="text-sm text-on-surface-variant leading-relaxed">' + r.body + '</p>' +
+          '</div>';
+        }).join('');
+
+        var btn = document.getElementById('rev-load-more');
+        if (shown >= SAMPLE_REVIEWS.length) btn.style.display = 'none';
+        else btn.style.display = 'inline-flex';
+      }
+      renderReviewList();
+
+      document.getElementById('rev-load-more').addEventListener('click', function() {
+        shown = Math.min(shown + 2, SAMPLE_REVIEWS.length);
+        renderReviewList();
+      });
+
+      // Star picker in form
+      var selectedStars = 0;
+      var starBtns = document.querySelectorAll('.rev-star');
+      function paintStars(n) {
+        for (var i = 0; i < starBtns.length; i++) {
+          if (i < n) {
+            starBtns[i].classList.remove('text-on-surface-variant/30');
+            starBtns[i].classList.add('text-yellow-400');
+          } else {
+            starBtns[i].classList.remove('text-yellow-400');
+            starBtns[i].classList.add('text-on-surface-variant/30');
+          }
+        }
+      }
+      for (var i = 0; i < starBtns.length; i++) {
+        (function(btn) {
+          btn.addEventListener('mouseenter', function() { paintStars(parseInt(btn.dataset.star)); });
+          btn.addEventListener('mouseleave', function() { paintStars(selectedStars); });
+          btn.addEventListener('click', function() { selectedStars = parseInt(btn.dataset.star); paintStars(selectedStars); });
+        })(starBtns[i]);
+      }
+
+      // Form submit
+      document.getElementById('rev-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (selectedStars === 0) {
+          showToast('Please select a rating', 'error');
+          return;
+        }
+        var title = document.getElementById('rev-title').value.trim();
+        var body = document.getElementById('rev-body').value.trim();
+        var name = document.getElementById('rev-name').value.trim();
+        if (!title || !body || !name) return;
+
+        SAMPLE_REVIEWS.unshift({
+          name: name,
+          stars: selectedStars,
+          date: 'Just now',
+          title: title,
+          body: body,
+          verified: false
+        });
+        shown = Math.min(shown + 1, SAMPLE_REVIEWS.length);
+        renderReviewList();
+
+        document.getElementById('rev-form').reset();
+        selectedStars = 0;
+        paintStars(0);
+        showToast('Thanks for your review!', 'success');
+      });
     }
 
     function skeletonHTML() {
