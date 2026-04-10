@@ -33,9 +33,7 @@
   <!-- Hero Slider Section -->
   <header class="pt-24 sm:pt-32 pb-10 sm:pb-16 px-4 sm:px-6 overflow-hidden">
     <div id="hero-bg" class="max-w-7xl mx-auto relative rounded-xl overflow-hidden min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] flex items-center bg-zinc-900">
-      <img class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-100" src="assets/hero-1.jpg" alt="" fetchpriority="high" decoding="async" />
-      <img class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0" src="assets/hero-2.jpg" alt="" decoding="async" />
-      <img class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0" src="assets/hero-3.jpg" alt="" decoding="async" />
+      <div id="hero-slides" class="absolute inset-0"></div>
       <div class="absolute inset-0 z-[1] pointer-events-none" style="background:linear-gradient(90deg,rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.4) 50%,rgba(0,0,0,0.15) 100%);"></div>
       <div class="relative z-10 px-5 sm:px-8 md:px-20 max-w-2xl py-8 sm:py-0">
         <div class="inline-block px-3 py-1 rounded-lg bg-tertiary-container text-on-tertiary-container font-label text-xs sm:text-sm mb-4 sm:mb-6">
@@ -58,17 +56,60 @@
       </div>
     </div>
     <script>
+      // Auto-discover hero-N.(png|jpg|jpeg|webp) in assets/ and build rotating slideshow
       (function(){
-        var slides = document.querySelectorAll('#hero-bg .hero-slide');
-        if (slides.length < 2) return;
-        var i = 0;
-        setInterval(function(){
-          slides[i].classList.remove('opacity-100');
-          slides[i].classList.add('opacity-0');
-          i = (i + 1) % slides.length;
-          slides[i].classList.remove('opacity-0');
-          slides[i].classList.add('opacity-100');
-        }, 3000);
+        var MAX_SLIDES = 12;
+        var ROTATE_MS = 3000;
+        var EXTS = ['png', 'jpg', 'jpeg', 'webp'];
+        var wrap = document.getElementById('hero-slides');
+        if (!wrap) return;
+
+        function probe(src) {
+          return new Promise(function(resolve){
+            var img = new Image();
+            img.onload = function(){ resolve(src); };
+            img.onerror = function(){ resolve(null); };
+            img.src = src;
+          });
+        }
+
+        function findSlide(n) {
+          // Try each extension, return the first that loads
+          var i = 0;
+          function next() {
+            if (i >= EXTS.length) return Promise.resolve(null);
+            var src = 'assets/hero-' + n + '.' + EXTS[i++];
+            return probe(src).then(function(ok){ return ok || next(); });
+          }
+          return next();
+        }
+
+        var tasks = [];
+        for (var n = 1; n <= MAX_SLIDES; n++) tasks.push(findSlide(n));
+
+        Promise.all(tasks).then(function(results){
+          var sources = results.filter(Boolean);
+          if (sources.length === 0) return;
+          sources.forEach(function(src, idx){
+            var img = document.createElement('img');
+            img.src = src;
+            img.alt = '';
+            img.decoding = 'async';
+            if (idx === 0) img.setAttribute('fetchpriority', 'high');
+            img.className = 'hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ' + (idx === 0 ? 'opacity-100' : 'opacity-0');
+            wrap.appendChild(img);
+          });
+          if (sources.length < 2) return;
+          var slides = wrap.querySelectorAll('.hero-slide');
+          var cur = 0;
+          setInterval(function(){
+            slides[cur].classList.remove('opacity-100');
+            slides[cur].classList.add('opacity-0');
+            cur = (cur + 1) % slides.length;
+            slides[cur].classList.remove('opacity-0');
+            slides[cur].classList.add('opacity-100');
+          }, ROTATE_MS);
+        });
       })();
     </script>
   </header>
