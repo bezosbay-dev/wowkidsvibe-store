@@ -32,28 +32,19 @@
 
   <!-- Hero Slider Section -->
   <header class="pt-24 sm:pt-32 pb-10 sm:pb-16 px-4 sm:px-6 overflow-hidden">
-    <div id="hero-bg" class="max-w-7xl mx-auto relative rounded-xl overflow-hidden min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] flex items-center bg-surface-container-low" style="background-image:url('https://lh3.googleusercontent.com/aida/ADBb0ugp3x1phPyUXdWrejfetVkWz-NUNikH-wMSXo4clJ62SCpWbgWbVpr3wuzpDmJvkWYcAVx50aZPfqnA1TodUu_NNkBa4wkdq_Bxt23jErmSZ9h3y8H3mfFBl7s1DvAV2IXvoAKyIGmraa4jVw6wMcMTF06Izi5NwYKF8j_qjPGJx1VDHG9YeKkhAQuU-bDzqruRPiclzIe5OODKxDCst0WgputJRLHHykzza8zulnb3bnBmYtxLWMJOJrp1c1QsihazfVG5htJUm2E');background-size:cover;background-position:center;background-repeat:no-repeat;">
-      <div class="absolute inset-0 z-0 pointer-events-none" style="background:rgba(0,0,0,0.3);"></div>
-      <div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-r from-background/80 via-background/40 to-transparent"></div>
-      <script>
-        // Swap in custom hero bg if assets/hero-bg.jpg exists (user-uploaded)
-        (function(){
-          var img = new Image();
-          img.onload = function(){
-            var el = document.getElementById('hero-bg');
-            if (el) el.style.backgroundImage = "url('assets/hero-bg.jpg')";
-          };
-          img.src = 'assets/hero-bg.jpg';
-        })();
-      </script>
+    <div id="hero-bg" class="max-w-7xl mx-auto relative rounded-xl overflow-hidden min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] flex items-center bg-zinc-900">
+      <img class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-100" src="assets/hero-1.jpg" alt="" fetchpriority="high" decoding="async" />
+      <img class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0" src="assets/hero-2.jpg" alt="" decoding="async" />
+      <img class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0" src="assets/hero-3.jpg" alt="" decoding="async" />
+      <div class="absolute inset-0 z-[1] pointer-events-none" style="background:linear-gradient(90deg,rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.4) 50%,rgba(0,0,0,0.15) 100%);"></div>
       <div class="relative z-10 px-5 sm:px-8 md:px-20 max-w-2xl py-8 sm:py-0">
         <div class="inline-block px-3 py-1 rounded-lg bg-tertiary-container text-on-tertiary-container font-label text-xs sm:text-sm mb-4 sm:mb-6">
           NEW COLLECTION 2024
         </div>
-        <h1 class="text-4xl sm:text-6xl md:text-8xl font-extrabold font-headline leading-[0.9] tracking-tight mb-4 sm:mb-6 text-on-background">
-          Kinetic <span class="text-primary italic">Childhoods.</span>
+        <h1 class="text-4xl sm:text-6xl md:text-8xl font-extrabold font-headline leading-[0.9] tracking-tight mb-4 sm:mb-6 text-white drop-shadow-lg">
+          Kinetic <span class="text-primary-fixed-dim italic">Childhoods.</span>
         </h1>
-        <p class="text-base sm:text-lg md:text-xl text-on-surface-variant mb-6 sm:mb-10 font-body leading-relaxed">
+        <p class="text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-10 font-body leading-relaxed drop-shadow">
           Curating high-energy essentials for the modern digital playground. Play smarter, move faster, vibe harder.
         </p>
         <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -66,6 +57,20 @@
         </div>
       </div>
     </div>
+    <script>
+      (function(){
+        var slides = document.querySelectorAll('#hero-bg .hero-slide');
+        if (slides.length < 2) return;
+        var i = 0;
+        setInterval(function(){
+          slides[i].classList.remove('opacity-100');
+          slides[i].classList.add('opacity-0');
+          i = (i + 1) % slides.length;
+          slides[i].classList.remove('opacity-0');
+          slides[i].classList.add('opacity-100');
+        }, 3000);
+      })();
+    </script>
   </header>
 
   <!-- Category Emoji Row -->
