@@ -243,13 +243,16 @@
       var fmtDate = function(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); };
       var deliveryStr = fmtDate(d1) + ' – ' + fmtDate(d2);
 
-      // Bundle calculations
-      var b1Total = priceNum;
-      var b2Total = Math.round(priceNum * 2 * 0.90 * 100) / 100;
-      var b3Total = Math.round(priceNum * 3 * 0.85 * 100) / 100;
-      var b1Save = hasDiscount ? Math.round((compareNum - priceNum) * 100) / 100 : 0;
-      var b2Save = Math.round((compareNum * 2 - b2Total) * 100) / 100;
-      var b3Save = Math.round((compareNum * 3 - b3Total) * 100) / 100;
+      // Bundle calculations — sitewide offer: Buy 1 = 40% off, Buy 2 = 60% off, Buy 3 = 70% off
+      var b1Total = Math.round(priceNum * 1 * 0.60 * 100) / 100;
+      var b2Total = Math.round(priceNum * 2 * 0.40 * 100) / 100;
+      var b3Total = Math.round(priceNum * 3 * 0.30 * 100) / 100;
+      var b1Strike = priceNum;
+      var b2Strike = Math.round(priceNum * 2 * 100) / 100;
+      var b3Strike = Math.round(priceNum * 3 * 100) / 100;
+      var b1Save = Math.round((b1Strike - b1Total) * 100) / 100;
+      var b2Save = Math.round((b2Strike - b2Total) * 100) / 100;
+      var b3Save = Math.round((b3Strike - b3Total) * 100) / 100;
 
       // Short description
       var shortDesc = p.description ? (p.description.length > 200 ? p.description.substring(0, 200) + '...' : p.description) : '';
@@ -339,12 +342,15 @@
                   '<div class="flex items-center gap-3">' +
                     '<div class="b-radio"></div>' +
                     '<div class="flex-1 min-w-0">' +
-                      '<div class="font-headline font-bold text-sm text-on-surface">Buy 1</div>' +
-                      '<div class="text-xs text-on-surface-variant mt-0.5">Standard Discount</div>' +
+                      '<div class="flex items-center gap-2 flex-wrap">' +
+                        '<span class="font-headline font-bold text-sm text-on-surface">Buy 1</span>' +
+                        '<span class="text-[9px] font-extrabold bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-label uppercase tracking-wide">40% OFF</span>' +
+                      '</div>' +
+                      '<div class="text-xs text-on-surface-variant mt-0.5">Single Item Discount</div>' +
                     '</div>' +
                     '<div class="text-right flex-shrink-0">' +
                       '<div class="font-label font-bold text-base text-on-surface">' + formatMoney(b1Total, cur) + '</div>' +
-                      (hasDiscount ? '<div class="text-xs text-on-surface-variant line-through">' + formatMoney(compareNum, cur) + '</div>' : '') +
+                      '<div class="text-xs text-on-surface-variant line-through">' + formatMoney(b1Strike, cur) + '</div>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
@@ -357,13 +363,14 @@
                     '<div class="flex-1 min-w-0">' +
                       '<div class="flex items-center gap-2 flex-wrap">' +
                         '<span class="font-headline font-bold text-sm text-on-surface">Buy 2</span>' +
+                        '<span class="text-[9px] font-extrabold bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-label uppercase tracking-wide">60% OFF</span>' +
                         '<span class="text-[9px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px]">local_shipping</span>Free Shipping</span>' +
                       '</div>' +
-                      '<div class="text-xs text-on-surface-variant mt-0.5">Extra 10% OFF</div>' +
+                      '<div class="text-xs text-on-surface-variant mt-0.5">Save more with a pair</div>' +
                     '</div>' +
                     '<div class="text-right flex-shrink-0">' +
                       '<div class="font-label font-bold text-base text-on-surface">' + formatMoney(b2Total, cur) + '</div>' +
-                      '<div class="text-xs text-on-surface-variant line-through">' + formatMoney(compareNum * 2, cur) + '</div>' +
+                      '<div class="text-xs text-on-surface-variant line-through">' + formatMoney(b2Strike, cur) + '</div>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
@@ -375,13 +382,14 @@
                     '<div class="flex-1 min-w-0">' +
                       '<div class="flex items-center gap-2 flex-wrap">' +
                         '<span class="font-headline font-bold text-sm text-on-surface">Buy 3</span>' +
+                        '<span class="text-[9px] font-extrabold bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-label uppercase tracking-wide">70% OFF</span>' +
                         '<span class="text-[9px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px]">local_shipping</span>Free Shipping</span>' +
                       '</div>' +
-                      '<div class="text-xs text-on-surface-variant mt-0.5">Extra 15% OFF</div>' +
+                      '<div class="text-xs text-on-surface-variant mt-0.5">Best deal — biggest savings</div>' +
                     '</div>' +
                     '<div class="text-right flex-shrink-0">' +
                       '<div class="font-label font-bold text-base text-on-surface">' + formatMoney(b3Total, cur) + '</div>' +
-                      '<div class="text-xs text-on-surface-variant line-through">' + formatMoney(compareNum * 3, cur) + '</div>' +
+                      '<div class="text-xs text-on-surface-variant line-through">' + formatMoney(b3Strike, cur) + '</div>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
@@ -524,24 +532,30 @@
 
     function recalcBundles(cur) {
       var pr = parseFloat(selectedVariant.price.amount);
-      var cp = selectedVariant.compareAtPrice ? parseFloat(selectedVariant.compareAtPrice.amount) : pr;
-      var b1 = pr, b2 = Math.round(pr * 2 * 0.90 * 100) / 100, b3 = Math.round(pr * 3 * 0.85 * 100) / 100;
-      var s1 = Math.round((cp - pr) * 100) / 100, s2 = Math.round((cp * 2 - b2) * 100) / 100, s3 = Math.round((cp * 3 - b3) * 100) / 100;
+      var b1 = Math.round(pr * 1 * 0.60 * 100) / 100;
+      var b2 = Math.round(pr * 2 * 0.40 * 100) / 100;
+      var b3 = Math.round(pr * 3 * 0.30 * 100) / 100;
+      var k1 = Math.round(pr * 1 * 100) / 100;
+      var k2 = Math.round(pr * 2 * 100) / 100;
+      var k3 = Math.round(pr * 3 * 100) / 100;
+      var s1 = Math.round((k1 - b1) * 100) / 100;
+      var s2 = Math.round((k2 - b2) * 100) / 100;
+      var s3 = Math.round((k3 - b3) * 100) / 100;
       var opts = document.querySelectorAll('.bundle-opt');
       if (opts[0]) {
         opts[0].dataset.total = b1; opts[0].dataset.save = s1;
-        var p0 = opts[0].querySelector('.font-label'); if (p0) p0.textContent = formatMoney(b1, cur);
-        var s0 = opts[0].querySelector('.line-through'); if (s0) s0.textContent = formatMoney(cp, cur);
+        var p0 = opts[0].querySelector('.text-right .font-label'); if (p0) p0.textContent = formatMoney(b1, cur);
+        var s0 = opts[0].querySelector('.line-through'); if (s0) s0.textContent = formatMoney(k1, cur);
       }
       if (opts[1]) {
         opts[1].dataset.total = b2; opts[1].dataset.save = s2;
-        var p1 = opts[1].querySelector('.font-label'); if (p1) p1.textContent = formatMoney(b2, cur);
-        var s1e = opts[1].querySelector('.line-through'); if (s1e) s1e.textContent = formatMoney(cp * 2, cur);
+        var p1 = opts[1].querySelector('.text-right .font-label'); if (p1) p1.textContent = formatMoney(b2, cur);
+        var s1e = opts[1].querySelector('.line-through'); if (s1e) s1e.textContent = formatMoney(k2, cur);
       }
       if (opts[2]) {
         opts[2].dataset.total = b3; opts[2].dataset.save = s3;
-        var p2 = opts[2].querySelector('.font-label'); if (p2) p2.textContent = formatMoney(b3, cur);
-        var s2e = opts[2].querySelector('.line-through'); if (s2e) s2e.textContent = formatMoney(cp * 3, cur);
+        var p2 = opts[2].querySelector('.text-right .font-label'); if (p2) p2.textContent = formatMoney(b3, cur);
+        var s2e = opts[2].querySelector('.line-through'); if (s2e) s2e.textContent = formatMoney(k3, cur);
       }
       var active = document.querySelector('.bundle-opt.selected');
       if (active) {
