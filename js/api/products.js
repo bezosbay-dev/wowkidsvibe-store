@@ -1,5 +1,38 @@
 import { shopifyFetch } from './client.js';
 
+// Session-scoped product cache (5 minute TTL) — reduces Shopify API calls on
+// back/forward navigation and variant switches. sessionStorage (not
+// localStorage) because product data should be fresh per tab session.
+const CACHE_TTL = 5 * 60 * 1000;
+const CACHE_PREFIX = 'wkv_prod_';
+
+function cacheGet(key) {
+  try {
+    const raw = sessionStorage.getItem(CACHE_PREFIX + key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (Date.now() - parsed.ts > CACHE_TTL) {
+      sessionStorage.removeItem(CACHE_PREFIX + key);
+      return null;
+    }
+    return parsed.data;
+  } catch { return null; }
+}
+
+function cacheSet(key, data) {
+  try { sessionStorage.setItem(CACHE_PREFIX + key, JSON.stringify({ ts: Date.now(), data })); }
+  catch { /* quota exceeded — silently drop */ }
+}
+
+export function clearProductCache() {
+  try {
+    for (let i = sessionStorage.length - 1; i >= 0; i--) {
+      const k = sessionStorage.key(i);
+      if (k && k.startsWith(CACHE_PREFIX)) sessionStorage.removeItem(k);
+    }
+  } catch {}
+}
+
 const PRODUCT_CARD_FRAGMENT = `
   fragment ProductCard on Product {
     id
@@ -44,6 +77,9 @@ export async function getProducts({ first = 12, after = null, sortKey = 'BEST_SE
 }
 
 export async function getProductByHandle(handle) {
+  const cached = cacheGet('handle_' + handle);
+  if (cached) return cached;
+
   const data = await shopifyFetch(`
     query getProduct($handle: String!) {
       product(handle: $handle) {
@@ -86,10 +122,14 @@ export async function getProductByHandle(handle) {
     }
   `, { handle });
 
+  if (data.product) cacheSet('handle_' + handle, data.product);
   return data.product;
 }
 
 export async function getProductRecommendations(productId) {
+  const cached = cacheGet('recs_' + productId);
+  if (cached) return cached;
+
   const data = await shopifyFetch(`
     query getRecommendations($productId: ID!) {
       productRecommendations(productId: $productId) {
@@ -99,5 +139,7 @@ export async function getProductRecommendations(productId) {
     ${PRODUCT_CARD_FRAGMENT}
   `, { productId });
 
-  return data.productRecommendations || [];
+  const recs = data.productRecommendations || [];
+  cacheSet('recs_' + productId, recs);
+  return recs;
 }

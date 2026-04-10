@@ -103,10 +103,41 @@
         </button>
       </div>
 
-      <!-- Write a Review Form -->
-      <div class="mt-12 pt-10 border-t border-outline-variant/20">
+      <!-- Trust strip -->
+      <div class="mt-10 mb-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-on-surface-variant">
+        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px] text-green-600" style="font-variation-settings:'FILL' 1">verified</span>Only verified buyers can leave reviews</span>
+        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px] text-green-600" style="font-variation-settings:'FILL' 1">shield</span>No fake or paid reviews</span>
+        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px] text-blue-600" style="font-variation-settings:'FILL' 1">public</span>Imported reviews are clearly labeled</span>
+      </div>
+
+      <!-- Write a Review (gated) -->
+      <div class="mt-6 pt-8 border-t border-outline-variant/20">
         <h3 class="text-lg font-headline font-extrabold text-on-surface mb-4">Write a Review</h3>
-        <form id="rev-form" class="space-y-5 bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/20">
+
+        <!-- Gate: not logged in -->
+        <div id="rev-gate-login" class="hidden bg-surface-container-low rounded-2xl p-6 border border-outline-variant/20 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <span class="material-symbols-outlined text-3xl text-primary">lock</span>
+          <div class="flex-1">
+            <div class="font-headline font-bold text-sm text-on-surface mb-1">Sign in required</div>
+            <div class="text-xs text-on-surface-variant">Only verified buyers can write reviews. Sign in to your account to continue.</div>
+          </div>
+          <a href="account/login.html" class="px-5 py-2.5 rounded-full kinetic-gradient text-white font-headline font-bold text-xs whitespace-nowrap">Sign In</a>
+        </div>
+
+        <!-- Gate: logged in but no purchase -->
+        <div id="rev-gate-purchase" class="hidden bg-surface-container-low rounded-2xl p-6 border border-outline-variant/20 flex items-start gap-4">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">shopping_bag</span>
+          <div class="flex-1">
+            <div class="font-headline font-bold text-sm text-on-surface mb-1">Purchase required</div>
+            <div class="text-xs text-on-surface-variant">You need to purchase this product before you can review it. This keeps reviews honest and trustworthy.</div>
+          </div>
+        </div>
+
+        <!-- Form (shown only if verified buyer) -->
+        <form id="rev-form" class="hidden space-y-5 bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/20">
+          <div class="flex items-center gap-2 text-[11px] font-bold text-green-700 bg-green-100 px-3 py-1.5 rounded-full w-fit uppercase tracking-wide">
+            <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1">verified</span>Verified Buyer
+          </div>
           <div>
             <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Your Rating</label>
             <div id="rev-star-picker" class="flex gap-1">
@@ -119,17 +150,20 @@
           </div>
           <div>
             <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Title</label>
-            <input id="rev-title" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary transition-all" placeholder="Give your review a title" type="text" required />
+            <input id="rev-title" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary transition-all" placeholder="Give your review a title" type="text" maxlength="80" required />
           </div>
           <div>
-            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Review</label>
-            <textarea id="rev-body" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary transition-all" rows="4" placeholder="Share your experience..." required></textarea>
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Review <span class="text-on-surface-variant/60 normal-case tracking-normal">(min 20 characters, no links)</span></label>
+            <textarea id="rev-body" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary transition-all" rows="4" placeholder="Share your experience..." maxlength="2000" required></textarea>
+            <div class="flex justify-between text-[10px] text-on-surface-variant mt-1 px-1">
+              <span id="rev-body-hint">0 / 2000</span>
+            </div>
           </div>
           <div>
-            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Your Name</label>
-            <input id="rev-name" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary transition-all" placeholder="John D." type="text" required />
+            <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Display Name</label>
+            <input id="rev-name" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary transition-all" placeholder="John D." type="text" maxlength="40" required />
           </div>
-          <button type="submit" class="w-full md:w-auto px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-lg">
+          <button type="submit" id="rev-submit" class="w-full md:w-auto px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100">
             Submit Review
           </button>
         </form>
@@ -163,6 +197,8 @@
     import { addToCart } from './js/api/cart.js';
     import { formatMoney } from './js/api/client.js';
     import { showToast } from './js/components/toast.js';
+    import { getStoredToken, getCustomer, hasPurchasedProduct } from './js/api/customer.js';
+    import { fetchReviews, fetchReviewStats, submitReview, markHelpful, relativeTime, validateReview } from './js/api/reviews.js';
 
     initHeader();
     initFooter();
@@ -692,90 +728,211 @@
       if (!section) return;
       section.style.display = 'block';
 
-      // Sample review data (realistic fallback — DSers imports don't include review data)
-      var SAMPLE_REVIEWS = [
-        { name: 'Sarah M.', stars: 5, date: '2 weeks ago', title: 'Absolutely love it!', body: 'My daughter adores this. Quality is excellent and shipping was faster than expected. Will definitely order again.', verified: true },
-        { name: 'Mike T.', stars: 5, date: '1 month ago', title: 'Exceeded expectations', body: 'Bought this as a gift for my nephew and everyone was impressed with the quality. Great value for the price.', verified: true },
-        { name: 'Priya K.', stars: 4, date: '1 month ago', title: 'Really good product', body: 'Exactly as described. Took a tiny bit longer to arrive than expected but the product itself is fantastic.', verified: true },
-        { name: 'Jessica R.', stars: 5, date: '2 months ago', title: 'Best purchase this year', body: 'I\'ve bought from many stores but the quality here is noticeably better. Packaging was beautiful too!', verified: true },
-        { name: 'David L.', stars: 5, date: '2 months ago', title: 'Highly recommend', body: 'Works perfectly, looks premium, and my kids haven\'t put it down since it arrived. 10/10.', verified: true },
-        { name: 'Amanda F.', stars: 4, date: '3 months ago', title: 'Really nice', body: 'Good quality and the design is very cute. One small scratch on arrival but customer service handled it great.', verified: true },
-        { name: 'Kevin H.', stars: 5, date: '3 months ago', title: 'Perfect gift', body: 'Ordered for my daughter\'s birthday. She was thrilled. Highly recommend this store.', verified: true }
-      ];
+      // Lazy-load: defer the heavy work until the section scrolls near the viewport
+      var started = false;
+      function start() {
+        if (started) return;
+        started = true;
+        loadReviewsRealtime();
+      }
 
-      var OVERALL = 4.8;
-      var TOTAL = 2847;
-      var BREAKDOWN = [
-        { stars: 5, pct: 82 },
-        { stars: 4, pct: 13 },
-        { stars: 3, pct: 3 },
-        { stars: 2, pct: 1 },
-        { stars: 1, pct: 1 }
-      ];
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(e){
+            if (e.isIntersecting) { start(); io.disconnect(); }
+          });
+        }, { rootMargin: '200px 0px' });
+        io.observe(section);
+      } else {
+        start();
+      }
+    }
 
-      // Overall
-      document.getElementById('rev-overall').textContent = OVERALL.toFixed(1);
-      document.getElementById('rev-overall-count').textContent = 'Based on ' + TOTAL.toLocaleString() + ' reviews';
+    async function loadReviewsRealtime() {
+      if (!currentProduct) return;
+
+      var productId = currentProduct.id;
+      var productHandle = currentProduct.handle;
+
+      // Fetch reviews + stats in parallel
+      var reviews = [];
+      var stats = { overall: 0, total: 0, breakdown: [] };
+      try {
+        reviews = await fetchReviews(productId);
+        stats = await fetchReviewStats(productId);
+      } catch (e) { console.error('reviews fetch:', e); }
+
+      // Sort: verified first, then newest
+      reviews.sort(function(a, b) {
+        if (a.verified_purchase !== b.verified_purchase) return b.verified_purchase ? 1 : -1;
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+
+      renderSummary(stats);
+      var state = { reviews: reviews, shown: 3 };
+      renderReviewList(state);
+      setupLoadMore(state);
+
+      await setupReviewForm(productId, productHandle, state);
+    }
+
+    function renderSummary(stats) {
+      var overall = stats.overall || 0;
+      var total = stats.total || 0;
+      document.getElementById('rev-overall').textContent = overall.toFixed(1);
+      document.getElementById('rev-overall-count').textContent = total > 0
+        ? 'Based on ' + total.toLocaleString() + ' review' + (total === 1 ? '' : 's')
+        : 'No reviews yet';
+
       var starsWrap = document.getElementById('rev-overall-stars');
       starsWrap.innerHTML = '';
       for (var i = 0; i < 5; i++) {
         var s = document.createElement('span');
-        s.className = 'material-symbols-outlined text-lg';
+        s.className = 'material-symbols-outlined text-lg ' + (i < Math.round(overall) ? '' : 'text-on-surface-variant/30');
         s.style.fontVariationSettings = "'FILL' 1";
         s.textContent = 'star';
         starsWrap.appendChild(s);
       }
 
-      // Breakdown bars
       var bd = document.getElementById('rev-breakdown');
-      bd.innerHTML = BREAKDOWN.map(function(r) {
+      var breakdown = stats.breakdown && stats.breakdown.length ? stats.breakdown : [
+        { stars: 5, pct: 0 }, { stars: 4, pct: 0 }, { stars: 3, pct: 0 }, { stars: 2, pct: 0 }, { stars: 1, pct: 0 }
+      ];
+      bd.innerHTML = breakdown.map(function(r) {
         return '<div class="flex items-center gap-3">' +
-          '<span class="text-xs font-bold text-on-surface w-6">' + r.stars + '★</span>' +
+          '<span class="text-xs font-bold text-on-surface w-6">' + r.stars + '&#9733;</span>' +
           '<div class="flex-1 h-2 bg-surface-container-high rounded-full overflow-hidden">' +
             '<div class="h-full bg-yellow-400" style="width:' + r.pct + '%"></div>' +
           '</div>' +
           '<span class="text-xs text-on-surface-variant w-10 text-right">' + r.pct + '%</span>' +
         '</div>';
       }).join('');
+    }
 
-      // Render reviews (start with 3)
-      var shown = 3;
-      function renderReviewList() {
-        var list = document.getElementById('rev-list');
-        list.innerHTML = SAMPLE_REVIEWS.slice(0, shown).map(function(r) {
-          var starsHTML = '';
-          for (var i = 0; i < 5; i++) {
-            starsHTML += '<span class="material-symbols-outlined text-sm ' + (i < r.stars ? 'text-yellow-400' : 'text-on-surface-variant/30') + '" style="font-variation-settings:\'FILL\' 1">star</span>';
-          }
-          return '<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-5">' +
-            '<div class="flex items-start justify-between gap-3 mb-2 flex-wrap">' +
-              '<div class="flex items-center gap-3">' +
-                '<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-headline font-extrabold text-primary text-sm">' + r.name.charAt(0) + '</div>' +
-                '<div>' +
-                  '<div class="font-headline font-bold text-sm text-on-surface">' + r.name + '</div>' +
-                  '<div class="text-[11px] text-on-surface-variant">' + r.date + '</div>' +
-                '</div>' +
-              '</div>' +
-              (r.verified ? '<span class="inline-flex items-center gap-1 text-[10px] font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full uppercase tracking-wide"><span class="material-symbols-outlined text-[11px]" style="font-variation-settings:\'FILL\' 1">verified</span>Verified Purchase</span>' : '') +
-            '</div>' +
-            '<div class="flex gap-0.5 mb-2">' + starsHTML + '</div>' +
-            '<h4 class="font-headline font-bold text-sm text-on-surface mb-1">' + r.title + '</h4>' +
-            '<p class="text-sm text-on-surface-variant leading-relaxed">' + r.body + '</p>' +
-          '</div>';
-        }).join('');
-
-        var btn = document.getElementById('rev-load-more');
-        if (shown >= SAMPLE_REVIEWS.length) btn.style.display = 'none';
-        else btn.style.display = 'inline-flex';
+    function reviewCardHTML(r) {
+      var starsHTML = '';
+      for (var i = 0; i < 5; i++) {
+        starsHTML += '<span class="material-symbols-outlined text-sm ' + (i < Number(r.rating) ? 'text-yellow-400' : 'text-on-surface-variant/30') + '" style="font-variation-settings:\'FILL\' 1">star</span>';
       }
-      renderReviewList();
+      var name = r.reviewer_name || 'Anonymous';
+      var badge = r.verified_purchase
+        ? '<span class="inline-flex items-center gap-1 text-[10px] font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full uppercase tracking-wide"><span class="material-symbols-outlined text-[11px]" style="font-variation-settings:\'FILL\' 1">verified</span>Verified Purchase</span>'
+        : (r.source === 'aliexpress'
+          ? '<span class="inline-flex items-center gap-1 text-[10px] font-bold text-blue-700 bg-blue-100 px-2 py-1 rounded-full uppercase tracking-wide"><span class="material-symbols-outlined text-[11px]" style="font-variation-settings:\'FILL\' 1">public</span>Imported Review</span>'
+          : '');
+      var rel = relativeTime(r.created_at) || '';
+      var helpfulCount = Number(r.helpful_count || 0);
+      return '<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-5" data-review-id="' + r.id + '">' +
+        '<div class="flex items-start justify-between gap-3 mb-2 flex-wrap">' +
+          '<div class="flex items-center gap-3">' +
+            '<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-headline font-extrabold text-primary text-sm">' + name.charAt(0).toUpperCase() + '</div>' +
+            '<div>' +
+              '<div class="font-headline font-bold text-sm text-on-surface">' + escapeHTML(name) + '</div>' +
+              '<div class="text-[11px] text-on-surface-variant">' + rel + '</div>' +
+            '</div>' +
+          '</div>' +
+          badge +
+        '</div>' +
+        '<div class="flex gap-0.5 mb-2">' + starsHTML + '</div>' +
+        '<h4 class="font-headline font-bold text-sm text-on-surface mb-1">' + escapeHTML(r.title || '') + '</h4>' +
+        '<p class="text-sm text-on-surface-variant leading-relaxed mb-3">' + escapeHTML(r.body || '') + '</p>' +
+        '<button type="button" class="rev-helpful inline-flex items-center gap-1.5 text-[11px] text-on-surface-variant hover:text-primary transition-colors" data-review-id="' + r.id + '" data-count="' + helpfulCount + '">' +
+          '<span class="material-symbols-outlined text-[14px]">thumb_up</span>' +
+          'Helpful <span class="rev-helpful-count">(' + helpfulCount + ')</span>' +
+        '</button>' +
+      '</div>';
+    }
 
-      document.getElementById('rev-load-more').addEventListener('click', function() {
-        shown = Math.min(shown + 2, SAMPLE_REVIEWS.length);
-        renderReviewList();
+    function escapeHTML(s) {
+      return String(s).replace(/[&<>"']/g, function(c) {
+        return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+      });
+    }
+
+    function renderReviewList(state) {
+      var list = document.getElementById('rev-list');
+      var slice = state.reviews.slice(0, state.shown);
+      if (slice.length === 0) {
+        list.innerHTML = '<div class="text-center py-10 text-sm text-on-surface-variant">No reviews yet — be the first to share your experience!</div>';
+      } else {
+        list.innerHTML = slice.map(reviewCardHTML).join('');
+      }
+      var btn = document.getElementById('rev-load-more');
+      if (state.shown >= state.reviews.length) btn.style.display = 'none';
+      else btn.style.display = 'inline-flex';
+
+      // Wire helpful buttons
+      list.querySelectorAll('.rev-helpful').forEach(function(b) {
+        b.addEventListener('click', async function() {
+          if (b.dataset.voted === '1') return;
+          b.dataset.voted = '1';
+          var id = b.dataset.reviewId;
+          var current = Number(b.dataset.count || 0);
+          var next = await markHelpful(id, current);
+          b.dataset.count = next;
+          b.classList.add('text-primary');
+          var span = b.querySelector('.rev-helpful-count');
+          if (span) span.textContent = '(' + next + ')';
+        });
+      });
+    }
+
+    function setupLoadMore(state) {
+      var btn = document.getElementById('rev-load-more');
+      btn.onclick = function() {
+        state.shown = Math.min(state.shown + 3, state.reviews.length);
+        renderReviewList(state);
+      };
+    }
+
+    async function setupReviewForm(productId, productHandle, state) {
+      var form = document.getElementById('rev-form');
+      var loginGate = document.getElementById('rev-gate-login');
+      var purchaseGate = document.getElementById('rev-gate-purchase');
+
+      form.classList.add('hidden');
+      loginGate.classList.add('hidden');
+      purchaseGate.classList.add('hidden');
+
+      var token = getStoredToken();
+      if (!token) {
+        loginGate.classList.remove('hidden');
+        return;
+      }
+
+      var customer = null;
+      try { customer = await getCustomer(); } catch {}
+      if (!customer) {
+        loginGate.classList.remove('hidden');
+        return;
+      }
+
+      var purchased = false;
+      try { purchased = await hasPurchasedProduct(productId); } catch {}
+      if (!purchased) {
+        purchaseGate.classList.remove('hidden');
+        return;
+      }
+
+      // Verified buyer — show form
+      form.classList.remove('hidden');
+
+      // Prefill name
+      var nameInput = document.getElementById('rev-name');
+      if (nameInput && customer.firstName) {
+        var initials = customer.firstName + ' ' + (customer.lastName ? customer.lastName.charAt(0) + '.' : '');
+        nameInput.value = initials.trim();
+      }
+
+      // Char counter
+      var bodyInput = document.getElementById('rev-body');
+      var hint = document.getElementById('rev-body-hint');
+      bodyInput.addEventListener('input', function() {
+        hint.textContent = bodyInput.value.length + ' / 2000';
+        if (bodyInput.value.length < 20) hint.classList.add('text-red-500'); else hint.classList.remove('text-red-500');
       });
 
-      // Star picker in form
+      // Star picker
       var selectedStars = 0;
       var starBtns = document.querySelectorAll('.rev-star');
       function paintStars(n) {
@@ -797,33 +954,62 @@
         })(starBtns[i]);
       }
 
-      // Form submit
-      document.getElementById('rev-form').addEventListener('submit', function(e) {
+      form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        if (selectedStars === 0) {
-          showToast('Please select a rating', 'error');
+        var submitBtn = document.getElementById('rev-submit');
+        var title = document.getElementById('rev-title').value.trim();
+        var body = bodyInput.value.trim();
+        var name = nameInput.value.trim();
+
+        var validationError = validateReview({ rating: selectedStars, title: title, body: body, reviewerName: name });
+        if (validationError) {
+          showToast(validationError, 'error');
           return;
         }
-        var title = document.getElementById('rev-title').value.trim();
-        var body = document.getElementById('rev-body').value.trim();
-        var name = document.getElementById('rev-name').value.trim();
-        if (!title || !body || !name) return;
 
-        SAMPLE_REVIEWS.unshift({
-          name: name,
-          stars: selectedStars,
-          date: 'Just now',
-          title: title,
-          body: body,
-          verified: false
-        });
-        shown = Math.min(shown + 1, SAMPLE_REVIEWS.length);
-        renderReviewList();
+        submitBtn.disabled = true;
+        var origText = submitBtn.textContent;
+        submitBtn.textContent = 'Submitting...';
 
-        document.getElementById('rev-form').reset();
-        selectedStars = 0;
-        paintStars(0);
-        showToast('Thanks for your review!', 'success');
+        try {
+          var saved = await submitReview({
+            productId: productId,
+            productHandle: productHandle,
+            rating: selectedStars,
+            title: title,
+            body: body,
+            reviewerName: name,
+            userId: customer.id,
+            userEmail: customer.email,
+            purchaseVerified: true,
+          });
+
+          var newReview = {
+            id: saved.id || ('local-' + Date.now()),
+            reviewer_name: name,
+            rating: selectedStars,
+            title: title,
+            body: body,
+            source: 'shopify',
+            verified_purchase: true,
+            helpful_count: 0,
+            created_at: new Date().toISOString(),
+          };
+          state.reviews.unshift(newReview);
+          state.shown = Math.min(state.shown + 1, state.reviews.length);
+          renderReviewList(state);
+
+          form.reset();
+          selectedStars = 0;
+          paintStars(0);
+          hint.textContent = '0 / 2000';
+          showToast('Thanks for your review!', 'success');
+        } catch (err) {
+          showToast(err.message || 'Could not submit review', 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = origText;
+        }
       });
     }
 
