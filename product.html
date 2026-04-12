@@ -347,19 +347,18 @@
             '<!-- Title -->' +
             '<h1 class="text-xl lg:text-2xl font-headline font-extrabold text-on-surface leading-snug">' + p.title + '</h1>' +
 
-            '<!-- Stars -->' +
-            '<div class="flex items-center gap-2">' +
-              '<div class="flex text-yellow-400">' +
-                '<span class="material-symbols-outlined text-sm" style="font-variation-settings:\'FILL\' 1">star</span>'.repeat(5) +
-              '</div>' +
-              '<span class="text-sm font-bold text-on-surface">4.9</span>' +
-              '<span class="text-xs text-on-surface-variant">(2,847 reviews)</span>' +
+            '<!-- Stars (populated by reviews API) -->' +
+            '<div id="pdp-rating-row" class="flex items-center gap-2" style="display:none">' +
+              '<div id="pdp-stars" class="flex text-yellow-400"></div>' +
+              '<span id="pdp-rating-num" class="text-sm font-bold text-on-surface"></span>' +
+              '<span id="pdp-review-count" class="text-xs text-on-surface-variant"></span>' +
             '</div>' +
 
-            '<!-- Price -->' +
+            '<!-- Price (shows Buy 1 bundle price = 40% off) -->' +
             '<div class="flex items-center gap-3 flex-wrap pb-4 border-b border-outline-variant/20">' +
-              '<span id="variant-price" class="text-2xl lg:text-3xl font-headline font-extrabold ' + (hasDiscount ? 'text-primary' : 'text-on-surface') + '">' + formatMoney(price.amount, cur) + '</span>' +
-              (hasDiscount ? '<span id="variant-compare" class="text-base text-on-surface-variant line-through">' + formatMoney(compareAt.amount, cur) + '</span><span class="text-[11px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full font-label uppercase">SAVE ' + discountPct + '%</span>' : '') +
+              '<span id="variant-price" class="text-2xl lg:text-3xl font-headline font-extrabold text-primary">' + formatMoney(b1Total, cur) + '</span>' +
+              '<span id="variant-compare" class="text-base text-on-surface-variant line-through">' + formatMoney(priceNum, cur) + '</span>' +
+              '<span class="text-[11px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full font-label uppercase">SAVE 40%</span>' +
             '</div>' +
 
             '<!-- Short Description -->' +
@@ -554,10 +553,12 @@
 
             if (match) {
               selectedVariant = match;
+              var rawPr = parseFloat(match.price.amount);
+              var salePr = Math.round(rawPr * 0.60 * 100) / 100; // 40% off
               var el = document.getElementById('variant-price');
-              if (el) el.textContent = formatMoney(match.price.amount, match.price.currencyCode);
+              if (el) el.textContent = formatMoney(salePr, match.price.currencyCode);
               var cmpEl = document.getElementById('variant-compare');
-              if (cmpEl && match.compareAtPrice) cmpEl.textContent = formatMoney(match.compareAtPrice.amount, match.compareAtPrice.currencyCode);
+              if (cmpEl) cmpEl.textContent = formatMoney(rawPr, match.price.currencyCode);
               if (match.image) document.getElementById('main-image').src = match.image.url;
               recalcBundles(match.price.currencyCode);
             }
@@ -705,18 +706,17 @@
         document.getElementById('related-section').style.display = 'block';
         document.getElementById('related-products').innerHTML = recs.slice(0, 6).map(function(r) {
           var pr = r.priceRange.minVariantPrice;
-          var ca = r.compareAtPriceRange && r.compareAtPriceRange.minVariantPrice;
-          var disc = ca && parseFloat(ca.amount) > parseFloat(pr.amount);
-          var pct = disc ? Math.round((1 - parseFloat(pr.amount) / parseFloat(ca.amount)) * 100) : 0;
+          var rawAmt = parseFloat(pr.amount);
+          var saleAmt = Math.round(rawAmt * 0.60 * 100) / 100; // 40% off sitewide
           return '<a href="product.html?handle=' + r.handle + '" class="snap-start flex-shrink-0 w-[160px] lg:w-[200px] group block">' +
             '<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low mb-3 relative">' +
-              (disc ? '<div class="absolute top-2 left-2 z-10 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">-' + pct + '%</div>' : '') +
+              '<div class="absolute top-2 left-2 z-10 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">-40%</div>' +
               (r.featuredImage ? '<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="' + r.featuredImage.url + '" alt="' + (r.featuredImage.altText || r.title) + '" loading="lazy" />' : '<div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-4xl">image</span></div>') +
             '</div>' +
             '<h3 class="font-headline font-bold text-xs text-on-surface line-clamp-2 mb-1">' + r.title + '</h3>' +
             '<div class="flex items-center gap-2">' +
-              '<span class="text-sm font-bold text-primary">' + formatMoney(pr.amount, pr.currencyCode) + '</span>' +
-              (disc ? '<span class="text-[11px] text-on-surface-variant line-through">' + formatMoney(ca.amount, ca.currencyCode) + '</span>' : '') +
+              '<span class="text-sm font-bold text-primary">' + formatMoney(saleAmt, pr.currencyCode) + '</span>' +
+              '<span class="text-[11px] text-on-surface-variant line-through">' + formatMoney(rawAmt, pr.currencyCode) + '</span>' +
             '</div>' +
           '</a>';
         }).join('');
@@ -783,6 +783,19 @@
       document.getElementById('rev-overall-count').textContent = total > 0
         ? 'Based on ' + total.toLocaleString() + ' review' + (total === 1 ? '' : 's')
         : 'No reviews yet';
+
+      // Populate the PDP rating row at top of product info
+      var pdpRow = document.getElementById('pdp-rating-row');
+      if (pdpRow && total > 0) {
+        pdpRow.style.display = 'flex';
+        document.getElementById('pdp-rating-num').textContent = overall.toFixed(1);
+        document.getElementById('pdp-review-count').textContent = '(' + total.toLocaleString() + ' review' + (total === 1 ? '' : 's') + ')';
+        var pdpStars = document.getElementById('pdp-stars');
+        pdpStars.innerHTML = '';
+        for (var s = 0; s < 5; s++) {
+          pdpStars.innerHTML += '<span class="material-symbols-outlined text-sm ' + (s < Math.round(overall) ? '' : 'text-on-surface-variant/30') + '" style="font-variation-settings:\'FILL\' 1">star</span>';
+        }
+      }
 
       var starsWrap = document.getElementById('rev-overall-stars');
       starsWrap.innerHTML = '';

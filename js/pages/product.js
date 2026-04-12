@@ -70,12 +70,14 @@ function renderProduct(container) {
   quantity = 1;
 
   const mainImage = selectedVariant.image || images[0];
-  const price = selectedVariant.price;
-  const compareAt = selectedVariant.compareAtPrice;
-  const hasDiscount = compareAt && parseFloat(compareAt.amount) > parseFloat(price.amount);
-  const discountPercent = hasDiscount
-    ? Math.round((1 - parseFloat(price.amount) / parseFloat(compareAt.amount)) * 100)
-    : 0;
+  const rawPrice = selectedVariant.price;
+  const rawAmount = parseFloat(rawPrice.amount);
+  // Sitewide 40% discount — matches the bundle "Buy 1" logic
+  const saleAmount = Math.round(rawAmount * 0.60 * 100) / 100;
+  const price = { amount: String(saleAmount), currencyCode: rawPrice.currencyCode };
+  const compareAt = rawPrice; // original Shopify price shown as strikethrough
+  const hasDiscount = true;
+  const discountPercent = 40;
 
   // Update breadcrumb
   const breadcrumb = document.getElementById('product-breadcrumb');
@@ -103,11 +105,9 @@ function renderProduct(container) {
         <!-- Title & Rating -->
         <header class="space-y-4">
           <h1 class="text-3xl lg:text-4xl font-headline font-extrabold tracking-tight leading-tight text-on-surface">${p.title}</h1>
-          <div class="flex items-center gap-3">
-            <div class="flex text-[#C49B00]">
-              ${'<span class="material-symbols-outlined text-sm" style="font-variation-settings: \'FILL\' 1;">star</span>'.repeat(5)}
-            </div>
-            <span class="text-sm font-medium text-on-surface-variant">4.9/5</span>
+          <div id="pdp-rating-row" class="flex items-center gap-3" style="display:none">
+            <div id="pdp-stars" class="flex text-[#C49B00]"></div>
+            <span id="pdp-rating-num" class="text-sm font-medium text-on-surface-variant"></span>
           </div>
         </header>
 
@@ -270,18 +270,16 @@ function setupVariantOptions(variants) {
 }
 
 function updatePriceDisplay(variant) {
+  var rawAmount = parseFloat(variant.price.amount);
+  var saleAmount = Math.round(rawAmount * 0.60 * 100) / 100; // 40% off
   var priceEl = document.getElementById('variant-price');
   if (priceEl) {
-    priceEl.textContent = formatMoney(variant.price.amount, variant.price.currencyCode);
+    priceEl.textContent = formatMoney(saleAmount, variant.price.currencyCode);
   }
   var compareEl = document.getElementById('variant-compare-price');
   if (compareEl) {
-    if (variant.compareAtPrice && parseFloat(variant.compareAtPrice.amount) > parseFloat(variant.price.amount)) {
-      compareEl.textContent = formatMoney(variant.compareAtPrice.amount, variant.compareAtPrice.currencyCode);
-      compareEl.style.display = '';
-    } else {
-      compareEl.style.display = 'none';
-    }
+    compareEl.textContent = formatMoney(rawAmount, variant.price.currencyCode);
+    compareEl.style.display = '';
   }
 }
 
@@ -367,9 +365,9 @@ async function loadRecommendations() {
     }
 
     grid.innerHTML = recs.slice(0, 4).map(function(p) {
-      var recPrice = p.priceRange.minVariantPrice;
-      var recCompare = p.compareAtPriceRange ? p.compareAtPriceRange.minVariantPrice : null;
-      var recHasDiscount = recCompare && parseFloat(recCompare.amount) > parseFloat(recPrice.amount);
+      var recRaw = p.priceRange.minVariantPrice;
+      var recRawAmt = parseFloat(recRaw.amount);
+      var recSaleAmt = Math.round(recRawAmt * 0.60 * 100) / 100; // 40% off
 
       return '<a href="/product.html?handle=' + p.handle + '" class="group block">' +
         '<div class="aspect-square rounded-2xl bg-surface-container-low overflow-hidden mb-4 relative">' +
@@ -377,8 +375,8 @@ async function loadRecommendations() {
         '</div>' +
         '<h3 class="font-headline font-bold text-sm mb-1 line-clamp-2">' + p.title + '</h3>' +
         '<div class="flex items-center gap-2">' +
-          '<span class="text-primary font-headline font-extrabold">' + formatMoney(recPrice.amount, recPrice.currencyCode) + '</span>' +
-          (recHasDiscount ? '<span class="text-xs text-on-surface-variant line-through">' + formatMoney(recCompare.amount, recCompare.currencyCode) + '</span>' : '') +
+          '<span class="text-primary font-headline font-extrabold">' + formatMoney(recSaleAmt, recRaw.currencyCode) + '</span>' +
+          '<span class="text-xs text-on-surface-variant line-through">' + formatMoney(recRawAmt, recRaw.currencyCode) + '</span>' +
         '</div>' +
       '</a>';
     }).join('');

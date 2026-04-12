@@ -3,13 +3,18 @@ import { addToCart } from '../api/cart.js';
 import { showToast } from './toast.js';
 import { openCartDrawer } from './header.js';
 
+// Sitewide discount — matches the "Buy 1 = 40% OFF" bundle logic on the product page.
+// The Shopify price field holds the original/base price; the customer actually pays 40% less.
+const SITEWIDE_DISCOUNT = 0.40;
+
 export function renderProductCard(product, style = 'default') {
-  const price = product.priceRange.minVariantPrice;
-  const compareAt = product.compareAtPriceRange?.minVariantPrice;
-  const hasDiscount = compareAt && parseFloat(compareAt.amount) > parseFloat(price.amount);
-  const discountPercent = hasDiscount
-    ? Math.round((1 - parseFloat(price.amount) / parseFloat(compareAt.amount)) * 100)
-    : 0;
+  const rawPrice = product.priceRange.minVariantPrice;
+  const rawAmount = parseFloat(rawPrice.amount);
+  const saleAmount = Math.round(rawAmount * (1 - SITEWIDE_DISCOUNT) * 100) / 100;
+  const price = { amount: String(saleAmount), currencyCode: rawPrice.currencyCode };
+  const compareAt = rawPrice; // original Shopify price shown as strikethrough
+  const hasDiscount = true;
+  const discountPercent = Math.round(SITEWIDE_DISCOUNT * 100);
   const variantId = product.variants?.edges?.[0]?.node?.id || '';
   const image = product.featuredImage;
   const tag = product.tags?.[0] || '';
@@ -75,10 +80,7 @@ function renderCollectionCard(product, price, compareAt, hasDiscount, discountPe
                 ? `<span class="vibe-badge bg-tertiary-container text-on-tertiary-container px-3 py-1 text-[10px] font-bold uppercase">${tag}</span>`
                 : '<span></span>'
             }
-            <div class="flex items-center gap-1 text-secondary">
-              <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
-              <span class="text-xs font-bold text-on-surface">4.9</span>
-            </div>
+            <span></span>
           </div>
           <h2 class="text-lg font-headline font-extrabold text-on-surface line-clamp-2">${product.title}</h2>
           <div class="flex items-center justify-between">
