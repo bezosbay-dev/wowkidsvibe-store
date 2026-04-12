@@ -1,4 +1,4 @@
-import { getCart } from '../api/cart.js';
+import { getCart, getDiscountTier, getCheckoutUrl } from '../api/cart.js';
 import { predictiveSearch } from '../api/search.js';
 import { formatMoney } from '../api/client.js';
 
@@ -220,9 +220,15 @@ function renderCartDrawer(cart) {
     return;
   }
 
+  const tier = getDiscountTier(cart.totalQuantity);
+  let discountedSubtotal = 0;
+
   const lines = cart.lines.edges.map(({ node }) => {
     const m = node.merchandise;
-    const compareAt = node.cost.compareAtAmountPerQuantity;
+    const originalPrice = parseFloat(m.price.amount);
+    const discountedPrice = Math.round(originalPrice * (1 - tier.discount) * 100) / 100;
+    discountedSubtotal += Math.round(discountedPrice * node.quantity * 100) / 100;
+
     return `
       <div class="flex gap-4 py-4 border-b border-outline-variant/10">
         <a href="${b}product.html?handle=${m.product.handle}" class="w-20 h-20 rounded-lg bg-surface-container-low overflow-hidden flex-shrink-0">
@@ -238,8 +244,8 @@ function renderCartDrawer(cart) {
               <button class="cart-qty-btn w-7 h-7 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors text-sm" data-line-id="${node.id}" data-action="increase" data-qty="${node.quantity}">+</button>
             </div>
             <div class="text-right">
-              ${compareAt ? `<span class="text-xs text-outline line-through block">${formatMoney(compareAt.amount)}</span>` : ''}
-              <span class="font-headline font-bold text-sm">${formatMoney(node.cost.amountPerQuantity.amount)}</span>
+              <span class="text-xs text-outline line-through block">${formatMoney(originalPrice)}</span>
+              <span class="font-headline font-bold text-sm">${formatMoney(discountedPrice)}</span>
             </div>
           </div>
         </div>
@@ -255,10 +261,14 @@ function renderCartDrawer(cart) {
     <div class="mt-6 space-y-3">
       <div class="flex justify-between text-on-surface-variant text-sm">
         <span>Subtotal</span>
-        <span class="font-bold text-on-surface">${formatMoney(cart.cost.subtotalAmount.amount)}</span>
+        <span class="font-bold text-on-surface">${formatMoney(discountedSubtotal)}</span>
+      </div>
+      <div class="flex items-center justify-center gap-1 text-green-600 text-xs font-bold">
+        <span class="material-symbols-outlined text-sm">local_offer</span>
+        ${Math.round(tier.discount * 100)}% OFF applied
       </div>
       <p class="text-xs text-on-surface-variant">Shipping & taxes calculated at checkout</p>
-      <a href="${cart.checkoutUrl}" class="block w-full py-4 kinetic-gradient text-white rounded-full font-headline font-bold text-center hover:scale-[1.02] transition-all shadow-lg">
+      <a href="${getCheckoutUrl(cart)}" class="block w-full py-4 kinetic-gradient text-white rounded-full font-headline font-bold text-center hover:scale-[1.02] transition-all shadow-lg">
         Checkout
       </a>
       <a href="${b}cart.html" class="block w-full py-3 bg-surface-container text-on-surface rounded-full font-headline font-bold text-center hover:bg-surface-container-high transition-all">

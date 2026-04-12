@@ -194,7 +194,7 @@
     import { initHeader, openCartDrawer } from './js/components/header.js';
     import { initFooter } from './js/components/footer.js';
     import { SHOPIFY_CONFIG, STOREFRONT_URL } from './js/shopify-config.js';
-    import { addToCart } from './js/api/cart.js';
+    import { addToCart, getCheckoutUrl } from './js/api/cart.js';
     import { formatMoney } from './js/api/client.js';
     import { showToast } from './js/components/toast.js';
     import { getStoredToken, getCustomer, hasPurchasedProduct } from './js/api/customer.js';
@@ -661,7 +661,7 @@
           buy.textContent = 'Processing...';
           try {
             var cart = await addToCart(selectedVariant.id, bundleQty * quantity);
-            if (cart && cart.checkoutUrl) window.location.href = cart.checkoutUrl;
+            if (cart) window.location.href = getCheckoutUrl(cart);
           } catch(e) {
             console.error(e);
             showToast('Failed to checkout', 'error');

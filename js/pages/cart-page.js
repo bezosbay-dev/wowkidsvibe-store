@@ -1,4 +1,4 @@
-import { getCart, updateCartLine, removeCartLine } from '../api/cart.js';
+import { getCart, updateCartLine, removeCartLine, getDiscountTier, getCheckoutUrl } from '../api/cart.js';
 import { formatMoney } from '../api/client.js';
 import { cartItemSkeleton } from '../components/skeleton.js';
 
@@ -28,10 +28,18 @@ function renderCartPage(cart) {
   if (emptyState) emptyState.style.display = 'none';
 
   // Render items
+  const tier = getDiscountTier(cart.totalQuantity);
+  let discountedSubtotal = 0;
+
   if (itemsContainer) {
     itemsContainer.innerHTML = cart.lines.edges.map(({ node }) => {
       const m = node.merchandise;
-      const compareAt = node.cost.compareAtAmountPerQuantity;
+      const originalPrice = parseFloat(m.price.amount);
+      const discountedPrice = Math.round(originalPrice * (1 - tier.discount) * 100) / 100;
+      const lineTotal = Math.round(discountedPrice * node.quantity * 100) / 100;
+      const originalLineTotal = Math.round(originalPrice * node.quantity * 100) / 100;
+      discountedSubtotal += lineTotal;
+
       return `
         <div class="flex flex-col md:flex-row gap-6 p-6 bg-surface-container-lowest rounded-lg soft-shadow group transition-all hover:scale-[1.01]">
           <a href="product.html?handle=${m.product.handle}" class="relative w-full md:w-40 h-40 flex-shrink-0 bg-surface-container rounded-lg overflow-hidden">
@@ -52,8 +60,8 @@ function renderCartPage(cart) {
                 <button class="cart-qty w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors" data-line-id="${node.id}" data-action="increase" data-qty="${node.quantity}">+</button>
               </div>
               <div class="text-right">
-                ${compareAt ? `<span class="block text-sm text-outline line-through">${formatMoney(parseFloat(compareAt.amount) * node.quantity)}</span>` : ''}
-                <span class="font-headline font-extrabold text-2xl text-on-surface">${formatMoney(node.cost.totalAmount.amount)}</span>
+                <span class="block text-sm text-outline line-through">${formatMoney(originalLineTotal)}</span>
+                <span class="font-headline font-extrabold text-2xl text-on-surface">${formatMoney(lineTotal)}</span>
               </div>
             </div>
           </div>
@@ -83,13 +91,19 @@ function renderCartPage(cart) {
   // Render summary
   if (summaryContainer) {
     const itemCount = cart.lines.edges.reduce((sum, { node }) => sum + node.quantity, 0);
+    const originalSubtotal = cart.lines.edges.reduce((sum, { node }) => sum + parseFloat(node.merchandise.price.amount) * node.quantity, 0);
+    const youSave = Math.round((originalSubtotal - discountedSubtotal) * 100) / 100;
     summaryContainer.innerHTML = `
       <div class="bg-surface-container-highest rounded-lg p-8 soft-shadow">
         <h2 class="font-headline font-bold text-2xl mb-6">Order Summary</h2>
         <div class="space-y-4 font-body">
           <div class="flex justify-between text-on-surface-variant">
             <span>Subtotal (${itemCount} items)</span>
-            <span class="font-bold text-on-surface">${formatMoney(cart.cost.subtotalAmount.amount)}</span>
+            <span class="font-bold text-on-surface line-through">${formatMoney(originalSubtotal)}</span>
+          </div>
+          <div class="flex justify-between text-green-600">
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">local_offer</span> ${Math.round(tier.discount * 100)}% OFF</span>
+            <span class="font-bold">-${formatMoney(youSave)}</span>
           </div>
           <div class="flex justify-between text-on-surface-variant">
             <span>Shipping</span>
@@ -98,7 +112,7 @@ function renderCartPage(cart) {
           <div class="pt-6 mt-6 border-t border-outline-variant/20">
             <div class="flex justify-between items-end">
               <span class="font-headline font-bold text-xl">Total</span>
-              <span class="font-headline font-extrabold text-3xl text-on-surface">${formatMoney(cart.cost.totalAmount.amount)}</span>
+              <span class="font-headline font-extrabold text-3xl text-on-surface">${formatMoney(discountedSubtotal)}</span>
             </div>
             <p class="text-xs text-on-surface-variant mt-2">Taxes calculated at checkout</p>
           </div>
@@ -107,7 +121,7 @@ function renderCartPage(cart) {
           <span class="material-symbols-outlined text-xl">local_shipping</span>
           <span class="font-headline font-bold text-sm tracking-tight uppercase">Free Shipping on All Orders</span>
         </div>
-        <a href="${cart.checkoutUrl}" class="w-full mt-4 py-4 kinetic-gradient text-white rounded-full font-headline font-bold text-lg flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-lg">
+        <a href="${getCheckoutUrl(cart)}" class="w-full mt-4 py-4 kinetic-gradient text-white rounded-full font-headline font-bold text-lg flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-lg">
           Secure Checkout <span class="material-symbols-outlined">arrow_forward</span>
         </a>
         <div class="mt-8 pt-8 border-t border-outline-variant/20">

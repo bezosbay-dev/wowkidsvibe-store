@@ -1,5 +1,5 @@
 import { getProductByHandle, getProductRecommendations } from '../api/products.js';
-import { addToCart } from '../api/cart.js';
+import { addToCart, getCheckoutUrl } from '../api/cart.js';
 import { formatMoney } from '../api/client.js';
 import { showToast } from '../components/toast.js';
 import { openCartDrawer } from '../components/header.js';
@@ -338,8 +338,8 @@ function setupAddToCart() {
 
       try {
         var cart = await addToCart(selectedVariant.id, quantity);
-        if (cart && cart.checkoutUrl) {
-          window.location.href = cart.checkoutUrl;
+        if (cart) {
+          window.location.href = getCheckoutUrl(cart);
         }
       } catch (err) {
         console.error('[ProductPage] Buy now error:', err);
