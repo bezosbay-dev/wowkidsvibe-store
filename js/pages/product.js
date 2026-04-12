@@ -338,12 +338,16 @@ function setupAddToCart() {
 
       try {
         var cart = await addToCart(selectedVariant.id, quantity);
-        if (cart) {
-          window.location.href = getCheckoutUrl(cart);
+        var url = getCheckoutUrl(cart);
+        if (url && url !== '#') {
+          window.location.href = url;
+          return; // page is navigating away
         }
+        showToast('Unable to start checkout', 'error');
       } catch (err) {
         console.error('[ProductPage] Buy now error:', err);
         showToast('Failed to proceed to checkout', 'error');
+      } finally {
         buyBtn.disabled = false;
         buyBtn.textContent = 'BUY IT NOW';
       }

@@ -173,25 +173,34 @@ export async function addToCart(variantId, quantity = 1) {
     return cart;
   }
 
-  const data = await shopifyFetch(`
-    mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-      cartLinesAdd(cartId: $cartId, lines: $lines) {
-        cart { ...CartFields }
-        userErrors { field message }
+  try {
+    const data = await shopifyFetch(`
+      mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+        cartLinesAdd(cartId: $cartId, lines: $lines) {
+          cart { ...CartFields }
+          userErrors { field message }
+        }
       }
-    }
-    ${CART_FRAGMENT}
-  `, {
-    cartId,
-    lines: [{ merchandiseId: variantId, quantity }]
-  });
+      ${CART_FRAGMENT}
+    `, {
+      cartId,
+      lines: [{ merchandiseId: variantId, quantity }]
+    });
 
-  const cart = data.cartLinesAdd.cart;
-  if (cart) {
-    dispatchCartEvent(cart);
-    applyDiscountToCart(cart);
+    const cart = data.cartLinesAdd.cart;
+    if (cart) {
+      dispatchCartEvent(cart);
+      applyDiscountToCart(cart);
+    }
+    return cart;
+  } catch (err) {
+    // Cart ID may be expired — clear it and retry with a fresh cart
+    console.warn('Cart add failed, creating new cart:', err.message);
+    localStorage.removeItem(CART_ID_KEY);
+    cacheCart(null);
+    const cart = await createCart([{ merchandiseId: variantId, quantity }]);
+    return cart;
   }
-  return cart;
 }
 
 export async function updateCartLine(lineId, quantity) {

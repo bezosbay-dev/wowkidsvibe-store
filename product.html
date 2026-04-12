@@ -661,10 +661,16 @@
           buy.textContent = 'Processing...';
           try {
             var cart = await addToCart(selectedVariant.id, bundleQty * quantity);
-            if (cart) window.location.href = getCheckoutUrl(cart);
+            var url = getCheckoutUrl(cart);
+            if (url && url !== '#') {
+              window.location.href = url;
+              return; // page is navigating away
+            }
+            showToast('Unable to start checkout', 'error');
           } catch(e) {
             console.error(e);
             showToast('Failed to checkout', 'error');
+          } finally {
             buy.disabled = false;
             buy.innerHTML = orig;
           }
