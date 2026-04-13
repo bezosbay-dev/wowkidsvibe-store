@@ -63,6 +63,31 @@
 
     /* Mobile bottom padding */
     @media(max-width:1023px) { .pdp-main { padding-bottom:80px; } }
+
+    /* Product Story */
+    .story-block { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:center; }
+    .story-block.reverse { direction:rtl; }
+    .story-block.reverse > * { direction:ltr; }
+    @media(max-width:767px) { .story-block, .story-block.reverse { grid-template-columns:1fr; direction:ltr; } }
+    .story-block img { width:100%; border-radius:1rem; object-fit:cover; aspect-ratio:4/3; }
+
+    /* What You Get */
+    .wyg-list { list-style:none; padding:0; margin:0; }
+    .wyg-list li { padding:12px 0; border-bottom:1px solid #e4e1ee; display:flex; align-items:center; gap:12px; font-size:15px; color:#2f2e36; }
+    .wyg-list li:last-child { border-bottom:none; }
+
+    /* Social Proof Cards */
+    .proof-card { background:#fff; border:1px solid #e4e1ee; border-radius:1rem; padding:1.5rem; transition:box-shadow .2s; }
+    .proof-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.06); }
+
+    /* FAQ Accordion */
+    .faq-item { border-bottom:1px solid #e4e1ee; }
+    .faq-q { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 0; cursor:pointer; font-weight:700; font-size:15px; color:#2f2e36; transition:color .15s; user-select:none; }
+    .faq-q:hover { color:#b60d3d; }
+    .faq-a { max-height:0; overflow:hidden; transition:max-height .35s ease, padding .35s ease; padding:0; }
+    .faq-a.open { max-height:600px; padding:0 0 18px 0; }
+    .faq-toggle { font-size:22px; font-weight:700; transition:transform .3s; flex-shrink:0; width:24px; text-align:center; line-height:1; }
+    .faq-item.open .faq-toggle { transform:rotate(45deg); }
   </style>
 </head>
 <body class="bg-background text-on-background font-body">
@@ -74,6 +99,18 @@
   <main class="pdp-main pt-24 pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div id="product-detail"></div>
     <div id="description-section" style="display:none"></div>
+
+    <!-- Product Story (image + text blocks) -->
+    <section id="story-section" class="mt-12 lg:mt-16" style="display:none"></section>
+
+    <!-- What You Get -->
+    <section id="what-you-get-section" class="mt-12 lg:mt-16" style="display:none"></section>
+
+    <!-- Social Proof Reviews Banner -->
+    <section id="social-proof-section" class="mt-12 lg:mt-16" style="display:none"></section>
+
+    <!-- FAQ Accordion -->
+    <section id="faq-section" class="mt-12 lg:mt-16" style="display:none"></section>
 
     <!-- Reviews Section -->
     <section id="reviews-section" class="mt-12 lg:mt-16 border-t border-outline-variant/20 pt-10 max-w-4xl" style="display:none">
@@ -227,7 +264,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontToken },
           body: JSON.stringify({
-            query: 'query getProduct($handle: String!) { product(handle: $handle) { id title handle description descriptionHtml productType tags vendor images(first: 10) { edges { node { url altText } } } variants(first: 100) { edges { node { id title availableForSale price { amount currencyCode } compareAtPrice { amount currencyCode } selectedOptions { name value } image { url altText } } } } options { id name values } priceRange { minVariantPrice { amount currencyCode } } compareAtPriceRange { minVariantPrice { amount currencyCode } } } }',
+            query: 'query getProduct($handle: String!) { product(handle: $handle) { id title handle description descriptionHtml productType tags vendor images(first: 10) { edges { node { url altText } } } variants(first: 100) { edges { node { id title availableForSale price { amount currencyCode } compareAtPrice { amount currencyCode } selectedOptions { name value } image { url altText } } } } options { id name values } priceRange { minVariantPrice { amount currencyCode } } compareAtPriceRange { minVariantPrice { amount currencyCode } } storyImage1:metafield(namespace:"custom" key:"story_image_1"){reference{...on MediaImage{image{url altText}}...on GenericFile{url}}} storyHeadline1:metafield(namespace:"custom" key:"story_headline_1"){value} storyText1:metafield(namespace:"custom" key:"story_text_1"){value} storyImage2:metafield(namespace:"custom" key:"story_image_2"){reference{...on MediaImage{image{url altText}}...on GenericFile{url}}} storyHeadline2:metafield(namespace:"custom" key:"story_headline_2"){value} storyText2:metafield(namespace:"custom" key:"story_text_2"){value} storyImage3:metafield(namespace:"custom" key:"story_image_3"){reference{...on MediaImage{image{url altText}}...on GenericFile{url}}} storyHeadline3:metafield(namespace:"custom" key:"story_headline_3"){value} storyText3:metafield(namespace:"custom" key:"story_text_3"){value} whatYouGet:metafield(namespace:"custom" key:"what_you_get"){value} review1Title:metafield(namespace:"custom" key:"featured_review_1_title"){value} review1Text:metafield(namespace:"custom" key:"featured_review_1_text"){value} review1Name:metafield(namespace:"custom" key:"featured_review_1_name"){value} review1Stars:metafield(namespace:"custom" key:"featured_review_1_stars"){value} review2Title:metafield(namespace:"custom" key:"featured_review_2_title"){value} review2Text:metafield(namespace:"custom" key:"featured_review_2_text"){value} review2Name:metafield(namespace:"custom" key:"featured_review_2_name"){value} review2Stars:metafield(namespace:"custom" key:"featured_review_2_stars"){value} review3Title:metafield(namespace:"custom" key:"featured_review_3_title"){value} review3Text:metafield(namespace:"custom" key:"featured_review_3_text"){value} review3Name:metafield(namespace:"custom" key:"featured_review_3_name"){value} review3Stars:metafield(namespace:"custom" key:"featured_review_3_stars"){value} overallRating:metafield(namespace:"custom" key:"overall_rating"){value} totalReviews:metafield(namespace:"custom" key:"total_reviews"){value} faq:metafield(namespace:"custom" key:"faq"){value} relatedProducts:metafield(namespace:"custom" key:"related_products"){references(first:8){edges{node{...on Product{id title handle featuredImage{url altText} priceRange{minVariantPrice{amount currencyCode}} variants(first:1){edges{node{id}}}}}}}} } }',
             variables: { handle: handle }
           }),
         });
@@ -244,6 +281,10 @@
 
         document.title = currentProduct.title + ' — WowKidsVibe';
         renderProduct(container);
+        renderStorySections();
+        renderWhatYouGetSection();
+        renderSocialProofSection();
+        renderFAQSection();
         initReviews();
         loadRecommendations();
       } catch(err) {
@@ -258,7 +299,7 @@
       var variants = p.variants.edges.map(function(e) { return e.node; });
       selectedVariant = variants[0];
       quantity = 1;
-      bundleQty = 1;
+      bundleQty = 2;
 
       var mainImage = selectedVariant.image || images[0];
       var price = selectedVariant.price;
@@ -357,11 +398,11 @@
               '<span id="pdp-review-count" class="text-xs text-on-surface-variant"></span>' +
             '</div>' +
 
-            '<!-- Price (shows Buy 1 bundle price = 40% off) -->' +
+            '<!-- Price (shows selected bundle price) -->' +
             '<div class="flex items-center gap-3 flex-wrap pb-4 border-b border-outline-variant/20">' +
-              '<span id="variant-price" class="text-2xl lg:text-3xl font-headline font-extrabold text-primary">' + formatMoney(b1Total, cur) + '</span>' +
-              '<span id="variant-compare" class="text-base text-on-surface-variant line-through">' + formatMoney(priceNum, cur) + '</span>' +
-              '<span class="text-[11px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full font-label uppercase">SAVE ' + b1Pct + '%</span>' +
+              '<span id="variant-price" class="text-2xl lg:text-3xl font-headline font-extrabold text-primary">' + formatMoney(b2Total, cur) + '</span>' +
+              '<span id="variant-compare" class="text-base text-on-surface-variant line-through">' + formatMoney(b2Strike, cur) + '</span>' +
+              '<span id="discount-badge" class="text-[11px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full font-label uppercase">SAVE ' + b2Pct + '%</span>' +
             '</div>' +
 
             '<!-- Short Description -->' +
@@ -376,7 +417,7 @@
               '<div class="p-3 space-y-3" id="bundle-options">' +
 
                 '<!-- Buy 1 -->' +
-                '<div class="bundle-opt selected" data-bundle="1" data-total="' + b1Total + '" data-save="' + b1Save + '">' +
+                '<div class="bundle-opt" data-bundle="1" data-total="' + b1Total + '" data-save="' + b1Save + '" data-pct="' + b1Pct + '">' +
                   '<div class="flex items-center gap-3">' +
                     '<div class="b-radio"></div>' +
                     '<div class="flex-1 min-w-0">' +
@@ -394,7 +435,7 @@
                 '</div>' +
 
                 '<!-- Buy 2 -->' +
-                '<div class="bundle-opt" data-bundle="2" data-total="' + b2Total + '" data-save="' + b2Save + '">' +
+                '<div class="bundle-opt selected" data-bundle="2" data-total="' + b2Total + '" data-save="' + b2Save + '" data-pct="' + b2Pct + '">' +
                   '<div class="absolute -top-2.5 right-3 bg-green-500 text-white text-[9px] font-extrabold px-3 py-0.5 rounded-full font-label uppercase tracking-wide">Most Popular</div>' +
                   '<div class="flex items-center gap-3">' +
                     '<div class="b-radio"></div>' +
@@ -414,7 +455,7 @@
                 '</div>' +
 
                 '<!-- Buy 3 -->' +
-                '<div class="bundle-opt" data-bundle="3" data-total="' + b3Total + '" data-save="' + b3Save + '">' +
+                '<div class="bundle-opt" data-bundle="3" data-total="' + b3Total + '" data-save="' + b3Save + '" data-pct="' + b3Pct + '">' +
                   '<div class="flex items-center gap-3">' +
                     '<div class="b-radio"></div>' +
                     '<div class="flex-1 min-w-0">' +
@@ -433,16 +474,16 @@
                 '</div>' +
 
               '</div>' +
-              '<div id="bundle-savings" class="mx-3 mb-3 px-4 py-2.5 rounded-xl bg-green-50 flex items-center justify-center gap-2 ' + (b1Save > 0 ? '' : 'hidden') + '">' +
+              '<div id="bundle-savings" class="mx-3 mb-3 px-4 py-2.5 rounded-xl bg-green-50 flex items-center justify-center gap-2 ' + (b2Save > 0 ? '' : 'hidden') + '">' +
                 '<span class="text-base">&#128293;</span>' +
-                '<span class="text-green-600 font-headline font-bold text-sm">You save <span id="savings-amount">' + formatMoney(b1Save, cur) + '</span></span>' +
+                '<span class="text-green-600 font-headline font-bold text-sm">You save <span id="savings-amount">' + formatMoney(b2Save, cur) + '</span></span>' +
               '</div>' +
             '</div>' +
 
-            '<!-- Variant Selectors (single) -->' +
-            '<div id="single-variant-options">' + optionsHTML + '</div>' +
+            '<!-- Variant Selectors (single — hidden when Buy 2/3 selected) -->' +
+            '<div id="single-variant-options" style="display:none">' + optionsHTML + '</div>' +
             '<!-- Bundle Variant Pickers (Buy 2/3) -->' +
-            '<div id="bundle-variant-pickers" style="display:none"></div>' +
+            '<div id="bundle-variant-pickers"></div>' +
 
             '<!-- Quantity -->' +
             '<div class="space-y-3">' +
@@ -511,6 +552,7 @@
       setupBundleClicks(cur);
       setupCTA();
       setupFavorite();
+      renderBundlePickers(2); // Buy 2 is pre-selected
     }
 
     function stripImages(html) {
@@ -637,10 +679,19 @@
             opt.classList.add('selected');
             bundleQty = parseInt(opt.dataset.bundle);
             var sv = parseFloat(opt.dataset.save);
+            var total = parseFloat(opt.dataset.total);
+            var pct = opt.dataset.pct;
             var savBar = document.getElementById('bundle-savings');
             var savAmt = document.getElementById('savings-amount');
             if (sv > 0) { savBar.classList.remove('hidden'); savAmt.textContent = formatMoney(sv, cur); }
             else { savBar.classList.add('hidden'); }
+            // Update main price display
+            var priceEl = document.getElementById('variant-price');
+            var compareEl = document.getElementById('variant-compare');
+            var badgeEl = document.getElementById('discount-badge');
+            if (priceEl) priceEl.textContent = formatMoney(total, cur);
+            if (compareEl) compareEl.textContent = formatMoney(total + sv, cur);
+            if (badgeEl) badgeEl.textContent = 'SAVE ' + pct + '%';
             // Toggle variant pickers
             if (bundleQty === 1) {
               singleOpts.style.display = '';
@@ -752,8 +803,163 @@
       }
     }
 
+    // ── SECTION 1: Rich Product Story ──────────────────────────────
+    function renderStorySections() {
+      var p = currentProduct;
+      var stories = [];
+      for (var n = 1; n <= 3; n++) {
+        var imgMf = p['storyImage' + n];
+        var headMf = p['storyHeadline' + n];
+        var textMf = p['storyText' + n];
+        var imgUrl = imgMf && imgMf.reference ? (imgMf.reference.image ? imgMf.reference.image.url : imgMf.reference.url) : null;
+        var imgAlt = imgMf && imgMf.reference && imgMf.reference.image ? (imgMf.reference.image.altText || '') : '';
+        var headline = headMf ? headMf.value : null;
+        var text = textMf ? textMf.value : '';
+        if (imgUrl && headline) stories.push({ imgUrl: imgUrl, imgAlt: imgAlt, headline: headline, text: text });
+      }
+      if (stories.length === 0) return;
+      var sec = document.getElementById('story-section');
+      sec.style.display = 'block';
+      sec.innerHTML = '<div class="space-y-12 max-w-5xl mx-auto">' + stories.map(function(s, i) {
+        var rev = i % 2 === 1;
+        return '<div class="story-block' + (rev ? ' reverse' : '') + '">' +
+          '<img src="' + s.imgUrl + '" alt="' + escapeHTML(s.imgAlt) + '" loading="lazy" />' +
+          '<div class="space-y-4">' +
+            '<h3 class="text-xl lg:text-2xl font-headline font-extrabold text-on-surface">' + escapeHTML(s.headline) + '</h3>' +
+            '<p class="text-sm lg:text-base text-on-surface-variant leading-relaxed">' + escapeHTML(s.text) + '</p>' +
+          '</div>' +
+        '</div>';
+      }).join('') + '</div>';
+    }
+
+    // ── SECTION 2: What You Get ─────────────────────────────────────
+    function renderWhatYouGetSection() {
+      var mf = currentProduct.whatYouGet;
+      if (!mf || !mf.value) return;
+      var items = mf.value.split('\n').filter(function(l) { return l.trim(); });
+      if (items.length === 0) return;
+      var sec = document.getElementById('what-you-get-section');
+      sec.style.display = 'block';
+      sec.innerHTML =
+        '<div class="bg-surface-container-lowest border-2 border-outline-variant/30 rounded-2xl p-6 lg:p-8 max-w-3xl">' +
+          '<h3 class="text-lg font-headline font-extrabold text-on-surface mb-4 flex items-center gap-2">' +
+            '<span class="material-symbols-outlined text-primary">inventory_2</span> What You Get:' +
+          '</h3>' +
+          '<ul class="wyg-list">' + items.map(function(item) {
+            return '<li><span class="material-symbols-outlined text-green-600 text-lg" style="font-variation-settings:\'FILL\' 1">check_circle</span><span>' + escapeHTML(item.trim()) + '</span></li>';
+          }).join('') + '</ul>' +
+        '</div>';
+    }
+
+    // ── SECTION 3: Social Proof Reviews Banner ──────────────────────
+    function renderSocialProofSection() {
+      var p = currentProduct;
+      var reviews = [];
+      for (var n = 1; n <= 3; n++) {
+        var title = p['review' + n + 'Title'] ? p['review' + n + 'Title'].value : null;
+        var text = p['review' + n + 'Text'] ? p['review' + n + 'Text'].value : null;
+        var name = p['review' + n + 'Name'] ? p['review' + n + 'Name'].value : null;
+        var stars = p['review' + n + 'Stars'] ? parseInt(p['review' + n + 'Stars'].value) || 5 : 5;
+        if (title && text && name) reviews.push({ title: title, text: text, name: name, stars: stars });
+      }
+      if (reviews.length === 0) return;
+      var overall = p.overallRating ? p.overallRating.value : '4.8';
+      var totalRev = p.totalReviews ? p.totalReviews.value : '';
+      function makeStars(count) {
+        var h = '';
+        for (var i = 0; i < 5; i++) h += '<span class="material-symbols-outlined text-sm ' + (i < count ? 'text-yellow-400' : 'text-on-surface-variant/30') + '" style="font-variation-settings:\'FILL\' 1">star</span>';
+        return h;
+      }
+      var sec = document.getElementById('social-proof-section');
+      sec.style.display = 'block';
+      sec.innerHTML =
+        '<div class="text-center mb-8">' +
+          '<div class="inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-5 py-2.5">' +
+            '<span class="font-headline font-extrabold text-green-800">Excellent</span>' +
+            '<span class="font-headline font-bold text-green-700">' + overall + '/5</span>' +
+            '<div class="flex">' + makeStars(Math.round(parseFloat(overall))) + '</div>' +
+            (totalRev ? '<span class="text-xs text-green-600">' + parseInt(totalRev).toLocaleString() + ' reviews</span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">' + reviews.map(function(r) {
+          return '<div class="proof-card">' +
+            '<div class="flex gap-0.5 mb-3">' + makeStars(r.stars) + '</div>' +
+            '<h4 class="font-headline font-bold text-sm text-on-surface mb-2">' + escapeHTML(r.title) + '</h4>' +
+            '<p class="text-sm text-on-surface-variant leading-relaxed mb-3">' + escapeHTML(r.text) + '</p>' +
+            '<div class="flex items-center gap-2">' +
+              '<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-headline font-bold text-primary text-xs">' + r.name.charAt(0).toUpperCase() + '</div>' +
+              '<span class="font-label font-bold text-xs text-on-surface">' + escapeHTML(r.name) + '</span>' +
+              '<span class="inline-flex items-center gap-1 text-[9px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full"><span class="material-symbols-outlined text-[10px]" style="font-variation-settings:\'FILL\' 1">verified</span>Verified</span>' +
+            '</div>' +
+          '</div>';
+        }).join('') + '</div>';
+    }
+
+    // ── SECTION 4: FAQ Accordion ────────────────────────────────────
+    function renderFAQSection() {
+      var mf = currentProduct.faq;
+      if (!mf || !mf.value) return;
+      var faqs;
+      try { faqs = JSON.parse(mf.value); } catch(e) { return; }
+      if (!Array.isArray(faqs) || faqs.length === 0) return;
+      var sec = document.getElementById('faq-section');
+      sec.style.display = 'block';
+      sec.innerHTML =
+        '<h3 class="text-lg font-headline font-extrabold text-on-surface mb-6 flex items-center gap-2">' +
+          '<span class="w-5 h-0.5 bg-primary rounded-full"></span> Frequently Asked Questions' +
+        '</h3>' +
+        '<div class="border-t border-outline-variant/20 max-w-3xl">' + faqs.map(function(f) {
+          return '<div class="faq-item">' +
+            '<div class="faq-q">' + escapeHTML(f.q) + '<span class="faq-toggle">+</span></div>' +
+            '<div class="faq-a"><p class="text-sm text-on-surface-variant leading-relaxed">' + escapeHTML(f.a) + '</p></div>' +
+          '</div>';
+        }).join('') + '</div>';
+      // Wire accordion
+      sec.querySelectorAll('.faq-q').forEach(function(q) {
+        q.addEventListener('click', function() {
+          var item = q.parentElement;
+          var answer = item.querySelector('.faq-a');
+          var isOpen = item.classList.contains('open');
+          sec.querySelectorAll('.faq-item.open').forEach(function(other) {
+            if (other !== item) { other.classList.remove('open'); other.querySelector('.faq-a').classList.remove('open'); }
+          });
+          if (isOpen) { item.classList.remove('open'); answer.classList.remove('open'); }
+          else { item.classList.add('open'); answer.classList.add('open'); }
+        });
+      });
+    }
+
+    // ── SECTION 5: Related Products / Upsell ────────────────────────
+    function renderRelatedCards(recs) {
+      var _rc = getDiscountConfig();
+      document.getElementById('related-section').style.display = 'block';
+      document.getElementById('related-products').innerHTML = recs.slice(0, 6).map(function(r) {
+        var pr = r.priceRange.minVariantPrice;
+        var rawAmt = parseFloat(pr.amount);
+        var saleAmt = Math.round(rawAmt * (1 - _rc.buy1 / 100) * 100) / 100;
+        return '<a href="product.html?handle=' + r.handle + '" class="snap-start flex-shrink-0 w-[160px] lg:w-[200px] group block">' +
+          '<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low mb-3 relative">' +
+            '<div class="absolute top-2 left-2 z-10 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">-' + _rc.buy1 + '%</div>' +
+            (r.featuredImage ? '<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="' + r.featuredImage.url + '" alt="' + (r.featuredImage.altText || r.title) + '" loading="lazy" />' : '<div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-4xl">image</span></div>') +
+          '</div>' +
+          '<h3 class="font-headline font-bold text-xs text-on-surface line-clamp-2 mb-1">' + r.title + '</h3>' +
+          '<div class="flex items-center gap-2">' +
+            '<span class="text-sm font-bold text-primary">' + formatMoney(saleAmt, pr.currencyCode) + '</span>' +
+            '<span class="text-[11px] text-on-surface-variant line-through">' + formatMoney(rawAmt, pr.currencyCode) + '</span>' +
+          '</div>' +
+        '</a>';
+      }).join('');
+    }
+
     async function loadRecommendations() {
       if (!currentProduct) return;
+      // Check metafield-driven related products first
+      var metaRefs = currentProduct.relatedProducts && currentProduct.relatedProducts.references;
+      if (metaRefs && metaRefs.edges && metaRefs.edges.length > 0) {
+        renderRelatedCards(metaRefs.edges.map(function(e) { return e.node; }));
+        return;
+      }
+      // Fallback: Shopify product recommendations API
       try {
         var resp = await fetch(STOREFRONT_URL, {
           method: 'POST',
@@ -766,25 +972,7 @@
         var json = await resp.json();
         var recs = json.data && json.data.productRecommendations;
         if (!recs || recs.length === 0) return;
-
-        document.getElementById('related-section').style.display = 'block';
-        document.getElementById('related-products').innerHTML = recs.slice(0, 6).map(function(r) {
-          var pr = r.priceRange.minVariantPrice;
-          var rawAmt = parseFloat(pr.amount);
-          var _rc = getDiscountConfig();
-          var saleAmt = Math.round(rawAmt * (1 - _rc.buy1 / 100) * 100) / 100;
-          return '<a href="product.html?handle=' + r.handle + '" class="snap-start flex-shrink-0 w-[160px] lg:w-[200px] group block">' +
-            '<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low mb-3 relative">' +
-              '<div class="absolute top-2 left-2 z-10 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">-' + _rc.buy1 + '%</div>' +
-              (r.featuredImage ? '<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="' + r.featuredImage.url + '" alt="' + (r.featuredImage.altText || r.title) + '" loading="lazy" />' : '<div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-4xl">image</span></div>') +
-            '</div>' +
-            '<h3 class="font-headline font-bold text-xs text-on-surface line-clamp-2 mb-1">' + r.title + '</h3>' +
-            '<div class="flex items-center gap-2">' +
-              '<span class="text-sm font-bold text-primary">' + formatMoney(saleAmt, pr.currencyCode) + '</span>' +
-              '<span class="text-[11px] text-on-surface-variant line-through">' + formatMoney(rawAmt, pr.currencyCode) + '</span>' +
-            '</div>' +
-          '</a>';
-        }).join('');
+        renderRelatedCards(recs);
       } catch(e) { console.error('Recs error:', e); }
     }
 
