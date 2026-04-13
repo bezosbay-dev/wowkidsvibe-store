@@ -2,20 +2,70 @@ import { shopifyFetch } from './client.js';
 
 const CART_ID_KEY = 'wowkidsvibe_cart_id';
 const CART_CACHE_KEY = 'wowkidsvibe_cart_cache';
+const DISCOUNT_CFG_KEY = 'wkv_discount_cfg';
+const DISCOUNT_CFG_TTL = 30 * 60 * 1000; // 30 min
 
-// Bundle discount tiers — must match the product page bundle options.
-// Buy 1 = 40% off, Buy 2 = 60% off, Buy 3+ = 70% off.
-// Each code must exist in Shopify Admin → Discounts.
-export const DISCOUNT_TIERS = [
-  { minQty: 3, discount: 0.70, code: 'SAVE70' },
-  { minQty: 2, discount: 0.60, code: 'SAVE60' },
-  { minQty: 1, discount: 0.40, code: 'SAVE40' },
-];
+// ── Dynamic discount config ──────────────────────────────────────
+// Fetched from Shopify shop metafield "custom.discount_config".
+// Expected JSON value: {"buy1": 40, "buy2": 60, "buy3": 70}
+// Change ONLY in Shopify Admin → the website picks it up automatically.
+let discountConfig = { buy1: 40, buy2: 60, buy3: 70 };
 
-export function getDiscountTier(totalQuantity) {
-  return DISCOUNT_TIERS.find(t => totalQuantity >= t.minQty) || DISCOUNT_TIERS[DISCOUNT_TIERS.length - 1];
+export function getDiscountConfig() {
+  return discountConfig;
 }
 
+export async function fetchDiscountConfig() {
+  // Check sessionStorage cache first
+  try {
+    const cached = sessionStorage.getItem(DISCOUNT_CFG_KEY);
+    if (cached) {
+      const { data, ts } = JSON.parse(cached);
+      if (Date.now() - ts < DISCOUNT_CFG_TTL) {
+        discountConfig = data;
+        return data;
+      }
+    }
+  } catch {}
+
+  try {
+    const result = await shopifyFetch(`{
+      shop {
+        metafield(namespace: "custom", key: "discount_config") {
+          value
+        }
+      }
+    }`);
+    const raw = result?.shop?.metafield?.value;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const cfg = {
+        buy1: Number(parsed.buy1) || 40,
+        buy2: Number(parsed.buy2) || 60,
+        buy3: Number(parsed.buy3) || 70,
+      };
+      discountConfig = cfg;
+      try { sessionStorage.setItem(DISCOUNT_CFG_KEY, JSON.stringify({ data: cfg, ts: Date.now() })); } catch {}
+      return cfg;
+    }
+  } catch (e) {
+    console.warn('Discount config fetch failed, using defaults:', e.message);
+  }
+  return discountConfig;
+}
+
+// ── Discount tier helpers ────────────────────────────────────────
+export function getDiscountTier(totalQuantity) {
+  const c = discountConfig;
+  const tiers = [
+    { minQty: 3, discount: c.buy3 / 100, code: 'SAVE' + c.buy3 },
+    { minQty: 2, discount: c.buy2 / 100, code: 'SAVE' + c.buy2 },
+    { minQty: 1, discount: c.buy1 / 100, code: 'SAVE' + c.buy1 },
+  ];
+  return tiers.find(t => totalQuantity >= t.minQty) || tiers[tiers.length - 1];
+}
+
+// ── Cart GraphQL fragment ────────────────────────────────────────
 const CART_FRAGMENT = `
   fragment CartFields on Cart {
     id
@@ -54,6 +104,7 @@ const CART_FRAGMENT = `
   }
 `;
 
+// ── localStorage helpers ─────────────────────────────────────────
 function getStoredCartId() {
   return localStorage.getItem(CART_ID_KEY);
 }
@@ -84,14 +135,11 @@ function dispatchCartEvent(cart) {
   window.dispatchEvent(new CustomEvent('cart:updated', { detail: cart }));
 }
 
-// Apply a discount code to the Shopify cart (fire-and-forget).
-// The cart drawer shows client-side calculated prices regardless,
-// but this ensures checkout charges the discounted amount.
+// ── Auto-apply discount code (fire-and-forget) ──────────────────
 function applyDiscountToCart(cart) {
   if (!cart || !cart.id || cart.totalQuantity < 1) return;
   const tier = getDiscountTier(cart.totalQuantity);
 
-  // Skip if already applied
   const existing = cart.discountCodes?.find(d => d.code === tier.code && d.applicable);
   if (existing) return;
 
@@ -111,6 +159,7 @@ function applyDiscountToCart(cart) {
     .catch(err => console.warn('Discount code not applied:', err.message));
 }
 
+// ── Cart mutations ───────────────────────────────────────────────
 export async function createCart(lines = []) {
   const data = await shopifyFetch(`
     mutation cartCreate($input: CartInput!) {
@@ -120,9 +169,7 @@ export async function createCart(lines = []) {
       }
     }
     ${CART_FRAGMENT}
-  `, {
-    input: { lines }
-  });
+  `, { input: { lines } });
 
   const cart = data.cartCreate.cart;
   if (cart) {
@@ -137,7 +184,6 @@ export async function getCart() {
   const cartId = getStoredCartId();
   if (!cartId) return null;
 
-  // Show cached cart immediately while fetching fresh data
   const cached = getCachedCart();
   if (cached) {
     window.dispatchEvent(new CustomEvent('cart:updated', { detail: cached }));
@@ -165,12 +211,14 @@ export async function getCart() {
   }
 }
 
-export async function addToCart(variantId, quantity = 1) {
+// Add multiple line items at once (used for Buy 2 / Buy 3 bundles).
+// items: [{ variantId: "gid://...", quantity: 1 }, ...]
+export async function addMultipleToCart(items) {
+  const lines = items.map(i => ({ merchandiseId: i.variantId, quantity: i.quantity }));
   let cartId = getStoredCartId();
 
   if (!cartId) {
-    const cart = await createCart([{ merchandiseId: variantId, quantity }]);
-    return cart;
+    return await createCart(lines);
   }
 
   try {
@@ -182,10 +230,7 @@ export async function addToCart(variantId, quantity = 1) {
         }
       }
       ${CART_FRAGMENT}
-    `, {
-      cartId,
-      lines: [{ merchandiseId: variantId, quantity }]
-    });
+    `, { cartId, lines });
 
     const cart = data.cartLinesAdd.cart;
     if (cart) {
@@ -194,13 +239,16 @@ export async function addToCart(variantId, quantity = 1) {
     }
     return cart;
   } catch (err) {
-    // Cart ID may be expired — clear it and retry with a fresh cart
     console.warn('Cart add failed, creating new cart:', err.message);
     localStorage.removeItem(CART_ID_KEY);
     cacheCart(null);
-    const cart = await createCart([{ merchandiseId: variantId, quantity }]);
-    return cart;
+    return await createCart(lines);
   }
+}
+
+// Single-item convenience wrapper
+export async function addToCart(variantId, quantity = 1) {
+  return addMultipleToCart([{ variantId, quantity }]);
 }
 
 export async function updateCartLine(lineId, quantity) {
@@ -215,10 +263,7 @@ export async function updateCartLine(lineId, quantity) {
       }
     }
     ${CART_FRAGMENT}
-  `, {
-    cartId,
-    lines: [{ id: lineId, quantity }]
-  });
+  `, { cartId, lines: [{ id: lineId, quantity }] });
 
   const cart = data.cartLinesUpdate.cart;
   if (cart) {
@@ -240,10 +285,7 @@ export async function removeCartLine(lineId) {
       }
     }
     ${CART_FRAGMENT}
-  `, {
-    cartId,
-    lineIds: [lineId]
-  });
+  `, { cartId, lineIds: [lineId] });
 
   const cart = data.cartLinesRemove.cart;
   if (cart) {

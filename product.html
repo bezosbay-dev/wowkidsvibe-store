@@ -194,7 +194,7 @@
     import { initHeader, openCartDrawer } from './js/components/header.js';
     import { initFooter } from './js/components/footer.js';
     import { SHOPIFY_CONFIG, STOREFRONT_URL } from './js/shopify-config.js';
-    import { addToCart, getCheckoutUrl } from './js/api/cart.js';
+    import { addToCart, addMultipleToCart, getCheckoutUrl, fetchDiscountConfig, getDiscountConfig } from './js/api/cart.js';
     import { formatMoney } from './js/api/client.js';
     import { showToast } from './js/components/toast.js';
     import { getStoredToken, getCustomer, hasPurchasedProduct } from './js/api/customer.js';
@@ -208,6 +208,7 @@
     let quantity = 1;
     let bundleQty = 1;
 
+    await fetchDiscountConfig();
     initProductPage();
 
     async function initProductPage() {
@@ -279,10 +280,12 @@
       var fmtDate = function(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); };
       var deliveryStr = fmtDate(d1) + ' – ' + fmtDate(d2);
 
-      // Bundle calculations — sitewide offer: Buy 1 = 40% off, Buy 2 = 60% off, Buy 3 = 70% off
-      var b1Total = Math.round(priceNum * 1 * 0.60 * 100) / 100;
-      var b2Total = Math.round(priceNum * 2 * 0.40 * 100) / 100;
-      var b3Total = Math.round(priceNum * 3 * 0.30 * 100) / 100;
+      // Bundle calculations — dynamic from Shopify metafield
+      var cfg = getDiscountConfig();
+      var b1Pct = cfg.buy1, b2Pct = cfg.buy2, b3Pct = cfg.buy3;
+      var b1Total = Math.round(priceNum * 1 * (1 - b1Pct / 100) * 100) / 100;
+      var b2Total = Math.round(priceNum * 2 * (1 - b2Pct / 100) * 100) / 100;
+      var b3Total = Math.round(priceNum * 3 * (1 - b3Pct / 100) * 100) / 100;
       var b1Strike = priceNum;
       var b2Strike = Math.round(priceNum * 2 * 100) / 100;
       var b3Strike = Math.round(priceNum * 3 * 100) / 100;
@@ -358,7 +361,7 @@
             '<div class="flex items-center gap-3 flex-wrap pb-4 border-b border-outline-variant/20">' +
               '<span id="variant-price" class="text-2xl lg:text-3xl font-headline font-extrabold text-primary">' + formatMoney(b1Total, cur) + '</span>' +
               '<span id="variant-compare" class="text-base text-on-surface-variant line-through">' + formatMoney(priceNum, cur) + '</span>' +
-              '<span class="text-[11px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full font-label uppercase">SAVE 40%</span>' +
+              '<span class="text-[11px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full font-label uppercase">SAVE ' + b1Pct + '%</span>' +
             '</div>' +
 
             '<!-- Short Description -->' +
@@ -379,7 +382,7 @@
                     '<div class="flex-1 min-w-0">' +
                       '<div class="flex items-center gap-2 flex-wrap">' +
                         '<span class="font-headline font-bold text-sm text-on-surface">Buy 1</span>' +
-                        '<span class="text-[9px] font-extrabold bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-label uppercase tracking-wide">40% OFF</span>' +
+                        '<span class="text-[9px] font-extrabold bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-label uppercase tracking-wide">' + b1Pct + '% OFF</span>' +
                       '</div>' +
                       '<div class="text-xs text-on-surface-variant mt-0.5">Single Item Discount</div>' +
                     '</div>' +
@@ -398,7 +401,7 @@
                     '<div class="flex-1 min-w-0">' +
                       '<div class="flex items-center gap-2 flex-wrap">' +
                         '<span class="font-headline font-bold text-sm text-on-surface">Buy 2</span>' +
-                        '<span class="text-[9px] font-extrabold bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-label uppercase tracking-wide">60% OFF</span>' +
+                        '<span class="text-[9px] font-extrabold bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-label uppercase tracking-wide">' + b2Pct + '% OFF</span>' +
                         '<span class="text-[9px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px]">local_shipping</span>Free Shipping</span>' +
                       '</div>' +
                       '<div class="text-xs text-on-surface-variant mt-0.5">Save more with a pair</div>' +
@@ -417,7 +420,7 @@
                     '<div class="flex-1 min-w-0">' +
                       '<div class="flex items-center gap-2 flex-wrap">' +
                         '<span class="font-headline font-bold text-sm text-on-surface">Buy 3</span>' +
-                        '<span class="text-[9px] font-extrabold bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-label uppercase tracking-wide">70% OFF</span>' +
+                        '<span class="text-[9px] font-extrabold bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-label uppercase tracking-wide">' + b3Pct + '% OFF</span>' +
                         '<span class="text-[9px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px]">local_shipping</span>Free Shipping</span>' +
                       '</div>' +
                       '<div class="text-xs text-on-surface-variant mt-0.5">Best deal — biggest savings</div>' +
@@ -436,8 +439,10 @@
               '</div>' +
             '</div>' +
 
-            '<!-- Variant Selectors -->' +
-            optionsHTML +
+            '<!-- Variant Selectors (single) -->' +
+            '<div id="single-variant-options">' + optionsHTML + '</div>' +
+            '<!-- Bundle Variant Pickers (Buy 2/3) -->' +
+            '<div id="bundle-variant-pickers" style="display:none"></div>' +
 
             '<!-- Quantity -->' +
             '<div class="space-y-3">' +
@@ -554,7 +559,8 @@
             if (match) {
               selectedVariant = match;
               var rawPr = parseFloat(match.price.amount);
-              var salePr = Math.round(rawPr * 0.60 * 100) / 100; // 40% off
+              var _cfg = getDiscountConfig();
+              var salePr = Math.round(rawPr * (1 - _cfg.buy1 / 100) * 100) / 100;
               var el = document.getElementById('variant-price');
               if (el) el.textContent = formatMoney(salePr, match.price.currencyCode);
               var cmpEl = document.getElementById('variant-compare');
@@ -569,9 +575,10 @@
 
     function recalcBundles(cur) {
       var pr = parseFloat(selectedVariant.price.amount);
-      var b1 = Math.round(pr * 1 * 0.60 * 100) / 100;
-      var b2 = Math.round(pr * 2 * 0.40 * 100) / 100;
-      var b3 = Math.round(pr * 3 * 0.30 * 100) / 100;
+      var _c = getDiscountConfig();
+      var b1 = Math.round(pr * 1 * (1 - _c.buy1 / 100) * 100) / 100;
+      var b2 = Math.round(pr * 2 * (1 - _c.buy2 / 100) * 100) / 100;
+      var b3 = Math.round(pr * 3 * (1 - _c.buy3 / 100) * 100) / 100;
       var k1 = Math.round(pr * 1 * 100) / 100;
       var k2 = Math.round(pr * 2 * 100) / 100;
       var k3 = Math.round(pr * 3 * 100) / 100;
@@ -604,8 +611,25 @@
       }
     }
 
+    function renderBundlePickers(count) {
+      var variants = currentProduct.variants.edges.map(function(e) { return e.node; });
+      var optionsStr = variants.map(function(v) {
+        return '<option value="' + v.id + '">' + v.title + (v.availableForSale ? '' : ' (Sold out)') + '</option>';
+      }).join('');
+      var html = '';
+      for (var i = 0; i < count; i++) {
+        html += '<div class="space-y-1">' +
+          '<label class="font-headline font-bold text-sm text-on-surface">Item ' + (i + 1) + '</label>' +
+          '<select class="bundle-variant-select w-full px-4 py-3 rounded-xl bg-surface-container-low border-2 border-outline-variant/30 focus:border-primary focus:ring-0 text-sm font-body text-on-surface cursor-pointer transition-colors">' +
+          optionsStr + '</select></div>';
+      }
+      document.getElementById('bundle-variant-pickers').innerHTML = html;
+    }
+
     function setupBundleClicks(cur) {
       var opts = document.querySelectorAll('.bundle-opt');
+      var singleOpts = document.getElementById('single-variant-options');
+      var bundlePickers = document.getElementById('bundle-variant-pickers');
       for (var i = 0; i < opts.length; i++) {
         (function(opt) {
           opt.addEventListener('click', function() {
@@ -617,6 +641,15 @@
             var savAmt = document.getElementById('savings-amount');
             if (sv > 0) { savBar.classList.remove('hidden'); savAmt.textContent = formatMoney(sv, cur); }
             else { savBar.classList.add('hidden'); }
+            // Toggle variant pickers
+            if (bundleQty === 1) {
+              singleOpts.style.display = '';
+              bundlePickers.style.display = 'none';
+            } else {
+              singleOpts.style.display = 'none';
+              bundlePickers.style.display = '';
+              renderBundlePickers(bundleQty);
+            }
           });
         })(opts[i]);
       }
@@ -630,6 +663,16 @@
       if (inc) inc.addEventListener('click', function() { if (quantity < 99) { quantity++; v.textContent = quantity; } });
     }
 
+    function getBundleLines() {
+      // For Buy 2/3: collect each bundle-variant-select value
+      var selects = document.querySelectorAll('.bundle-variant-select');
+      var lines = [];
+      for (var i = 0; i < selects.length; i++) {
+        lines.push({ variantId: selects[i].value, quantity: quantity });
+      }
+      return lines;
+    }
+
     function setupCTA() {
       var atc = document.getElementById('btn-atc');
       if (atc) {
@@ -638,13 +681,20 @@
           atc.disabled = true;
           var orig = atc.innerHTML;
           atc.innerHTML = '<span class="material-symbols-outlined animate-spin text-xl">progress_activity</span> Adding...';
+          var safetyTimer = setTimeout(function() { atc.disabled = false; atc.innerHTML = orig; }, 5000);
           try {
-            await addToCart(selectedVariant.id, bundleQty * quantity);
+            if (bundleQty === 1) {
+              await addToCart(selectedVariant.id, quantity);
+            } else {
+              await addMultipleToCart(getBundleLines());
+            }
+            clearTimeout(safetyTimer);
             showToast('Added to cart!', 'success');
             try { openCartDrawer(); } catch(e) {}
             atc.innerHTML = '<span class="material-symbols-outlined text-xl">check_circle</span> Added!';
             setTimeout(function() { atc.innerHTML = orig; }, 1500);
           } catch(e) {
+            clearTimeout(safetyTimer);
             console.error(e);
             showToast('Failed to add to cart', 'error');
             atc.innerHTML = orig;
@@ -659,8 +709,15 @@
           buy.disabled = true;
           var orig = buy.innerHTML;
           buy.textContent = 'Processing...';
+          var safetyTimer = setTimeout(function() { buy.disabled = false; buy.innerHTML = orig; }, 5000);
           try {
-            var cart = await addToCart(selectedVariant.id, bundleQty * quantity);
+            var cart;
+            if (bundleQty === 1) {
+              cart = await addToCart(selectedVariant.id, quantity);
+            } else {
+              cart = await addMultipleToCart(getBundleLines());
+            }
+            clearTimeout(safetyTimer);
             var url = getCheckoutUrl(cart);
             if (url && url !== '#') {
               window.location.href = url;
@@ -668,6 +725,7 @@
             }
             showToast('Unable to start checkout', 'error');
           } catch(e) {
+            clearTimeout(safetyTimer);
             console.error(e);
             showToast('Failed to checkout', 'error');
           } finally {
@@ -713,10 +771,11 @@
         document.getElementById('related-products').innerHTML = recs.slice(0, 6).map(function(r) {
           var pr = r.priceRange.minVariantPrice;
           var rawAmt = parseFloat(pr.amount);
-          var saleAmt = Math.round(rawAmt * 0.60 * 100) / 100; // 40% off sitewide
+          var _rc = getDiscountConfig();
+          var saleAmt = Math.round(rawAmt * (1 - _rc.buy1 / 100) * 100) / 100;
           return '<a href="product.html?handle=' + r.handle + '" class="snap-start flex-shrink-0 w-[160px] lg:w-[200px] group block">' +
             '<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low mb-3 relative">' +
-              '<div class="absolute top-2 left-2 z-10 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">-40%</div>' +
+              '<div class="absolute top-2 left-2 z-10 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">-' + _rc.buy1 + '%</div>' +
               (r.featuredImage ? '<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="' + r.featuredImage.url + '" alt="' + (r.featuredImage.altText || r.title) + '" loading="lazy" />' : '<div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-4xl">image</span></div>') +
             '</div>' +
             '<h3 class="font-headline font-bold text-xs text-on-surface line-clamp-2 mb-1">' + r.title + '</h3>' +

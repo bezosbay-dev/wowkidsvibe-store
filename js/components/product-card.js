@@ -1,20 +1,18 @@
 import { formatMoney } from '../api/client.js';
-import { addToCart } from '../api/cart.js';
+import { addToCart, getDiscountConfig } from '../api/cart.js';
 import { showToast } from './toast.js';
 import { openCartDrawer } from './header.js';
 
-// Sitewide discount — matches the "Buy 1 = 40% OFF" bundle logic on the product page.
-// The Shopify price field holds the original/base price; the customer actually pays 40% less.
-const SITEWIDE_DISCOUNT = 0.40;
-
 export function renderProductCard(product, style = 'default') {
+  const cfg = getDiscountConfig();
+  const sitewideDiscount = cfg.buy1 / 100;
   const rawPrice = product.priceRange.minVariantPrice;
   const rawAmount = parseFloat(rawPrice.amount);
-  const saleAmount = Math.round(rawAmount * (1 - SITEWIDE_DISCOUNT) * 100) / 100;
+  const saleAmount = Math.round(rawAmount * (1 - sitewideDiscount) * 100) / 100;
   const price = { amount: String(saleAmount), currencyCode: rawPrice.currencyCode };
   const compareAt = rawPrice; // original Shopify price shown as strikethrough
   const hasDiscount = true;
-  const discountPercent = Math.round(SITEWIDE_DISCOUNT * 100);
+  const discountPercent = Math.round(sitewideDiscount * 100);
   const variantId = product.variants?.edges?.[0]?.node?.id || '';
   const image = product.featuredImage;
   const tag = product.tags?.[0] || '';

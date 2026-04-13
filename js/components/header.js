@@ -1,4 +1,4 @@
-import { getCart, getDiscountTier, getCheckoutUrl } from '../api/cart.js';
+import { getCart, getDiscountTier, getCheckoutUrl, fetchDiscountConfig } from '../api/cart.js';
 import { predictiveSearch } from '../api/search.js';
 import { formatMoney } from '../api/client.js';
 
@@ -20,6 +20,7 @@ export function initHeader() {
   setupMobileMenu();
   setupSearch();
   setupScrollAnimation();
+  fetchDiscountConfig(); // fire-and-forget: ensures config is loaded on every page
 }
 
 function renderHeader() {

@@ -313,18 +313,22 @@ function setupAddToCart() {
     atcBtn.addEventListener('click', async function() {
       if (!selectedVariant || !selectedVariant.availableForSale) return;
       atcBtn.disabled = true;
+      var origHTML = atcBtn.innerHTML;
       atcBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Adding...';
+      var safetyTimer = setTimeout(function() { atcBtn.disabled = false; atcBtn.innerHTML = origHTML; }, 5000);
 
       try {
         await addToCart(selectedVariant.id, quantity);
+        clearTimeout(safetyTimer);
         showToast('Added to cart!', 'success');
         openCartDrawer();
       } catch (err) {
+        clearTimeout(safetyTimer);
         console.error('[ProductPage] Add to cart error:', err);
         showToast('Failed to add to cart', 'error');
       } finally {
         atcBtn.disabled = false;
-        atcBtn.innerHTML = '<span class="material-symbols-outlined">shopping_bag</span> ADD TO CART';
+        atcBtn.innerHTML = origHTML;
       }
     });
   }
@@ -334,10 +338,13 @@ function setupAddToCart() {
     buyBtn.addEventListener('click', async function() {
       if (!selectedVariant || !selectedVariant.availableForSale) return;
       buyBtn.disabled = true;
+      var origHTML = buyBtn.innerHTML;
       buyBtn.textContent = 'Processing...';
+      var safetyTimer = setTimeout(function() { buyBtn.disabled = false; buyBtn.innerHTML = origHTML; }, 5000);
 
       try {
         var cart = await addToCart(selectedVariant.id, quantity);
+        clearTimeout(safetyTimer);
         var url = getCheckoutUrl(cart);
         if (url && url !== '#') {
           window.location.href = url;
@@ -345,11 +352,12 @@ function setupAddToCart() {
         }
         showToast('Unable to start checkout', 'error');
       } catch (err) {
+        clearTimeout(safetyTimer);
         console.error('[ProductPage] Buy now error:', err);
         showToast('Failed to proceed to checkout', 'error');
       } finally {
         buyBtn.disabled = false;
-        buyBtn.textContent = 'BUY IT NOW';
+        buyBtn.innerHTML = origHTML;
       }
     });
   }
