@@ -44,7 +44,7 @@ function renderHeader() {
         <div class="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between flex-nowrap">
           <!-- Left: Logo -->
           <a href="${b}index.html" class="font-extrabold tracking-tighter text-[#FF4D6D] font-headline whitespace-nowrap flex-shrink-0" style="font-size:clamp(1.15rem,2.5vw,1.5rem);">
-            WowKidsVibe
+            WoowFinds
           </a>
 
           <!-- Center: Nav Links (desktop) -->
@@ -97,7 +97,7 @@ function renderHeader() {
     <div id="mobile-menu" class="fixed top-0 left-0 w-80 h-full bg-background z-[56] mobile-menu overflow-y-auto">
       <div class="p-6">
         <div class="flex justify-between items-center mb-8">
-          <a href="${b}index.html" class="text-2xl font-extrabold tracking-tighter text-[#FF4D6D] font-headline">WowKidsVibe</a>
+          <a href="${b}index.html" class="text-2xl font-extrabold tracking-tighter text-[#FF4D6D] font-headline">WoowFinds</a>
           <button id="mobile-menu-close" class="p-2">
             <span class="material-symbols-outlined">close</span>
           </button>

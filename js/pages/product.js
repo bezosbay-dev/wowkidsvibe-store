@@ -45,7 +45,7 @@ export async function initProductPage() {
       return;
     }
 
-    document.title = currentProduct.title + ' — WowKidsVibe';
+    document.title = currentProduct.title + ' — WoowFinds';
     renderProduct(container);
     loadRecommendations();
 

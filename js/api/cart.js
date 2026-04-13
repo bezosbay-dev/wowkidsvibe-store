@@ -1,7 +1,7 @@
 import { shopifyFetch } from './client.js';
 
-const CART_ID_KEY = 'wowkidsvibe_cart_id';
-const CART_CACHE_KEY = 'wowkidsvibe_cart_cache';
+const CART_ID_KEY = 'woowfinds_cart_id';
+const CART_CACHE_KEY = 'woowfinds_cart_cache';
 const DISCOUNT_CFG_KEY = 'wkv_discount_cfg';
 const DISCOUNT_CFG_TTL = 30 * 60 * 1000; // 30 min
 

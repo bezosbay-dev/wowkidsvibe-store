@@ -1,6 +1,6 @@
 import { shopifyFetch } from './client.js';
 
-const TOKEN_KEY = 'wowkidsvibe_customer_token';
+const TOKEN_KEY = 'woowfinds_customer_token';
 
 export function getStoredToken() {
   return localStorage.getItem(TOKEN_KEY);
@@ -108,7 +108,7 @@ export async function getCustomer() {
 // Returns true if the logged-in customer has a completed order containing the
 // given product ID. Uses Storefront API only (no Admin token needed). Cached
 // per session to avoid re-querying on every product page view.
-const PURCHASE_CACHE_KEY = 'wowkidsvibe_purchased_products';
+const PURCHASE_CACHE_KEY = 'woowfinds_purchased_products';
 
 function readPurchaseCache() {
   try { return JSON.parse(sessionStorage.getItem(PURCHASE_CACHE_KEY) || '{}'); }

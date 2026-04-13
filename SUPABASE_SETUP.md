@@ -1,6 +1,6 @@
 # Supabase Setup — Verified Reviews
 
-This file walks you through wiring Supabase up to the WowKidsVibe review system.
+This file walks you through wiring Supabase up to the WoowFinds review system.
 Until you complete this, the review UI runs with fallback sample data.
 
 ---
@@ -146,4 +146,4 @@ server-side role check.
 | Reviews show "Sarah M." etc. | Supabase not configured yet — this is the fallback sample data. Finish step 4. |
 | "Could not save review: 401" | Your anon key is wrong or RLS policies weren't created. Re-run the SQL. |
 | "You have already reviewed this product" on first attempt | The unique index caught a ghost row. Check the table for leftover test rows. |
-| Verified badge not appearing for a known buyer | The customer must be logged in *and* the order must be non-refunded. Check `sessionStorage` for `wowkidsvibe_purchased_products`. |
+| Verified badge not appearing for a known buyer | The customer must be logged in *and* the order must be non-refunded. Check `sessionStorage` for `woowfinds_purchased_products`. |

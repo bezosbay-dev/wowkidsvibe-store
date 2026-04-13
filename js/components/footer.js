@@ -19,7 +19,7 @@ function renderFooter() {
           <!-- Left Column: Logo & Socials -->
           <div class="md:col-span-4 space-y-8">
             <a href="${b}index.html" class="text-2xl font-extrabold tracking-tighter font-headline text-white hover:text-[#FF4D6D] transition-colors">
-              WowKidsVibe
+              WoowFinds
             </a>
             <p class="text-zinc-400 text-sm leading-relaxed max-w-xs font-body">
               Elevating the childhood experience through high-energy, curated design and kinetic innovation.
@@ -78,7 +78,7 @@ function renderFooter() {
         <!-- Bottom Bar -->
         <div class="pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-8">
           <p class="text-[10px] font-label uppercase tracking-[0.2em] text-zinc-500">
-            &copy; ${new Date().getFullYear()} WOWKIDSVIBE. CURATING KINETIC CHILDHOODS.
+            &copy; ${new Date().getFullYear()} WOOWFINDS. CURATING KINETIC FINDS.
           </p>
           <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
             <div class="flex flex-wrap gap-2 justify-center items-center">

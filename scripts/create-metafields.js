@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ============================================================
-// CREATE ALL PRODUCT METAFIELD DEFINITIONS FOR WOWKIDSVIBE
+// CREATE ALL PRODUCT METAFIELD DEFINITIONS FOR WOOWFINDS
 // ============================================================
 //
 // HOW TO USE:
