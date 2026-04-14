@@ -31,7 +31,7 @@ function renderHeader() {
       <!-- Announcement Bar -->
       <div class="w-full bg-primary text-on-primary font-label text-xs uppercase tracking-widest">
         <div class="max-w-[1200px] mx-auto px-4 py-1.5 flex items-center justify-center gap-2 sm:gap-6 flex-wrap">
-          <span>Flash Sale: Up to 40% Off Storewide</span>
+          <span>Flash Sale: Up to 60% Off Storewide</span>
           <div class="flex items-center gap-2 bg-on-primary/10 px-3 py-0.5 rounded-full">
             <span class="opacity-70">Ends In:</span>
             <span class="font-bold" id="countdown-timer">04:12:55</span>

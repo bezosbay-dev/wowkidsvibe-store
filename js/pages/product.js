@@ -72,12 +72,12 @@ function renderProduct(container) {
   const mainImage = selectedVariant.image || images[0];
   const rawPrice = selectedVariant.price;
   const rawAmount = parseFloat(rawPrice.amount);
-  // Sitewide 40% discount — matches the bundle "Buy 1" logic
-  const saleAmount = Math.round(rawAmount * 0.60 * 100) / 100;
+  // Sitewide 30% discount — matches the bundle "Buy 1" logic
+  const saleAmount = Math.round(rawAmount * 0.70 * 100) / 100;
   const price = { amount: String(saleAmount), currencyCode: rawPrice.currencyCode };
   const compareAt = rawPrice; // original Shopify price shown as strikethrough
   const hasDiscount = true;
-  const discountPercent = 40;
+  const discountPercent = 30;
 
   // Update breadcrumb
   const breadcrumb = document.getElementById('product-breadcrumb');
@@ -271,7 +271,7 @@ function setupVariantOptions(variants) {
 
 function updatePriceDisplay(variant) {
   var rawAmount = parseFloat(variant.price.amount);
-  var saleAmount = Math.round(rawAmount * 0.60 * 100) / 100; // 40% off
+  var saleAmount = Math.round(rawAmount * 0.70 * 100) / 100; // 30% off
   var priceEl = document.getElementById('variant-price');
   if (priceEl) {
     priceEl.textContent = formatMoney(saleAmount, variant.price.currencyCode);
@@ -379,7 +379,7 @@ async function loadRecommendations() {
     grid.innerHTML = recs.slice(0, 4).map(function(p) {
       var recRaw = p.priceRange.minVariantPrice;
       var recRawAmt = parseFloat(recRaw.amount);
-      var recSaleAmt = Math.round(recRawAmt * 0.60 * 100) / 100; // 40% off
+      var recSaleAmt = Math.round(recRawAmt * 0.70 * 100) / 100; // 30% off
 
       return '<a href="/product.html?handle=' + p.handle + '" class="group block">' +
         '<div class="aspect-square rounded-2xl bg-surface-container-low overflow-hidden mb-4 relative">' +

@@ -7,9 +7,9 @@ const DISCOUNT_CFG_TTL = 30 * 60 * 1000; // 30 min
 
 // ── Dynamic discount config ──────────────────────────────────────
 // Fetched from Shopify shop metafield "custom.discount_config".
-// Expected JSON value: {"buy1": 40, "buy2": 60, "buy3": 70}
+// Expected JSON value: {"buy1": 30, "buy2": 50, "buy3": 60}
 // Change ONLY in Shopify Admin → the website picks it up automatically.
-let discountConfig = { buy1: 40, buy2: 60, buy3: 70 };
+let discountConfig = { buy1: 30, buy2: 50, buy3: 60 };
 
 export function getDiscountConfig() {
   return discountConfig;
@@ -40,9 +40,9 @@ export async function fetchDiscountConfig() {
     if (raw) {
       const parsed = JSON.parse(raw);
       const cfg = {
-        buy1: Number(parsed.buy1) || 40,
-        buy2: Number(parsed.buy2) || 60,
-        buy3: Number(parsed.buy3) || 70,
+        buy1: Number(parsed.buy1) || 30,
+        buy2: Number(parsed.buy2) || 50,
+        buy3: Number(parsed.buy3) || 60,
       };
       discountConfig = cfg;
       try { sessionStorage.setItem(DISCOUNT_CFG_KEY, JSON.stringify({ data: cfg, ts: Date.now() })); } catch {}
