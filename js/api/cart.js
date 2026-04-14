@@ -135,28 +135,33 @@ function dispatchCartEvent(cart) {
   window.dispatchEvent(new CustomEvent('cart:updated', { detail: cart }));
 }
 
-// ── Auto-apply discount code (fire-and-forget) ──────────────────
-function applyDiscountToCart(cart) {
-  if (!cart || !cart.id || cart.totalQuantity < 1) return;
+// ── Auto-apply discount code (awaited before returning cart) ─────
+async function applyDiscountToCart(cart) {
+  if (!cart || !cart.id || cart.totalQuantity < 1) return cart;
   const tier = getDiscountTier(cart.totalQuantity);
 
   const existing = cart.discountCodes?.find(d => d.code === tier.code && d.applicable);
-  if (existing) return;
+  if (existing) return cart;
 
-  shopifyFetch(`
-    mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!) {
-      cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
-        cart { ...CartFields }
-        userErrors { field message }
+  try {
+    const data = await shopifyFetch(`
+      mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!) {
+        cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
+          cart { ...CartFields }
+          userErrors { field message }
+        }
       }
+      ${CART_FRAGMENT}
+    `, { cartId: cart.id, discountCodes: [tier.code] });
+    const updated = data.cartDiscountCodesUpdate?.cart;
+    if (updated) {
+      dispatchCartEvent(updated);
+      return updated;
     }
-    ${CART_FRAGMENT}
-  `, { cartId: cart.id, discountCodes: [tier.code] })
-    .then(data => {
-      const updated = data.cartDiscountCodesUpdate?.cart;
-      if (updated) dispatchCartEvent(updated);
-    })
-    .catch(err => console.warn('Discount code not applied:', err.message));
+  } catch (err) {
+    console.warn('Discount code not applied:', err.message);
+  }
+  return cart;
 }
 
 // ── Cart mutations ───────────────────────────────────────────────
@@ -171,11 +176,11 @@ export async function createCart(lines = []) {
     ${CART_FRAGMENT}
   `, { input: { lines } });
 
-  const cart = data.cartCreate.cart;
+  let cart = data.cartCreate.cart;
   if (cart) {
     storeCartId(cart.id);
     dispatchCartEvent(cart);
-    applyDiscountToCart(cart);
+    cart = await applyDiscountToCart(cart);
   }
   return cart;
 }
@@ -232,10 +237,10 @@ export async function addMultipleToCart(items) {
       ${CART_FRAGMENT}
     `, { cartId, lines });
 
-    const cart = data.cartLinesAdd.cart;
+    let cart = data.cartLinesAdd.cart;
     if (cart) {
       dispatchCartEvent(cart);
-      applyDiscountToCart(cart);
+      cart = await applyDiscountToCart(cart);
     }
     return cart;
   } catch (err) {
@@ -265,10 +270,10 @@ export async function updateCartLine(lineId, quantity) {
     ${CART_FRAGMENT}
   `, { cartId, lines: [{ id: lineId, quantity }] });
 
-  const cart = data.cartLinesUpdate.cart;
+  let cart = data.cartLinesUpdate.cart;
   if (cart) {
     dispatchCartEvent(cart);
-    applyDiscountToCart(cart);
+    cart = await applyDiscountToCart(cart);
   }
   return cart;
 }
@@ -287,10 +292,10 @@ export async function removeCartLine(lineId) {
     ${CART_FRAGMENT}
   `, { cartId, lineIds: [lineId] });
 
-  const cart = data.cartLinesRemove.cart;
+  let cart = data.cartLinesRemove.cart;
   if (cart) {
     dispatchCartEvent(cart);
-    applyDiscountToCart(cart);
+    cart = await applyDiscountToCart(cart);
   }
   return cart;
 }
