@@ -20,6 +20,7 @@ export function initHeader() {
   setupMobileMenu();
   setupSearch();
   setupScrollAnimation();
+  setupCopyProtection();
   fetchDiscountConfig(); // fire-and-forget: ensures config is loaded on every page
 }
 
@@ -431,4 +432,22 @@ function setupScrollAnimation() {
   }, { threshold: 0.1 });
 
   document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+}
+
+// ── Copy Protection ─────────────────────────────────────────
+function setupCopyProtection() {
+  // Block right-click context menu
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // Block Ctrl+C, Ctrl+A, Ctrl+S, Ctrl+U (view source)
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && ['c','a','s','u'].includes(e.key.toLowerCase())) {
+      e.preventDefault();
+    }
+  });
+
+  // Block image drag
+  document.addEventListener('dragstart', e => {
+    if (e.target.tagName === 'IMG') e.preventDefault();
+  });
 }

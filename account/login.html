@@ -41,6 +41,9 @@
             </button>
           </div>
         </div>
+        <div class="flex justify-end">
+          <button type="button" id="forgot-pw-link" class="text-sm text-primary font-medium hover:underline">Forgot Password?</button>
+        </div>
         <button id="login-btn" class="w-full py-5 kinetic-gradient text-white rounded-full font-headline font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-lg" type="submit">
           Sign In
         </button>
@@ -48,6 +51,35 @@
           Don't have an account? <a href="register.html" class="text-primary font-bold hover:underline">Create one</a>
         </p>
       </form>
+
+      <!-- Forgot Password Modal -->
+      <div id="forgot-pw-modal" class="hidden fixed inset-0 z-[999] flex items-center justify-center px-6">
+        <div id="forgot-pw-overlay" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+        <div class="relative bg-surface-container-lowest rounded-2xl p-8 soft-shadow max-w-md w-full space-y-6 animate-on-scroll visible">
+          <button id="forgot-pw-close" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary transition-colors">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+          <div class="text-center">
+            <span class="material-symbols-outlined text-5xl text-primary mb-4 block">lock_reset</span>
+            <h2 class="text-2xl font-headline font-extrabold mb-2">Reset Password</h2>
+            <p class="text-on-surface-variant text-sm">Enter your email and we'll send you a link to reset your password.</p>
+          </div>
+          <div id="forgot-pw-error" class="hidden bg-error-container/20 text-error p-4 rounded-xl text-sm font-medium"></div>
+          <div id="forgot-pw-success" class="hidden bg-green-100 text-green-700 p-4 rounded-xl text-sm font-medium"></div>
+          <form id="forgot-pw-form" class="space-y-4">
+            <div class="space-y-2">
+              <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant ml-2">Email Address</label>
+              <input id="forgot-pw-email" class="w-full px-5 py-4 rounded-xl bg-surface-container-highest/30 border-none focus:ring-2 focus:ring-tertiary transition-all" placeholder="your@email.com" type="email" required />
+            </div>
+            <button id="forgot-pw-btn" class="w-full py-4 kinetic-gradient text-white rounded-full font-headline font-bold text-base hover:scale-[1.02] active:scale-95 transition-all shadow-lg" type="submit">
+              Send Reset Link
+            </button>
+          </form>
+          <p class="text-center text-sm text-on-surface-variant">
+            Remember your password? <button id="forgot-pw-back" class="text-primary font-bold hover:underline">Sign In</button>
+          </p>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -56,7 +88,7 @@
   <script type="module">
     import { initHeader } from '../js/components/header.js';
     import { initFooter } from '../js/components/footer.js';
-    import { customerLogin, getStoredToken } from '../js/api/customer.js';
+    import { customerLogin, customerRecover, getStoredToken } from '../js/api/customer.js';
     import { showToast } from '../js/components/toast.js';
 
     initHeader();
@@ -94,6 +126,48 @@
       } finally {
         btn.disabled = false;
         btn.textContent = 'Sign In';
+      }
+    });
+
+    // Forgot Password Modal
+    const forgotModal = document.getElementById('forgot-pw-modal');
+    const forgotForm = document.getElementById('forgot-pw-form');
+    const forgotError = document.getElementById('forgot-pw-error');
+    const forgotSuccess = document.getElementById('forgot-pw-success');
+
+    function openForgotModal() {
+      forgotModal.classList.remove('hidden');
+      forgotError.classList.add('hidden');
+      forgotSuccess.classList.add('hidden');
+      forgotForm.classList.remove('hidden');
+      document.getElementById('forgot-pw-email').value = document.getElementById('login-email').value || '';
+    }
+    function closeForgotModal() { forgotModal.classList.add('hidden'); }
+
+    document.getElementById('forgot-pw-link').addEventListener('click', openForgotModal);
+    document.getElementById('forgot-pw-close').addEventListener('click', closeForgotModal);
+    document.getElementById('forgot-pw-overlay').addEventListener('click', closeForgotModal);
+    document.getElementById('forgot-pw-back').addEventListener('click', closeForgotModal);
+
+    forgotForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('forgot-pw-btn');
+      const email = document.getElementById('forgot-pw-email').value;
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      forgotError.classList.add('hidden');
+      forgotSuccess.classList.add('hidden');
+      try {
+        await customerRecover(email);
+        forgotForm.classList.add('hidden');
+        forgotSuccess.textContent = 'Password reset email sent! Check your inbox (and spam folder) for a link to reset your password.';
+        forgotSuccess.classList.remove('hidden');
+      } catch (err) {
+        forgotError.textContent = err.message || 'Could not send reset email. Please try again.';
+        forgotError.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Reset Link';
       }
     });
   </script>

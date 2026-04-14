@@ -49,7 +49,7 @@
     .thumb-item:hover { border-color:#aeacb6; }
 
     /* Bottom mobile nav */
-    .mobile-bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:90; background:#fff; border-top:1px solid #e4e1ee; display:flex; padding:6px 0 max(6px, env(safe-area-inset-bottom)); box-shadow:0 -2px 10px rgba(0,0,0,.05); }
+    .mobile-bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:70; background:#fff; border-top:1px solid #e4e1ee; display:flex; padding:6px 0 max(6px, env(safe-area-inset-bottom)); box-shadow:0 -2px 10px rgba(0,0,0,.05); }
     .mobile-bottom-nav a { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; font-size:10px; font-weight:600; color:#5c5a63; text-decoration:none; padding:6px 0; transition:color .15s; }
     .mobile-bottom-nav a:hover, .mobile-bottom-nav a.active { color:#b60d3d; }
     @media(min-width:1024px) { .mobile-bottom-nav { display:none; } }
@@ -61,8 +61,44 @@
     /* Description strip images */
     #desc-content img, #desc-content video, #desc-content iframe, #desc-content picture, #desc-content source { display:none!important; }
 
-    /* Mobile bottom padding */
-    @media(max-width:1023px) { .pdp-main { padding-bottom:80px; } }
+    /* Mobile bottom padding — account for sticky ATC bar */
+    @media(max-width:1023px) { .pdp-main { padding-bottom:140px; } }
+    @media(min-width:1024px) { .pdp-main { padding-bottom:100px; } }
+
+    /* Scrolling announcement bar */
+    .pdp-marquee-wrap { overflow:hidden; white-space:nowrap; background:#111; color:#fff; }
+    .pdp-marquee { display:inline-block; animation:pdp-marquee 30s linear infinite; }
+    .pdp-marquee span { display:inline-block; padding:0 2rem; font-size:12px; font-weight:600; letter-spacing:0.06em; }
+    @keyframes pdp-marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    /* Trust badge pills */
+    .trust-pill { display:flex; align-items:center; gap:8px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:12px 16px; }
+    .trust-pill .t-icon { width:36px; height:36px; min-width:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+
+    /* Feature section */
+    .feature-block { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; }
+    .feature-block.reverse { direction:rtl; }
+    .feature-block.reverse > * { direction:ltr; }
+    @media(max-width:767px) { .feature-block, .feature-block.reverse { grid-template-columns:1fr; direction:ltr; } }
+    .feature-block img { width:100%; border-radius:1.25rem; object-fit:cover; aspect-ratio:4/3; }
+    .feature-check { display:flex; align-items:flex-start; gap:10px; font-size:14px; color:#2f2e36; line-height:1.5; }
+    .feature-check .material-symbols-outlined { color:#16a34a; font-size:18px; flex-shrink:0; margin-top:2px; }
+
+    /* Testimonial card */
+    .testi-card { background:#fff; border:1px solid #e4e1ee; border-radius:1rem; padding:1.5rem; position:relative; }
+    .testi-card::before { content:''; position:absolute; top:0; left:24px; width:40px; height:4px; border-radius:0 0 4px 4px; }
+    .testi-card:nth-child(1)::before { background:#b60d3d; }
+    .testi-card:nth-child(2)::before { background:#7e32c1; }
+    .testi-card:nth-child(3)::before { background:#6d5a00; }
+
+    /* Review bar */
+    .rev-bar-track { height:8px; background:#e4e1ee; border-radius:4px; flex:1; overflow:hidden; }
+    .rev-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,#facc15,#eab308); transition:width .6s ease; }
+
+    /* Sticky ATC */
+    .sticky-atc { position:fixed; bottom:0; left:0; right:0; z-index:80; background:#fff; border-top:1px solid #e4e1ee; box-shadow:0 -4px 20px rgba(0,0,0,.08); transform:translateY(100%); transition:transform .35s cubic-bezier(.4,0,.2,1); padding:10px 16px; }
+    .sticky-atc.show { transform:translateY(0); }
+    @media(min-width:1024px) { .sticky-atc { padding:12px 2rem; } }
 
     /* Product Story */
     .story-block { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:center; }
@@ -97,6 +133,10 @@
 
   <!-- Main Content -->
   <main class="pdp-main pt-24 pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Scrolling Announcement Bar -->
+    <div class="pdp-marquee-wrap rounded-xl py-2.5 mb-6" id="pdp-announcement" style="display:none">
+      <div class="pdp-marquee" id="pdp-marquee-inner"></div>
+    </div>
     <div id="product-detail"></div>
     <div id="description-section" style="display:none"></div>
 
@@ -128,6 +168,24 @@
         </div>
         <!-- Breakdown bars -->
         <div class="md:col-span-3 space-y-2" id="rev-breakdown"></div>
+      </div>
+
+      <!-- Search & Sort & Write Review -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6">
+        <div class="relative flex-1">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+          <input id="rev-search" class="w-full pl-10 pr-4 py-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary text-sm transition-all" placeholder="Search reviews..." type="text" />
+        </div>
+        <select id="rev-sort" class="px-4 py-3 rounded-xl bg-surface-container-low border-none focus:ring-2 focus:ring-primary text-sm font-medium text-on-surface cursor-pointer">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="highest">Highest Rated</option>
+          <option value="lowest">Lowest Rated</option>
+          <option value="helpful">Most Helpful</option>
+        </select>
+        <a href="#rev-form" class="px-5 py-3 kinetic-gradient text-white rounded-xl font-headline font-bold text-sm text-center flex items-center gap-2 hover:scale-[1.02] transition-all whitespace-nowrap">
+          <span class="material-symbols-outlined text-lg">edit</span> Write a Review
+        </a>
       </div>
 
       <!-- Reviews list -->
@@ -207,6 +265,36 @@
       </div>
     </section>
 
+    <!-- Trust Badges Row -->
+    <section id="trust-badges-section" class="mt-12 lg:mt-16" style="display:none">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+        <div class="trust-pill">
+          <div class="t-icon bg-green-100"><span class="material-symbols-outlined text-green-600" style="font-variation-settings:'FILL' 1">shield</span></div>
+          <div><div class="font-headline font-bold text-sm text-on-surface">30-Day Money Back</div><div class="text-xs text-on-surface-variant">No questions asked</div></div>
+        </div>
+        <div class="trust-pill">
+          <div class="t-icon bg-blue-100"><span class="material-symbols-outlined text-blue-600" style="font-variation-settings:'FILL' 1">local_shipping</span></div>
+          <div><div class="font-headline font-bold text-sm text-on-surface">Fast Free Shipping</div><div class="text-xs text-on-surface-variant">On all orders</div></div>
+        </div>
+        <div class="trust-pill">
+          <div class="t-icon bg-purple-100"><span class="material-symbols-outlined text-purple-600" style="font-variation-settings:'FILL' 1">lock</span></div>
+          <div><div class="font-headline font-bold text-sm text-on-surface">Secure Checkout</div><div class="text-xs text-on-surface-variant">SSL encrypted payment</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Sections (alternating image + text) -->
+    <section id="feature-sections" class="mt-16 lg:mt-24 space-y-16" style="display:none"></section>
+
+    <!-- What Our Customers Say (3 testimonial cards) -->
+    <section id="testimonials-section" class="mt-16 lg:mt-24" style="display:none">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl lg:text-3xl font-headline font-extrabold text-on-surface mb-2">What Our Customers Say</h2>
+        <p class="text-on-surface-variant text-sm">Real reviews from real people</p>
+      </div>
+      <div id="testimonials-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"></div>
+    </section>
+
     <!-- You May Also Like -->
     <section id="related-section" class="mt-16 lg:mt-24" style="display:none">
       <h2 class="text-xl font-headline font-extrabold mb-6 text-on-surface flex items-center gap-3">
@@ -218,6 +306,23 @@
 
   <!-- Shared Footer -->
   <div data-component="footer"></div>
+
+  <!-- Sticky Add to Cart Bar -->
+  <div id="sticky-atc" class="sticky-atc">
+    <div class="max-w-7xl mx-auto flex items-center gap-4">
+      <img id="sticky-atc-img" class="w-12 h-12 rounded-xl object-cover flex-shrink-0 hidden" src="" alt="" />
+      <div class="flex-1 min-w-0">
+        <div id="sticky-atc-name" class="font-headline font-bold text-sm text-on-surface truncate"></div>
+        <div class="flex items-center gap-2">
+          <span id="sticky-atc-price" class="font-headline font-extrabold text-primary text-base"></span>
+          <span id="sticky-atc-compare" class="text-xs text-on-surface-variant line-through"></span>
+        </div>
+      </div>
+      <button id="sticky-atc-btn" class="flex-shrink-0 px-6 py-3 kinetic-gradient text-white rounded-full font-headline font-bold text-sm flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-lg">
+        <span class="material-symbols-outlined text-lg">shopping_cart</span> Add to Cart
+      </button>
+    </div>
+  </div>
 
   <!-- Bottom Mobile Nav -->
   <nav class="mobile-bottom-nav">
@@ -287,6 +392,11 @@
         renderFAQSection();
         initReviews();
         loadRecommendations();
+        initAnnouncementBar();
+        initTrustBadges();
+        renderFeatureSections();
+        renderTestimonialsSection();
+        initStickyATC();
       } catch(err) {
         console.error('Product page error:', err);
         container.innerHTML = '<div class="text-center py-20"><span class="material-symbols-outlined text-7xl text-error/30 mb-6 block">error</span><h2 class="font-headline font-extrabold text-xl mb-3">Failed to load product</h2><p class="text-on-surface-variant mb-2">' + err.message + '</p><a href="collection.html?handle=all" class="inline-block px-8 py-3 kinetic-gradient text-white rounded-full font-headline font-bold mt-6">Browse Products</a></div>';
@@ -692,6 +802,8 @@
             if (priceEl) priceEl.textContent = formatMoney(total, cur);
             if (compareEl) compareEl.textContent = formatMoney(total + sv, cur);
             if (badgeEl) badgeEl.textContent = 'SAVE ' + pct + '%';
+            // Update sticky ATC bar
+            window.dispatchEvent(new CustomEvent('stickyPriceUpdate', { detail: { price: formatMoney(total, cur), compare: formatMoney(total + sv, cur) } }));
             // Toggle variant pickers
             if (bundleQty === 1) {
               singleOpts.style.display = '';
@@ -1022,9 +1134,11 @@
       });
 
       renderSummary(stats);
-      var state = { reviews: reviews, shown: 3 };
+      var state = { reviews: reviews, allReviews: reviews.slice(), shown: 3 };
       renderReviewList(state);
       setupLoadMore(state);
+      setupReviewSearch(state);
+      setupReviewSort(state);
 
       await setupReviewForm(productId, productHandle, state);
     }
@@ -1066,9 +1180,9 @@
       ];
       bd.innerHTML = breakdown.map(function(r) {
         return '<div class="flex items-center gap-3">' +
-          '<span class="text-xs font-bold text-on-surface w-6">' + r.stars + '&#9733;</span>' +
-          '<div class="flex-1 h-2 bg-surface-container-high rounded-full overflow-hidden">' +
-            '<div class="h-full bg-yellow-400" style="width:' + r.pct + '%"></div>' +
+          '<span class="text-xs font-bold text-on-surface w-6 text-right">' + r.stars + '&#9733;</span>' +
+          '<div class="rev-bar-track">' +
+            '<div class="rev-bar-fill" style="width:' + r.pct + '%"></div>' +
           '</div>' +
           '<span class="text-xs text-on-surface-variant w-10 text-right">' + r.pct + '%</span>' +
         '</div>';
@@ -1149,6 +1263,47 @@
         state.shown = Math.min(state.shown + 3, state.reviews.length);
         renderReviewList(state);
       };
+    }
+
+    function setupReviewSearch(state) {
+      var input = document.getElementById('rev-search');
+      if (!input) return;
+      var timer = null;
+      input.addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(function() {
+          var q = input.value.trim().toLowerCase();
+          if (!q) {
+            state.reviews = state.allReviews.slice();
+          } else {
+            state.reviews = state.allReviews.filter(function(r) {
+              return (r.title && r.title.toLowerCase().indexOf(q) >= 0) ||
+                     (r.body && r.body.toLowerCase().indexOf(q) >= 0) ||
+                     (r.reviewer_name && r.reviewer_name.toLowerCase().indexOf(q) >= 0);
+            });
+          }
+          state.shown = 3;
+          renderReviewList(state);
+        }, 300);
+      });
+    }
+
+    function setupReviewSort(state) {
+      var select = document.getElementById('rev-sort');
+      if (!select) return;
+      select.addEventListener('change', function() {
+        var v = select.value;
+        state.reviews.sort(function(a, b) {
+          if (v === 'newest') return new Date(b.created_at) - new Date(a.created_at);
+          if (v === 'oldest') return new Date(a.created_at) - new Date(b.created_at);
+          if (v === 'highest') return Number(b.rating) - Number(a.rating);
+          if (v === 'lowest') return Number(a.rating) - Number(b.rating);
+          if (v === 'helpful') return Number(b.helpful_count || 0) - Number(a.helpful_count || 0);
+          return 0;
+        });
+        state.shown = 3;
+        renderReviewList(state);
+      });
     }
 
     async function setupReviewForm(productId, productHandle, state) {
@@ -1276,6 +1431,169 @@
           submitBtn.disabled = false;
           submitBtn.textContent = origText;
         }
+      });
+    }
+
+    // ── Scrolling Announcement Bar ───────────────────────────────
+    function initAnnouncementBar() {
+      var bar = document.getElementById('pdp-announcement');
+      var inner = document.getElementById('pdp-marquee-inner');
+      if (!bar || !inner) return;
+      var msgs = [
+        '1,000+ Happy Customers',
+        '30-Day Risk-Free Guarantee',
+        'Fast Free Worldwide Shipping',
+        'Secure Checkout',
+        'Premium Quality Products'
+      ];
+      var txt = msgs.map(function(m) { return '<span>' + m + '</span>'; }).join('<span class="opacity-40">&#x2022;</span>');
+      inner.innerHTML = txt + txt; // duplicate for seamless loop
+      bar.style.display = 'block';
+    }
+
+    // ── Trust Badges Row ──────────────────────────────────────────
+    function initTrustBadges() {
+      var sec = document.getElementById('trust-badges-section');
+      if (sec) sec.style.display = 'block';
+    }
+
+    // ── Feature Sections (built from product description) ─────────
+    function renderFeatureSections() {
+      if (!currentProduct) return;
+      var features = [
+        {
+          emoji: '&#127775;',
+          heading: 'Premium Quality Materials',
+          desc: 'Crafted with care using only the finest materials that are safe, durable, and built to last through years of play.',
+          checks: ['Non-toxic and BPA-free', 'Rigorously safety tested', 'Built to withstand daily use'],
+          img: (currentProduct.images.edges[1] ? currentProduct.images.edges[1].node.url : (currentProduct.images.edges[0] ? currentProduct.images.edges[0].node.url : ''))
+        },
+        {
+          emoji: '&#128640;',
+          heading: 'Designed for Learning & Fun',
+          desc: 'Every product is thoughtfully designed to spark creativity, encourage exploration, and make learning an adventure.',
+          checks: ['Stimulates imagination and creativity', 'Age-appropriate design', 'Hours of engaging entertainment'],
+          img: (currentProduct.images.edges[2] ? currentProduct.images.edges[2].node.url : (currentProduct.images.edges[0] ? currentProduct.images.edges[0].node.url : ''))
+        },
+        {
+          emoji: '&#127873;',
+          heading: 'The Perfect Gift',
+          desc: 'Looking for a gift that truly stands out? Our products come beautifully presented and ready to delight.',
+          checks: ['Gift-ready packaging', 'Loved by kids of all ages', 'Makes every occasion special'],
+          img: (currentProduct.images.edges[3] ? currentProduct.images.edges[3].node.url : (currentProduct.images.edges[0] ? currentProduct.images.edges[0].node.url : ''))
+        }
+      ];
+      var sec = document.getElementById('feature-sections');
+      if (!sec) return;
+      sec.style.display = 'block';
+      sec.innerHTML = '<div class="text-center mb-12"><h2 class="text-2xl lg:text-3xl font-headline font-extrabold text-on-surface mb-2">Why You\'ll Love It</h2><p class="text-on-surface-variant text-sm">Here\'s what makes this product special</p></div>' +
+        features.map(function(f, i) {
+          var rev = i % 2 === 1;
+          return '<div class="feature-block' + (rev ? ' reverse' : '') + ' max-w-5xl mx-auto">' +
+            (f.img ? '<img src="' + f.img + '" alt="' + f.heading + '" loading="lazy" />' : '<div class="aspect-[4/3] bg-surface-container-low rounded-xl"></div>') +
+            '<div class="space-y-5">' +
+              '<div class="text-4xl">' + f.emoji + '</div>' +
+              '<h3 class="text-xl lg:text-2xl font-headline font-extrabold text-on-surface">' + f.heading + '</h3>' +
+              '<p class="text-sm text-on-surface-variant leading-relaxed">' + f.desc + '</p>' +
+              '<div class="space-y-3">' + f.checks.map(function(c) {
+                return '<div class="feature-check"><span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1">check_circle</span><span>' + c + '</span></div>';
+              }).join('') + '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+    }
+
+    // ── Testimonials Section ──────────────────────────────────────
+    function renderTestimonialsSection() {
+      var p = currentProduct;
+      if (!p) return;
+      var reviews = [];
+      for (var n = 1; n <= 3; n++) {
+        var title = p['review' + n + 'Title'] ? p['review' + n + 'Title'].value : null;
+        var text = p['review' + n + 'Text'] ? p['review' + n + 'Text'].value : null;
+        var name = p['review' + n + 'Name'] ? p['review' + n + 'Name'].value : null;
+        var stars = p['review' + n + 'Stars'] ? parseInt(p['review' + n + 'Stars'].value) || 5 : 5;
+        if (title && text && name) reviews.push({ title: title, text: text, name: name, stars: stars });
+      }
+      // Use fallback testimonials if no metafield reviews exist
+      if (reviews.length === 0) {
+        reviews = [
+          { title: 'Absolutely Love It!', text: 'My kids haven\'t put it down since it arrived. The quality is incredible and it was delivered so fast. Will definitely be ordering more!', name: 'Sarah M.', stars: 5 },
+          { title: 'Best Purchase This Year', text: 'I was skeptical at first, but this exceeded all my expectations. My daughter plays with it every single day. Worth every penny.', name: 'James T.', stars: 5 },
+          { title: 'Perfect Gift', text: 'Bought this for my nephew\'s birthday and it was a hit! Beautiful packaging, great quality, and the whole family loved it.', name: 'Emily R.', stars: 5 }
+        ];
+      }
+      function makeStars(count) {
+        var h = '';
+        for (var i = 0; i < 5; i++) h += '<span class="material-symbols-outlined text-sm ' + (i < count ? 'text-yellow-400' : 'text-on-surface-variant/30') + '" style="font-variation-settings:\'FILL\' 1">star</span>';
+        return h;
+      }
+      var sec = document.getElementById('testimonials-section');
+      var grid = document.getElementById('testimonials-grid');
+      if (!sec || !grid) return;
+      sec.style.display = 'block';
+      grid.innerHTML = reviews.map(function(r) {
+        var initials = r.name.split(' ').map(function(w) { return w.charAt(0); }).join('').toUpperCase();
+        return '<div class="testi-card">' +
+          '<div class="flex items-center gap-3 mb-4">' +
+            '<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-headline font-bold text-primary text-sm">' + initials + '</div>' +
+            '<div>' +
+              '<div class="font-headline font-bold text-sm text-on-surface">' + escapeHTML(r.name) + '</div>' +
+              '<div class="flex gap-0.5">' + makeStars(r.stars) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<h4 class="font-headline font-bold text-sm text-on-surface mb-2">"' + escapeHTML(r.title) + '"</h4>' +
+          '<p class="text-sm text-on-surface-variant leading-relaxed">' + escapeHTML(r.text) + '</p>' +
+          '<div class="mt-3 flex items-center gap-1 text-[10px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full w-fit"><span class="material-symbols-outlined text-[12px]" style="font-variation-settings:\'FILL\' 1">verified</span>Verified Purchase</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    // ── Sticky Add to Cart Bar ────────────────────────────────────
+    function initStickyATC() {
+      if (!currentProduct || !selectedVariant) return;
+      var bar = document.getElementById('sticky-atc');
+      var imgEl = document.getElementById('sticky-atc-img');
+      var nameEl = document.getElementById('sticky-atc-name');
+      var priceEl = document.getElementById('sticky-atc-price');
+      var compareEl = document.getElementById('sticky-atc-compare');
+      var btn = document.getElementById('sticky-atc-btn');
+      if (!bar) return;
+
+      // Populate
+      var mainImg = currentProduct.images.edges[0] ? currentProduct.images.edges[0].node.url : '';
+      if (mainImg) { imgEl.src = mainImg; imgEl.classList.remove('hidden'); }
+      nameEl.textContent = currentProduct.title;
+      var rawAmt = parseFloat(selectedVariant.price.amount);
+      var cfg = getDiscountConfig();
+      var saleAmt = Math.round(rawAmt * (1 - cfg.buy1 / 100) * 100) / 100;
+      priceEl.textContent = formatMoney(saleAmt, selectedVariant.price.currencyCode);
+      compareEl.textContent = formatMoney(rawAmt, selectedVariant.price.currencyCode);
+
+      // Show/hide on scroll — show when main ATC button scrolls out of viewport
+      var mainATC = document.getElementById('btn-atc');
+      if (mainATC && 'IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function(entries) {
+          entries.forEach(function(e) {
+            if (e.isIntersecting) { bar.classList.remove('show'); }
+            else { bar.classList.add('show'); }
+          });
+        }, { threshold: 0 });
+        io.observe(mainATC);
+      }
+
+      // Update sticky bar when bundle/variant changes
+      window.addEventListener('stickyPriceUpdate', function(e) {
+        if (e.detail) {
+          if (e.detail.price) priceEl.textContent = e.detail.price;
+          if (e.detail.compare) compareEl.textContent = e.detail.compare;
+        }
+      });
+
+      // Click handler — mirrors the main ATC button
+      btn.addEventListener('click', function() {
+        var mainBtn = document.getElementById('btn-atc');
+        if (mainBtn) mainBtn.click();
       });
     }
 

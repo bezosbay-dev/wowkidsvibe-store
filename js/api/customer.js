@@ -33,6 +33,21 @@ export async function customerCreate(email, password, firstName = '', lastName =
   return data.customerCreate.customer;
 }
 
+export async function customerRecover(email) {
+  const data = await shopifyFetch(`
+    mutation customerRecover($email: String!) {
+      customerRecover(email: $email) {
+        customerUserErrors { code field message }
+      }
+    }
+  `, { email });
+
+  if (data.customerRecover.customerUserErrors.length > 0) {
+    throw new Error(data.customerRecover.customerUserErrors.map(e => e.message).join(', '));
+  }
+  return true;
+}
+
 export async function customerLogin(email, password) {
   const data = await shopifyFetch(`
     mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
