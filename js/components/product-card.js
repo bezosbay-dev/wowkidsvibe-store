@@ -52,17 +52,55 @@ export function renderProductCard(product, style = 'default') {
     }
 
     return `
-      <div class="product-card">
-        <a href="${url}">
-          <img src="${image}" alt="${title}" onerror="this.src='/fallback.jpg'"/>
-          <h3>${title}</h3>
-          <p>${formatMoney(price.amount, price.currencyCode)}</p>
-        </a>
-        <button class="add-to-cart-btn" data-variant-id="${variantId}">
-          Add to Cart
-        </button>
+  <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition">
+
+    <a href="${url}" class="block relative">
+
+      <div class="aspect-square overflow-hidden">
+        <img 
+          src="${image}" 
+          alt="${title}" 
+          class="w-full h-full object-cover"
+          onerror="this.src='/fallback.jpg'"
+        />
       </div>
-    `;
+
+      ${hasDiscount ? `
+        <div class="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
+          SAVE ${discountPercent}%
+        </div>
+      ` : ''}
+
+      <button 
+        class="add-to-cart-btn absolute bottom-3 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:bg-red-600 transition"
+        data-variant-id="${variantId}">
+        Add to Cart
+      </button>
+
+    </a>
+
+    <div class="p-3 space-y-1">
+
+      <h3 class="text-sm font-medium text-gray-800 line-clamp-2">
+        ${title}
+      </h3>
+
+      <div class="flex items-center gap-2">
+        <span class="text-red-600 font-bold text-sm">
+          ${formatMoney(price.amount, price.currencyCode)}
+        </span>
+
+        ${hasDiscount ? `
+          <span class="text-gray-400 line-through text-xs">
+            ${formatMoney(compareAt.amount, compareAt.currencyCode)}
+          </span>
+        ` : ''}
+      </div>
+
+    </div>
+
+  </div>
+`;
   } catch (err) {
     console.error('renderProductCard error:', err, product);
     return '';
