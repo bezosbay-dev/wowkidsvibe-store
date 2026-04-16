@@ -8,8 +8,6 @@ let currentHandle = 'all';
 let currentCategory = 'all';
 let currentSort = 'BEST_SELLING';
 let currentReverse = false;
-let endCursor = null;
-let hasNextPage = false;
 
 export async function initCollectionPage() {
   const params = new URLSearchParams(window.location.search);
@@ -20,7 +18,6 @@ export async function initCollectionPage() {
   setupSortDropdown();
   updateHeader();
   await loadProducts();
-  setupLoadMore();
 }
 
 function renderCategoryPills() {
@@ -39,7 +36,6 @@ function renderCategoryPills() {
       currentCategory = key;
       wrap.querySelectorAll('.cat-pill').forEach(b => b.classList.toggle('active', b.dataset.category === key));
 
-      // Update URL without reload
       const url = new URL(window.location.href);
       if (key === 'all') url.searchParams.delete('category');
       else url.searchParams.set('category', key);
@@ -50,12 +46,10 @@ function renderCategoryPills() {
       updateHeader();
       loadProducts();
 
-      // Scroll active pill into view
       btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     });
   });
 
-  // Auto-scroll the active pill into view on load
   const activeEl = wrap.querySelector('.cat-pill.active');
   if (activeEl) activeEl.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
 }
@@ -73,103 +67,65 @@ function updateHeader() {
   }
 }
 
-async function loadProducts(append = false) {
+async function loadProducts() {
   const grid = document.getElementById('collection-grid');
   if (!grid) return;
 
-  if (!append) {
-    grid.innerHTML = collectionCardSkeleton(8);
-    endCursor = null;
-  }
+  grid.innerHTML = collectionCardSkeleton(8);
 
   try {
-    let edges, pageInfo;
+    let edges = [];
 
-    // Category-based filtering uses the all-products query with a filter string
     if (currentCategory !== 'all') {
       const query = buildCategoryQuery(currentCategory);
-      let result = await getProducts({
-        first: 12,
-        after: append ? endCursor : null,
+      const result = await getProducts({
+        first: 250,
         sortKey: currentSort,
         reverse: currentReverse,
         query,
       });
-      // Fallback — category tags may not match any Shopify products;
-      // show all products instead of a confusing empty state
-      if (!append && (!result.edges || result.edges.length === 0)) {
-        result = await getProducts({
-          first: 12,
-          after: null,
-          sortKey: currentSort,
-          reverse: currentReverse,
-          query: '',
-        });
-      }
-      edges = result.edges;
-      pageInfo = result.pageInfo;
+      edges = (result && result.edges) ? result.edges : [];
     } else if (currentHandle === 'all') {
       const result = await getProducts({
-        first: 12,
-        after: append ? endCursor : null,
+        first: 250,
         sortKey: currentSort,
         reverse: currentReverse,
         query: '',
       });
-      edges = result.edges;
-      pageInfo = result.pageInfo;
+      edges = (result && result.edges) ? result.edges : [];
     } else {
       const collection = await getCollectionByHandle(currentHandle, {
-        first: 12,
-        after: append ? endCursor : null,
+        first: 250,
         sortKey: currentSort,
         reverse: currentReverse,
       });
-
-      if (!collection || !collection.products.edges.length) {
-        const result = await getProducts({
-          first: 12,
-          after: append ? endCursor : null,
-          sortKey: currentSort,
-          reverse: currentReverse,
-          query: '',
-        });
-        edges = result.edges;
-        pageInfo = result.pageInfo;
-      } else {
+      if (collection && collection.products && collection.products.edges) {
         edges = collection.products.edges;
-        pageInfo = collection.products.pageInfo;
-        // Override title with collection title if not using category
         const titleEl = document.getElementById('collection-title');
         const crumbEl = document.getElementById('crumb-current');
-        if (titleEl && !append) titleEl.innerHTML = `Curated <span class="text-primary">${collection.title}</span>`;
+        if (titleEl) titleEl.innerHTML = `Curated <span class="text-primary">${collection.title}</span>`;
         if (crumbEl) crumbEl.textContent = collection.title;
       }
     }
 
-    hasNextPage = pageInfo.hasNextPage;
-    endCursor = pageInfo.endCursor;
+    const products = edges.map(function (e) { return e.node; });
+    console.log('Products:', products.length);
 
     const countEl = document.getElementById('product-count');
     if (countEl) {
-      const total = append ? (grid.querySelectorAll('.animate-on-scroll').length + edges.length) : edges.length;
-      countEl.textContent = `Showing ${total} item${total === 1 ? '' : 's'}`;
+      countEl.textContent = `Showing ${products.length} item${products.length === 1 ? '' : 's'}`;
     }
 
-    const cards = edges.map(({ node }) => renderProductCard(node, 'collection')).join('');
-
-    if (append) {
-      grid.insertAdjacentHTML('beforeend', cards);
+    if (products.length === 0) {
+      grid.innerHTML = '<p class="col-span-full text-center text-on-surface-variant py-20 font-headline">No products found.</p>';
     } else {
-      grid.innerHTML = cards || '<p class="col-span-full text-center text-on-surface-variant py-20 font-headline">No products found in this category.</p>';
+      const cards = products.map(function (p) { return renderProductCard(p, 'collection'); }).join('');
+      grid.innerHTML = cards;
+      setupAddToCartButtons(grid);
     }
-
-    setupAddToCartButtons(grid);
 
     const loadMoreBtn = document.getElementById('load-more-btn');
-    if (loadMoreBtn) {
-      loadMoreBtn.style.display = hasNextPage ? 'inline-flex' : 'none';
-    }
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
@@ -178,9 +134,7 @@ async function loadProducts(append = false) {
 
   } catch (err) {
     console.error('Collection load error:', err);
-    if (!append) {
-      grid.innerHTML = '<p class="col-span-full text-center text-on-surface-variant py-20">Failed to load products. Please try again.</p>';
-    }
+    grid.innerHTML = '<p class="col-span-full text-center text-on-surface-variant py-20">Failed to load products. Please try again.</p>';
   }
 }
 
@@ -196,11 +150,5 @@ function setupSortDropdown() {
       case 'title-az':     currentSort = 'TITLE';        currentReverse = false; break;
     }
     loadProducts();
-  });
-}
-
-function setupLoadMore() {
-  document.getElementById('load-more-btn')?.addEventListener('click', () => {
-    loadProducts(true);
   });
 }

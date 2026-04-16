@@ -11,7 +11,8 @@ export async function initSearchPage() {
 
   if (query) await performSearch(query);
 
-  document.getElementById('search-form')?.addEventListener('submit', (e) => {
+  const form = document.getElementById('search-form');
+  if (form) form.addEventListener('submit', (e) => {
     e.preventDefault();
     const q = searchInput.value.trim();
     if (q) {

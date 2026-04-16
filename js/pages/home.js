@@ -30,13 +30,16 @@ async function loadTrendingProducts() {
   grid.innerHTML = productCardSkeleton(4);
 
   try {
-    const products = await getProducts({ first: 12, sortKey: 'BEST_SELLING' });
-    const cards = products.edges.map(({ node }) => renderProductCard(node, 'default')).join('');
+    const result = await getProducts({ first: 50, sortKey: 'BEST_SELLING' });
+    const allProducts = result.edges.map(function (e) { return e.node; });
+    const homepageProducts = allProducts.slice(0, 8);
+    console.log('Products:', homepageProducts.length);
+    const cards = homepageProducts.map(function (p) { return renderProductCard(p, 'default'); }).join('');
     grid.innerHTML = cards;
     setupAddToCartButtons(grid);
     setupScrollAnimations();
-  } catch {
-    // Keep static fallback content if API fails
+  } catch (err) {
+    console.error('Home trending load error:', err);
   }
 }
 
@@ -51,14 +54,14 @@ async function loadCollections() {
     collections.forEach((col, i) => {
       if (links[i]) {
         links[i].href = `collection.html?handle=${col.handle}`;
-        if (col.image?.url) {
+        if (col && col.image && col.image.url) {
           const img = links[i].querySelector('img');
           if (img) img.src = col.image.url;
         }
       }
     });
-  } catch {
-    // Keep static fallback
+  } catch (err) {
+    console.error('Collections load error:', err);
   }
 }
 

@@ -13,9 +13,10 @@ export function renderProductCard(product, style = 'default') {
   const compareAt = rawPrice; // original Shopify price shown as strikethrough
   const hasDiscount = true;
   const discountPercent = Math.round(sitewideDiscount * 100);
-  const variantId = product.variants?.edges?.[0]?.node?.id || '';
+  const variantEdges = (product.variants && product.variants.edges) ? product.variants.edges : [];
+  const variantId = (variantEdges[0] && variantEdges[0].node && variantEdges[0].node.id) || '';
   const image = product.featuredImage;
-  const tag = product.tags?.[0] || '';
+  const tag = (product.tags && product.tags[0]) || '';
   const url = `/product.html?handle=${product.handle}`;
 
   if (style === 'collection') {
@@ -30,7 +31,7 @@ export function renderProductCard(product, style = 'default') {
           ${hasDiscount ? `<div class="absolute top-3 left-3 z-10 bg-primary text-on-primary font-label px-3 py-1 rounded-full text-xs">SAVE ${discountPercent}%</div>` : ''}
           ${tag ? `<div class="absolute top-3 ${hasDiscount ? 'left-24' : 'left-3'} z-10 bg-tertiary text-on-tertiary font-label px-3 py-1 rounded-full text-xs uppercase">${tag}</div>` : ''}
           ${image
-            ? `<img class="w-full h-full object-cover" src="${image.url}" alt="${image.altText || product.title}" loading="lazy" />`
+            ? `<img class="w-full h-full object-cover" src="${image.url}" alt="${image.altText || product.title}" loading="lazy" onerror="this.onerror=null;this.src='/fallback.jpg';" />`
             : '<div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-6xl">image</span></div>'
           }
           <div class="card-overlay"></div>
@@ -60,7 +61,7 @@ function renderCollectionCard(product, price, compareAt, hasDiscount, discountPe
       <div class="bg-surface-container-low rounded-2xl overflow-hidden transition-shadow duration-300 group-hover:shadow-xl">
         <div class="product-card-img aspect-square">
           ${image
-            ? `<img alt="${image.altText || product.title}" class="w-full h-full object-cover" src="${image.url}" loading="lazy" />`
+            ? `<img alt="${image.altText || product.title}" class="w-full h-full object-cover" src="${image.url}" loading="lazy" onerror="this.onerror=null;this.src='/fallback.jpg';" />`
             : '<div class="w-full h-full flex items-center justify-center bg-surface-container text-on-surface-variant"><span class="material-symbols-outlined text-6xl">image</span></div>'
           }
           <div class="card-overlay"></div>

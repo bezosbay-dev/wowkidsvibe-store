@@ -88,8 +88,8 @@ function renderProduct(container) {
       <!-- ===== Gallery ===== -->
       <div class="lg:col-span-6 space-y-4">
         <div class="relative aspect-square rounded-2xl overflow-hidden bg-surface-container-low">
-          <img id="main-image" class="w-full h-full object-cover transition-opacity duration-300" src="${mainImage?.url || ''}" alt="${mainImage?.altText || p.title}" />
-          ${p.tags?.includes('new') ? '<div class="absolute top-4 left-4"><span class="bg-tertiary-container text-on-tertiary-container font-label text-[10px] font-bold px-3 py-1 rounded-full">NEW ARRIVAL</span></div>' : ''}
+          <img id="main-image" class="w-full h-full object-cover transition-opacity duration-300" src="${(mainImage && mainImage.url) || ''}" alt="${(mainImage && mainImage.altText) || p.title}" onerror="this.onerror=null;this.src='/fallback.jpg';" />
+          ${(p.tags && p.tags.indexOf('new') !== -1) ? '<div class="absolute top-4 left-4"><span class="bg-tertiary-container text-on-tertiary-container font-label text-[10px] font-bold px-3 py-1 rounded-full">NEW ARRIVAL</span></div>' : ''}
         </div>
         ${images.length > 1 ? `
         <div class="grid grid-cols-4 gap-3">
