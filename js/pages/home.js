@@ -30,7 +30,7 @@ async function loadTrendingProducts() {
   grid.innerHTML = productCardSkeleton(4);
 
   try {
-    const products = await getProducts({ first: 8, sortKey: 'BEST_SELLING' });
+    const products = await getProducts({ first: 12, sortKey: 'BEST_SELLING' });
     const cards = products.edges.map(({ node }) => renderProductCard(node, 'default')).join('');
     grid.innerHTML = cards;
     setupAddToCartButtons(grid);

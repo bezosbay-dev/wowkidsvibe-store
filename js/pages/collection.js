@@ -88,13 +88,24 @@ async function loadProducts(append = false) {
     // Category-based filtering uses the all-products query with a filter string
     if (currentCategory !== 'all') {
       const query = buildCategoryQuery(currentCategory);
-      const result = await getProducts({
+      let result = await getProducts({
         first: 12,
         after: append ? endCursor : null,
         sortKey: currentSort,
         reverse: currentReverse,
         query,
       });
+      // Fallback — category tags may not match any Shopify products;
+      // show all products instead of a confusing empty state
+      if (!append && (!result.edges || result.edges.length === 0)) {
+        result = await getProducts({
+          first: 12,
+          after: null,
+          sortKey: currentSort,
+          reverse: currentReverse,
+          query: '',
+        });
+      }
       edges = result.edges;
       pageInfo = result.pageInfo;
     } else if (currentHandle === 'all') {
@@ -115,7 +126,7 @@ async function loadProducts(append = false) {
         reverse: currentReverse,
       });
 
-      if (!collection) {
+      if (!collection || !collection.products.edges.length) {
         const result = await getProducts({
           first: 12,
           after: append ? endCursor : null,
