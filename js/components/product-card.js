@@ -72,7 +72,7 @@ export function renderProductCard(product, style = 'default') {
       ` : ''}
 
       <button 
-       class="add-to-cart-btn absolute bottom-1 left-1/2 -translate-x-1/2 bg-red-500 text-white px-3 py-1 text-[11px] rounded-full font-semibold shadow transition opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:px-4 sm:py-2 sm:text-sm"
+       class="add-to-cart-btn absolute bottom-1 left-1/2 -translate-x-1/2 bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-md transition opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:px-4 sm:py-2 sm:text-sm"
         data-variant-id="${variantId}">
         Add to Cart
       </button>
@@ -142,7 +142,7 @@ function renderCollectionCard(
 
       <!-- ADD TO CART -->
       <button 
-        class="add-to-cart-btn absolute bottom-1 left-1/2 -translate-x-1/2 bg-red-500 text-white px-3 py-1 text-[11px] rounded-full font-semibold shadow transition opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:px-4 sm:py-2 sm:text-sm"
+       class="add-to-cart-btn absolute bottom-1 left-1/2 -translate-x-1/2 bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-md transition opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:px-4 sm:py-2 sm:text-sm"
         data-variant-id="${variantId}">
         Add to Cart
       </button>
