@@ -1,5 +1,5 @@
 import { formatMoney } from '../api/client.js';
-import { addToCart, getDiscountConfig } from '../api/cart.js';
+import { addToCart } from '../api/cart.js';
 import { showToast } from './toast.js';
 import { openCartDrawer } from './header.js';
 
@@ -7,23 +7,16 @@ export function renderProductCard(product, style = 'default') {
   try {
     if (!product) return '';
 
-    const cfg = getDiscountConfig() || { buy1: 0 };
-    const sitewideDiscount = (cfg.buy1 || 0) / 100;
-
-    const rawPrice = product?.priceRange?.minVariantPrice;
-    const rawAmount = parseFloat(rawPrice?.amount || 0);
-
-    const saleAmount =
-      Math.round(rawAmount * (1 - sitewideDiscount) * 100) / 100;
-
-    const price = {
-      amount: String(saleAmount || 0),
-      currencyCode: rawPrice?.currencyCode || 'USD'
-    };
-
-    const compareAt = rawPrice || { amount: '0', currencyCode: 'USD' };
-    const hasDiscount = sitewideDiscount > 0;
-    const discountPercent = Math.round(sitewideDiscount * 100);
+    // Use Shopify's own pricing — no JS discount math on cards.
+    // If a variant has compareAtPrice set in Admin, render it as the strike.
+    const rawPrice = product?.priceRange?.minVariantPrice || { amount: '0', currencyCode: 'USD' };
+    const rawCompare = product?.compareAtPriceRange?.minVariantPrice || null;
+    const priceNum = parseFloat(rawPrice.amount || 0);
+    const compareNum = rawCompare ? parseFloat(rawCompare.amount || 0) : 0;
+    const hasDiscount = compareNum > priceNum;
+    const price = rawPrice;
+    const compareAt = hasDiscount ? rawCompare : rawPrice;
+    const discountPercent = hasDiscount ? Math.round((1 - priceNum / compareNum) * 100) : 0;
 
     const variantId =
       product?.variants?.edges?.[0]?.node?.id || '';

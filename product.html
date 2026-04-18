@@ -324,7 +324,7 @@
     import { initHeader, openCartDrawer } from './js/components/header.js';
     import { initFooter } from './js/components/footer.js';
     import { SHOPIFY_CONFIG, STOREFRONT_URL } from './js/shopify-config.js';
-    import { addToCart, addMultipleToCart, getCheckoutUrl, fetchDiscountConfig, getDiscountConfig } from './js/api/cart.js';
+    import { addToCart, addMultipleToCart, getCheckoutUrl } from './js/api/cart.js';
     import { formatMoney } from './js/api/client.js';
     import { showToast } from './js/components/toast.js';
     import { getStoredToken, getCustomer, hasPurchasedProduct } from './js/api/customer.js';
@@ -338,7 +338,6 @@
     let quantity = 1;
     let bundleQty = 1;
 
-    await fetchDiscountConfig();
     initProductPage();
 
     async function initProductPage() {
@@ -357,7 +356,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontToken },
           body: JSON.stringify({
-            query: 'query getProduct($handle: String!) { product(handle: $handle) { id title handle description descriptionHtml productType tags vendor images(first: 10) { edges { node { url altText } } } variants(first: 100) { edges { node { id title availableForSale price { amount currencyCode } compareAtPrice { amount currencyCode } selectedOptions { name value } image { url altText } } } } options { id name values } priceRange { minVariantPrice { amount currencyCode } } compareAtPriceRange { minVariantPrice { amount currencyCode } } storyImage1:metafield(namespace:"custom" key:"story_image_1"){reference{...on MediaImage{image{url altText}}...on GenericFile{url}}} storyHeadline1:metafield(namespace:"custom" key:"story_headline_1"){value} storyText1:metafield(namespace:"custom" key:"story_text_1"){value} storyImage2:metafield(namespace:"custom" key:"story_image_2"){reference{...on MediaImage{image{url altText}}...on GenericFile{url}}} storyHeadline2:metafield(namespace:"custom" key:"story_headline_2"){value} storyText2:metafield(namespace:"custom" key:"story_text_2"){value} storyImage3:metafield(namespace:"custom" key:"story_image_3"){reference{...on MediaImage{image{url altText}}...on GenericFile{url}}} storyHeadline3:metafield(namespace:"custom" key:"story_headline_3"){value} storyText3:metafield(namespace:"custom" key:"story_text_3"){value} whatYouGet:metafield(namespace:"custom" key:"what_you_get"){value} overallRating:metafield(namespace:"custom" key:"overall_rating"){value} totalReviews:metafield(namespace:"custom" key:"total_reviews"){value} faq:metafield(namespace:"custom" key:"faq"){value} relatedProducts:metafield(namespace:"custom" key:"related_products"){references(first:8){edges{node{...on Product{id title handle featuredImage{url altText} priceRange{minVariantPrice{amount currencyCode}} variants(first:1){edges{node{id}}}}}}}} } }',
+            query: 'query getProduct($handle: String!) { product(handle: $handle) { id title handle description descriptionHtml productType tags vendor images(first: 10) { edges { node { url altText } } } variants(first: 100) { edges { node { id title availableForSale price { amount currencyCode } compareAtPrice { amount currencyCode } selectedOptions { name value } image { url altText } } } } options { id name values } priceRange { minVariantPrice { amount currencyCode } } compareAtPriceRange { minVariantPrice { amount currencyCode } } storyImage1:metafield(namespace:"custom" key:"story_image_1"){reference{...on MediaImage{image{url altText}}...on GenericFile{url}}} storyHeadline1:metafield(namespace:"custom" key:"story_headline_1"){value} storyText1:metafield(namespace:"custom" key:"story_text_1"){value} storyImage2:metafield(namespace:"custom" key:"story_image_2"){reference{...on MediaImage{image{url altText}}...on GenericFile{url}}} storyHeadline2:metafield(namespace:"custom" key:"story_headline_2"){value} storyText2:metafield(namespace:"custom" key:"story_text_2"){value} storyImage3:metafield(namespace:"custom" key:"story_image_3"){reference{...on MediaImage{image{url altText}}...on GenericFile{url}}} storyHeadline3:metafield(namespace:"custom" key:"story_headline_3"){value} storyText3:metafield(namespace:"custom" key:"story_text_3"){value} whatYouGet:metafield(namespace:"custom" key:"what_you_get"){value} overallRating:metafield(namespace:"custom" key:"overall_rating"){value} totalReviews:metafield(namespace:"custom" key:"total_reviews"){value} faq:metafield(namespace:"custom" key:"faq"){value} relatedProducts:metafield(namespace:"custom" key:"related_products"){references(first:8){edges{node{...on Product{id title handle featuredImage{url altText} priceRange{minVariantPrice{amount currencyCode}} compareAtPriceRange{minVariantPrice{amount currencyCode}} variants(first:1){edges{node{id}}}}}}}} } }',
             variables: { handle: handle }
           }),
         });
@@ -418,9 +417,9 @@
       var fmtDate = function(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); };
       var deliveryStr = fmtDate(d1) + ' – ' + fmtDate(d2);
 
-      // Bundle calculations — fixed discounts: Buy1=0%, Buy2=50%, Buy3=60%
+      // Bundle calculations — fixed discounts: Buy1=30%, Buy2=50%, Buy3=60%
       // Applied to every product using its dynamic Shopify base price.
-      var b1Pct = 0, b2Pct = 50, b3Pct = 60;
+      var b1Pct = 30, b2Pct = 50, b3Pct = 60;
       var b1Total = Math.round(priceNum * 1 * (1 - b1Pct / 100) * 100) / 100;
       var b2Total = Math.round(priceNum * 2 * (1 - b2Pct / 100) * 100) / 100;
       var b3Total = Math.round(priceNum * 3 * (1 - b3Pct / 100) * 100) / 100;
@@ -495,11 +494,11 @@
               '<span id="pdp-review-count" class="text-xs text-on-surface-variant"></span>' +
             '</div>' +
 
-            '<!-- Price (shows selected bundle price — starts as Buy 1 = base price, no discount) -->' +
+            '<!-- Price (shows selected bundle price — starts as Buy 1 at 30% OFF, first paint is already discounted) -->' +
             '<div class="flex items-center gap-3 flex-wrap pb-4 border-b border-outline-variant/20">' +
               '<span id="variant-price" class="text-2xl lg:text-3xl font-headline font-extrabold text-primary">' + formatMoney(b1Total, cur) + '</span>' +
-              '<span id="variant-compare" class="text-base text-on-surface-variant line-through" style="display:none">' + formatMoney(b1Strike, cur) + '</span>' +
-              '<span id="discount-badge" class="text-[11px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full font-label uppercase" style="display:none">SAVE ' + b1Pct + '%</span>' +
+              '<span id="variant-compare" class="text-base text-on-surface-variant line-through">' + formatMoney(b1Strike, cur) + '</span>' +
+              '<span id="discount-badge" class="text-[11px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full font-label uppercase">SAVE ' + b1Pct + '%</span>' +
             '</div>' +
 
             '<!-- Short Description -->' +
@@ -523,7 +522,7 @@
                         (b1Pct > 0 ? '<span class="text-[9px] font-extrabold bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-label uppercase tracking-wide">' + b1Pct + '% OFF</span>' : '') +
                         '<span class="text-[9px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px]">local_shipping</span>Free Shipping</span>' +
                       '</div>' +
-                      '<div class="text-xs text-on-surface-variant mt-0.5">Single item — regular price</div>' +
+                      '<div class="text-xs text-on-surface-variant mt-0.5">Single item — 30% off</div>' +
                     '</div>' +
                     '<div class="text-right flex-shrink-0">' +
                       '<div class="font-label font-bold text-base text-on-surface">' + formatMoney(b1Total, cur) + '</div>' +
@@ -572,7 +571,7 @@
                 '</div>' +
 
               '</div>' +
-              '<div id="bundle-savings" class="mx-3 mb-3 px-4 py-2.5 rounded-xl bg-green-50 flex items-center justify-center gap-2 hidden">' +
+              '<div id="bundle-savings" class="mx-3 mb-3 px-4 py-2.5 rounded-xl bg-green-50 flex items-center justify-center gap-2 ' + (b1Save > 0 ? '' : 'hidden') + '">' +
                 '<span class="text-base">&#128293;</span>' +
                 '<span class="text-green-600 font-headline font-bold text-sm">You save <span id="savings-amount">' + formatMoney(b1Save, cur) + '</span></span>' +
               '</div>' +
@@ -710,8 +709,8 @@
 
     function recalcBundles(cur) {
       var pr = parseFloat(selectedVariant.price.amount);
-      // Fixed bundle discounts: Buy1=0%, Buy2=50%, Buy3=60% (same across all products)
-      var b1 = Math.round(pr * 1 * 1.00 * 100) / 100;
+      // Fixed bundle discounts: Buy1=30%, Buy2=50%, Buy3=60% (same across all products)
+      var b1 = Math.round(pr * 1 * 0.70 * 100) / 100;
       var b2 = Math.round(pr * 2 * 0.50 * 100) / 100;
       var b3 = Math.round(pr * 3 * 0.40 * 100) / 100;
       var k1 = Math.round(pr * 1 * 100) / 100;
@@ -1055,22 +1054,26 @@
     }
 
     // ── SECTION 5: Related Products / Upsell ────────────────────────
+    // Related/upsell cards render at Shopify's native price — no JS math.
+    // Strike + SAVE % appear only if a variant has compareAtPrice in Admin.
     function renderRelatedCards(recs) {
-      var _rc = getDiscountConfig();
       document.getElementById('related-section').style.display = 'block';
       document.getElementById('related-products').innerHTML = recs.slice(0, 6).map(function(r) {
         var pr = r.priceRange.minVariantPrice;
-        var rawAmt = parseFloat(pr.amount);
-        var saleAmt = Math.round(rawAmt * (1 - _rc.buy1 / 100) * 100) / 100;
+        var cmpObj = r.compareAtPriceRange && r.compareAtPriceRange.minVariantPrice ? r.compareAtPriceRange.minVariantPrice : null;
+        var priceNum = parseFloat(pr.amount);
+        var cmpNum = cmpObj ? parseFloat(cmpObj.amount) : 0;
+        var showStrike = cmpNum > priceNum;
+        var pct = showStrike ? Math.round((1 - priceNum / cmpNum) * 100) : 0;
         return '<a href="product.html?handle=' + r.handle + '" class="snap-start flex-shrink-0 w-[160px] lg:w-[200px] group block">' +
           '<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low mb-3 relative">' +
-            '<div class="absolute top-2 left-2 z-10 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">-' + _rc.buy1 + '%</div>' +
+            (showStrike ? '<div class="absolute top-2 left-2 z-10 bg-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full">-' + pct + '%</div>' : '') +
             (r.featuredImage ? '<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="' + r.featuredImage.url + '" alt="' + (r.featuredImage.altText || r.title) + '" loading="lazy" />' : '<div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-4xl">image</span></div>') +
           '</div>' +
           '<h3 class="font-headline font-bold text-xs text-on-surface line-clamp-2 mb-1">' + r.title + '</h3>' +
           '<div class="flex items-center gap-2">' +
-            '<span class="text-sm font-bold text-primary">' + formatMoney(saleAmt, pr.currencyCode) + '</span>' +
-            '<span class="text-[11px] text-on-surface-variant line-through">' + formatMoney(rawAmt, pr.currencyCode) + '</span>' +
+            '<span class="text-sm font-bold text-primary">' + formatMoney(priceNum, pr.currencyCode) + '</span>' +
+            (showStrike ? '<span class="text-[11px] text-on-surface-variant line-through">' + formatMoney(cmpNum, pr.currencyCode) + '</span>' : '') +
           '</div>' +
         '</a>';
       }).join('');
@@ -1531,10 +1534,12 @@
       var mainImg = currentProduct.images.edges[0] ? currentProduct.images.edges[0].node.url : '';
       if (mainImg) { imgEl.src = mainImg; imgEl.classList.remove('hidden'); }
       nameEl.textContent = currentProduct.title;
-      // Buy 1 is pre-selected → base price, no compare/strike.
+      // Buy 1 is pre-selected → 30% off, strike shows base price.
       var rawAmt = parseFloat(selectedVariant.price.amount);
-      priceEl.textContent = formatMoney(rawAmt, selectedVariant.price.currencyCode);
-      compareEl.textContent = '';
+      var cur = selectedVariant.price.currencyCode;
+      var saleAmt = Math.round(rawAmt * 0.70 * 100) / 100;
+      priceEl.textContent = formatMoney(saleAmt, cur);
+      compareEl.textContent = formatMoney(rawAmt, cur);
 
       // Show/hide on scroll — show when main ATC button scrolls out of viewport
       var mainATC = document.getElementById('btn-atc');
