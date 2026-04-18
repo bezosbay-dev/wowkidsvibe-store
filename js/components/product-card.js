@@ -2,21 +2,23 @@ import { formatMoney } from '../api/client.js';
 import { addToCart } from '../api/cart.js';
 import { showToast } from './toast.js';
 import { openCartDrawer } from './header.js';
+import { getDiscountData } from '../utils/pricing.js';
 
 export function renderProductCard(product, style = 'default') {
   try {
     if (!product) return '';
 
-    // Use Shopify's own pricing — no JS discount math on cards.
-    // If a variant has compareAtPrice set in Admin, render it as the strike.
+    // Global pricing rule via getDiscountData:
+    //   - If Shopify has compareAtPrice > price, honor it (admin = source of truth).
+    //   - Else force Buy 1 = 30% OFF so cards match product page Buy 1.
     const rawPrice = product?.priceRange?.minVariantPrice || { amount: '0', currencyCode: 'USD' };
     const rawCompare = product?.compareAtPriceRange?.minVariantPrice || null;
-    const priceNum = parseFloat(rawPrice.amount || 0);
-    const compareNum = rawCompare ? parseFloat(rawCompare.amount || 0) : 0;
-    const hasDiscount = compareNum > priceNum;
-    const price = rawPrice;
-    const compareAt = hasDiscount ? rawCompare : rawPrice;
-    const discountPercent = hasDiscount ? Math.round((1 - priceNum / compareNum) * 100) : 0;
+    const currency = rawPrice.currencyCode || 'USD';
+    const data = getDiscountData(rawPrice.amount, rawCompare ? rawCompare.amount : null);
+    const price = { amount: String(data.price), currencyCode: currency };
+    const compareAt = { amount: String(data.compareAtPrice), currencyCode: currency };
+    const hasDiscount = data.discount > 0;
+    const discountPercent = data.discount;
 
     const variantId =
       product?.variants?.edges?.[0]?.node?.id || '';
