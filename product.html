@@ -80,7 +80,9 @@
     .feature-block.reverse { direction:rtl; }
     .feature-block.reverse > * { direction:ltr; }
     @media(max-width:767px) { .feature-block, .feature-block.reverse { grid-template-columns:1fr; direction:ltr; } }
-    .feature-block img { width:100%; border-radius:1.25rem; object-fit:cover; aspect-ratio:4/3; }
+    /* Editorial images (infographics, 1:1 assets) — show whole image, never crop. */
+    .feature-block img { width:100%; height:auto; max-width:100%; border-radius:1.25rem; object-fit:contain; display:block; margin-left:auto; margin-right:auto; }
+    .feature-block > *:first-child { overflow:visible; }
     .feature-check { display:flex; align-items:flex-start; gap:10px; font-size:14px; color:#2f2e36; line-height:1.5; }
     .feature-check .material-symbols-outlined { color:#16a34a; font-size:18px; flex-shrink:0; margin-top:2px; }
 
@@ -98,7 +100,8 @@
     .story-block.reverse { direction:rtl; }
     .story-block.reverse > * { direction:ltr; }
     @media(max-width:767px) { .story-block, .story-block.reverse { grid-template-columns:1fr; direction:ltr; } }
-    .story-block img { width:100%; border-radius:1rem; object-fit:cover; aspect-ratio:4/3; }
+    .story-block img { width:100%; height:auto; max-width:100%; border-radius:1rem; object-fit:contain; display:block; margin-left:auto; margin-right:auto; }
+    .story-block > *:first-child { overflow:visible; }
 
     /* What You Get */
     .wyg-list { list-style:none; padding:0; margin:0; }
