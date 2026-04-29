@@ -6,8 +6,8 @@
 // key here.
 
 export const SUPABASE_CONFIG = {
-  url: 'https://YOUR-PROJECT.supabase.co',
-  anonKey: 'YOUR_SUPABASE_ANON_KEY',
+  url: 'https://qxjkeuyerbkjcrxakquz.supabase.co',
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4amtldXllcmJramNyeGFrcXV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MzY3ODYsImV4cCI6MjA5MTQxMjc4Nn0.R0skLONrv_sSYaLe38EbgEwrMO97uMXHRKAPwGIKgf0',
 };
 
 export const SUPABASE_ENABLED =
