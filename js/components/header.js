@@ -1,6 +1,7 @@
 import { getCart, getDiscountTier, getCheckoutUrl } from '../api/cart.js';
 import { predictiveSearch } from '../api/search.js';
 import { formatMoney } from '../api/client.js';
+import { getBanner } from '../api/site-settings.js';
 
 let searchTimeout = null;
 
@@ -21,6 +22,43 @@ export function initHeader() {
   setupSearch();
   setupScrollAnimation();
   setupCopyProtection();
+  loadPromoBanner();
+}
+
+async function loadPromoBanner() {
+  try {
+    const banner = await getBanner();
+    const wrap = document.getElementById('promo-banner');
+    if (!wrap) return;
+    if (!banner || !banner.enabled) {
+      wrap.style.display = 'none';
+      return;
+    }
+    const textEl = document.getElementById('promo-banner-text');
+    if (textEl && banner.text) textEl.textContent = banner.text;
+
+    const endsAt = banner.ends_at ? new Date(banner.ends_at).getTime() : 0;
+    const timerEl = document.getElementById('countdown-timer');
+    const timerWrap = document.getElementById('promo-banner-timer-wrap');
+    if (!endsAt || endsAt <= Date.now()) {
+      // Banner enabled but countdown expired — hide just the timer chip
+      if (timerWrap) timerWrap.style.display = 'none';
+    } else {
+      if (timerWrap) timerWrap.style.display = '';
+      const tick = () => {
+        const diff = Math.max(0, endsAt - Date.now());
+        const totalSec = Math.floor(diff / 1000);
+        const h = Math.floor(totalSec / 3600).toString().padStart(2, '0');
+        const m = Math.floor((totalSec % 3600) / 60).toString().padStart(2, '0');
+        const s = (totalSec % 60).toString().padStart(2, '0');
+        if (timerEl) timerEl.textContent = `${h}:${m}:${s}`;
+        if (diff <= 0 && timerWrap) timerWrap.style.display = 'none';
+      };
+      tick();
+      setInterval(tick, 1000);
+    }
+    wrap.style.display = '';
+  } catch (e) { console.warn('promo banner:', e); }
 }
 
 function renderHeader() {
@@ -28,13 +66,13 @@ function renderHeader() {
   return `
     <!-- Fixed Header Wrapper — full width, single unit -->
     <div class="fixed top-0 left-0 w-full z-50" id="header-wrapper">
-      <!-- Announcement Bar -->
-      <div class="w-full bg-primary text-on-primary font-label text-xs uppercase tracking-widest">
+      <!-- Announcement Bar — admin-managed (text + ends_at + enabled) via Supabase site_settings.promo_banner -->
+      <div id="promo-banner" class="w-full bg-primary text-on-primary font-label text-xs uppercase tracking-widest" style="display:none;">
         <div class="max-w-[1200px] mx-auto px-4 py-1.5 flex items-center justify-center gap-2 sm:gap-6 flex-wrap">
-          <span>Flash Sale: Up to 60% Off Storewide</span>
-          <div class="flex items-center gap-2 bg-on-primary/10 px-3 py-0.5 rounded-full">
+          <span id="promo-banner-text">Flash Sale: Up to 60% Off Storewide</span>
+          <div class="flex items-center gap-2 bg-on-primary/10 px-3 py-0.5 rounded-full" id="promo-banner-timer-wrap">
             <span class="opacity-70">Ends In:</span>
-            <span class="font-bold" id="countdown-timer">04:12:55</span>
+            <span class="font-bold" id="countdown-timer">--:--:--</span>
           </div>
         </div>
       </div>
@@ -407,19 +445,7 @@ function setupSearch() {
 }
 
 function setupScrollAnimation() {
-  // Countdown timer
-  let totalSeconds = 4 * 3600 + 12 * 60 + 55;
-  const timerEl = document.getElementById('countdown-timer');
-  if (timerEl) {
-    setInterval(() => {
-      if (totalSeconds <= 0) return;
-      totalSeconds--;
-      const h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
-      const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
-      const s = (totalSeconds % 60).toString().padStart(2, '0');
-      timerEl.textContent = `${h}:${m}:${s}`;
-    }, 1000);
-  }
+  // Countdown timer is owned by loadPromoBanner() now (admin-managed end time).
 
   // Scroll-reveal animations
   const observer = new IntersectionObserver((entries) => {

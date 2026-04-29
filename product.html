@@ -283,6 +283,9 @@
       </div>
     </section>
 
+    <!-- Real Customers Video Strip (Instagram Reels + TikTok) — admin-managed -->
+    <div id="video-strip-mount"></div>
+
     <!-- You May Also Like -->
     <section id="related-section" class="mt-16 lg:mt-24" style="display:none">
       <h2 class="text-xl font-headline font-extrabold mb-6 text-on-surface flex items-center gap-3">
@@ -330,6 +333,8 @@
     import { getStoredToken, getCustomer, hasPurchasedProduct } from './js/api/customer.js';
     import { fetchReviews, fetchReviewStats, submitReview, markHelpful, relativeTime, validateReview } from './js/api/reviews.js';
     import { getDiscountData } from './js/utils/pricing.js';
+    import { getProductVideos } from './js/api/product-videos.js';
+    import { renderVideoStrip, activateVideoStrip } from './js/components/video-strip.js';
 
     initHeader();
     initFooter();
@@ -380,6 +385,7 @@
         renderFAQSection();
         initReviews();
         loadRecommendations();
+        loadVideoStrip();
         initAnnouncementBar();
         initTrustBadges();
         renderFeatureSections();
@@ -1107,6 +1113,20 @@
         if (!recs || recs.length === 0) return;
         renderRelatedCards(recs);
       } catch(e) { console.error('Recs error:', e); }
+    }
+
+    // Load admin-managed Instagram Reels + TikTok strip. Section stays empty
+    // (no header) when there are no videos for this product.
+    async function loadVideoStrip() {
+      try {
+        if (!currentProduct || !currentProduct.handle) return;
+        var videos = await getProductVideos(currentProduct.handle);
+        if (!videos || videos.length === 0) return;
+        var mount = document.getElementById('video-strip-mount');
+        if (!mount) return;
+        mount.innerHTML = renderVideoStrip(videos);
+        activateVideoStrip(mount);
+      } catch (e) { console.warn('video strip:', e); }
     }
 
     function initReviews() {

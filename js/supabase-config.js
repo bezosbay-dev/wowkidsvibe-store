@@ -14,4 +14,13 @@ export const SUPABASE_ENABLED =
   !SUPABASE_CONFIG.url.includes('YOUR-PROJECT') &&
   !SUPABASE_CONFIG.anonKey.includes('YOUR_');
 
-export const REVIEWS_TABLE = 'reviews';
+// Single admin allowlist — must match the email used in supabase/setup.sql
+// RLS policies. Used client-side by admin-auth.js to gate the dashboard;
+// real enforcement is the RLS policy on the server.
+export const ADMIN_EMAIL = 'bezosbay@gmail.com';
+
+// Table names
+export const REVIEWS_TABLE          = 'reviews';
+export const PRODUCT_VIDEOS_TABLE   = 'product_videos';
+export const FEATURED_TABLE         = 'featured_products';
+export const SITE_SETTINGS_TABLE    = 'site_settings';

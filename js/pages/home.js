@@ -1,8 +1,9 @@
-import { getProducts } from '../api/products.js';
+import { getProducts, getProductsByHandles } from '../api/products.js';
 import { getCollections } from '../api/collections.js';
 import { renderProductCard, setupAddToCartButtons } from '../components/product-card.js';
 import { productCardSkeleton } from '../components/skeleton.js';
 import { CATEGORIES } from '../categories.js';
+import { getFeaturedHandles } from '../api/featured-products.js';
 
 export async function initHomePage() {
   renderCategoryRow();
@@ -30,9 +31,20 @@ async function loadTrendingProducts() {
   grid.innerHTML = productCardSkeleton(4);
 
   try {
-    const result = await getProducts({ first: 50, sortKey: 'BEST_SELLING' });
-    const allProducts = result.edges.map(function (e) { return e.node; });
-    const homepageProducts = allProducts.slice(0, 8);
+    let homepageProducts = [];
+    // Admin-curated featured handles take precedence over Shopify best-sellers.
+    try {
+      const featured = await getFeaturedHandles();
+      if (featured && featured.length) {
+        homepageProducts = await getProductsByHandles(featured.slice(0, 8));
+      }
+    } catch (e) { console.warn('featured fetch failed, falling back:', e); }
+
+    if (!homepageProducts.length) {
+      const result = await getProducts({ first: 50, sortKey: 'BEST_SELLING' });
+      const allProducts = result.edges.map(function (e) { return e.node; });
+      homepageProducts = allProducts.slice(0, 8);
+    }
     console.log('Products:', homepageProducts.length);
     const cards = homepageProducts.map(function (p) { return renderProductCard(p, 'default'); }).join('');
     grid.innerHTML = cards;

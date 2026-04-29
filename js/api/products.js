@@ -126,6 +126,26 @@ export async function getProductByHandle(handle) {
   return data.product;
 }
 
+// Fetch a list of products by handle, preserving the input order. Used by the
+// admin-curated homepage trending grid.
+export async function getProductsByHandles(handles) {
+  if (!Array.isArray(handles) || handles.length === 0) return [];
+  // Build OR query: "handle:foo OR handle:bar OR ..."
+  const queryStr = handles.map(h => `handle:${h}`).join(' OR ');
+  const data = await shopifyFetch(`
+    query getByHandles($query: String!, $first: Int!) {
+      products(first: $first, query: $query) {
+        edges { node { ...ProductCard } }
+      }
+    }
+    ${PRODUCT_CARD_FRAGMENT}
+  `, { query: queryStr, first: Math.min(handles.length, 50) });
+
+  const byHandle = {};
+  (data.products?.edges || []).forEach(e => { byHandle[e.node.handle] = e.node; });
+  return handles.map(h => byHandle[h]).filter(Boolean);
+}
+
 export async function getProductRecommendations(productId) {
   const cached = cacheGet('recs_' + productId);
   if (cached) return cached;
